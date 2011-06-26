@@ -40,7 +40,7 @@ case $hostwide {
             group   => "${puppi::params::configfile_group}",
             ensure  => "${ensure}",
             require => Class["puppi"],
-            content => "${puppi::params::nrpepluginsdir}/${command}\n",
+            content => "${puppi::params::checkpluginsdir}/${command}\n",
             tag     => 'puppi_check',
         }
     }
@@ -51,7 +51,7 @@ case $hostwide {
             group   => "${puppi::params::configfile_group}",
             ensure  => "${ensure}",
             require => Class["puppi"],
-            content => "${puppi::params::nrpepluginsdir}/${command}\n",
+            content => "${puppi::params::checkpluginsdir}/${command}\n",
             tag     => 'puppi_check',
         }
     }

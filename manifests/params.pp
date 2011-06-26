@@ -39,7 +39,9 @@ class puppi::params  {
     }
 
 # External tools
-    $nrpepluginsdir = $operatingsystem ? {
+# Directory where are placed the checks scripts
+# By default we use Nagios plugins
+    $checkpluginsdir = $operatingsystem ? {
         /(CentOS|RedHat|centos|redhat)/ => $architecture ? {
             x86_64  => "/usr/lib64/nagios/plugins",
             default => "/usr/lib/nagios/plugins",
