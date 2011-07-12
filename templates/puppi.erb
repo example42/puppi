@@ -6,8 +6,9 @@ configfile="<%= scope.lookupvar('puppi::params::basedir') %>/puppi.conf"
 # runcommand="cat"
 runcommand=""
 
-# Define default output verbosity (max, min, none)
+# Define defaults
 verbosity="max"
+show="yes"
 
 # Define action tag
 export tag=$(date +%Y%m%d-%H%M%S)
@@ -28,7 +29,6 @@ check_host () {
     for command in $(ls -v1 $checksdir) ; do
         title="$HOSTNAME check: $command"
         code=$(cat "$checksdir/$command")
-        echo -n $title
         ask_interactive
         output=$($runcommand "$checksdir/$command" 2>&1)
         handle_result
@@ -39,7 +39,6 @@ check () {
     for command in $(ls -v1 $projectsdir/$project/check) ; do
         title="$HOSTNAME check: $command"
         code=$(cat "$projectsdir/$project/check/$command")
-        echo -n $title
         ask_interactive
         output=$($runcommand "$projectsdir/$project/check/$command" 2>&1)
         handle_result
@@ -82,11 +81,19 @@ log () {
         fi
     fi
 
-    # So, show somehing
+    # So, show something
     if [ ! -z "$counts" ] ; then
-        tail $alllog
+        if [ ! -z "$greppattern" ] ; then
+            $tailcommand -n $counts $alllog | grep $greppattern
+        else
+            $tailcommand -n $counts $alllog
+        fi
     else
-        $tailcommand -f $alllog
+        if [ ! -z "$greppattern" ] ; then
+            $tailcommand -f $alllog | grep $greppattern
+        else
+            $tailcommand -f $alllog
+        fi
     fi
 }
 
@@ -111,11 +118,19 @@ info () {
                 echo "Your choices: $all_choices"
             done
             for info in $all_choices ; do
-                $infodir/$info
+                if [ ! -z "$greppattern" ] ; then
+                    $infodir/$info | grep $greppattern
+                else
+                    $infodir/$info
+                fi
             done
         else
             for info in $(ls $infodir) ; do
-                $infodir/$info
+                if [ ! -z "$greppattern" ] ; then
+                    $infodir/$info | grep $greppattern
+                else
+                    $infodir/$info
+                fi
             done
         fi
     fi
@@ -130,15 +145,18 @@ todo () {
 
 
 rollback () {
-    echo "Choose deploy to rollback:"
-    ls -l $archivedir/$project
-    read rollbackversion
-    save_runtime_config "rollbackversion=$rollbackversion" || initerr=1 
+    if [ ! -z $rollbackversion ] ; then
+        save_runtime_config "rollbackversion=$rollbackversion" || initerr=1
+    else
+        echo "Choose deploy to rollback:"
+        ls -l $archivedir/$project
+        read rollbackversion
+        save_runtime_config "rollbackversion=$rollbackversion" || initerr=1
+    fi
     
     for command in $(ls -v1 $projectsdir/$project/rollback) ; do
         title="$HOSTNAME Rollback: $command"
         code=$(cat "$projectsdir/$project/rollback/$command")
-        echo -n $title
         ask_interactive
         output=$($runcommand "$projectsdir/$project/rollback/$command" 2>&1)
         handle_result
@@ -152,7 +170,6 @@ deploy () {
     for command in $(ls -v1 $projectsdir/$project/deploy) ; do
         title="$HOSTNAME Deploy: $command"
         code=$(cat "$projectsdir/$project/deploy/$command")
-        echo -n $title
         ask_interactive
         output=$($runcommand "$projectsdir/$project/deploy/$command" 2>&1)
         handle_result
@@ -167,7 +184,6 @@ initialize () {
     for command in $(ls -v1 $projectsdir/$project/initialize) ; do
         title="$HOSTNAME Init: $command"
         code=$(cat "$projectsdir/$project/initialize/$command")
-        echo -n $title
         ask_interactive
         output=$($runcommand "$projectsdir/$project/initialize/$command" 2>&1)
         handle_result
@@ -280,7 +296,9 @@ create_runtime_conf () {
     save_runtime_config "interactive=$interactive" || initerr=1
     save_runtime_config "debug=$debug" || initerr=1
     save_runtime_config "report=$report" || initerr=1
+    save_runtime_config "show=$show" || initerr=1
     save_runtime_config "counts=$counts" || initerr=1
+    save_runtime_config "greppattern=$greppattern" || initerr=1
 
     for oopt in $(echo $options) ; do
         save_runtime_config "$(echo $oopt)" || initerr=1
@@ -295,13 +313,13 @@ showhelp () {
    echo "Usage: puppi <command> [project|topic] [options]"
    echo " "
    echo "Available commands:"
-   echo "check [project] - Run puppi checks host-wide or for a specific project"
-   echo "log [topic] [-i] - Show system and application specific logs"
-   echo "info [topic] [-i] - Show informations about the system"
+   echo "check [project] [-s <yes|no|fail>] - Run puppi checks host or project wide"
+   echo "log [topic] [-i] [-g <pattern>] - Show system and application specific logs"
+   echo "info [topic] [-i] [-g <pattern>] - Show informations about the system"
    echo "todo - Show todo's checklist of the system"
-   echo "init <project> - First time project initialization and setup"
-   echo "deploy <project> - Deploy the specified project"
-   echo "rollback <project> - Rollback the specified project. "
+   echo "init <project> [-i] [-f] [-t] - First time project initialization and setup"
+   echo "deploy <project> [-i] [-f] [-t] [-o ...] - Deploy the specified project"
+   echo "rollback <project> [state] [-i] [-f] [-t] - Rollback the specified project. "
    echo " "
    echo "Available options:"
    echo "-f - Force puppi commands execution flow also on CRITICAL errors"
@@ -309,6 +327,8 @@ showhelp () {
    echo "-t - Test mode. Just show the commands that should be executed"
    echo "-d <yes|full> - Debug mode. Show debug of what is done."
    echo "-r <yes|no|fail> - Enable reporting: yes/no/only on failures. Default depends on action"
+   echo "-s <yes|no|fail> - Show output: yes/no/only for failures. Default: yes"
+   echo "-g <pattern> - Grep command output with the selected pattern"
    echo "-o \"parameter=value parameter2=value2\" - Set manual options to override defaults"
    echo " "
    echo "Available projects:"
@@ -329,12 +349,43 @@ fi
 
 while [ $# -gt 0 ]; do
   case "$1" in
-    deploy|rollback|init)
+    deploy|init)
       report="yes"
       export action=$1
-      if [ ! -z "$2" ] ; then
-        export project=$(shell_filter_strict $2)
-        shift 2
+      if [ -n "$2" ] ; then
+        echo "$2" | egrep -q "^-.$"
+        if [ "$?" != "0" ] ; then
+          export project=$(shell_filter_strict $2)
+          shift 2
+        else
+          shift
+        fi
+      else
+        showhelp
+        exit
+        shift
+      fi
+    ;;
+    rollback)
+      report="yes"
+      export action=$1
+      if [ -n "$3" ] ; then
+        echo "$3" | egrep -q "^-.$"
+        if [ "$?" != "0" ] ; then
+          export project=$(shell_filter_strict $2)
+          export rollbackversion=$(shell_filter_strict $3)
+          shift 3
+        else
+          shift 2
+        fi
+      elif [ -n "$2" ] ; then
+        echo "$2" | egrep -q "^-.$"
+        if [ "$?" != "0" ] ; then
+          export project=$(shell_filter_strict $2)
+          shift 2
+        else
+          shift
+        fi
       else
         showhelp
         exit
@@ -344,10 +395,15 @@ while [ $# -gt 0 ]; do
     check)
       report="no"
       export action="checkhost"
-      if [ ! -z "$2" ] ; then
-        export project=$(shell_filter_strict $2)
-        export action="check"
-        shift 2
+      if [ -n "$2" ] ; then
+        echo "$2" | egrep -q "^-.$"
+        if [ "$?" != "0" ] ; then
+          export project=$(shell_filter_strict $2)
+          export action="check"
+          shift 2
+        else
+          shift
+        fi
       else
         shift
       fi
@@ -405,8 +461,16 @@ while [ $# -gt 0 ]; do
     -r)
       report="$(shell_filter_strict $2)"
       shift 2;;
+    -s)
+      show="$(shell_filter_strict $2)"
+      shift 2;;
     -c)
       counts="$(shell_filter_strict $2)"
+      shift 2;;
+    -g)
+      greppattern="$(shell_filter_strict $2)"
+      # greppattern="$(shell_filter $2)" # This allows partial regexp usage
+      # greppattern="$2" # This allows full regexp usage but is highly insecure if you sudo puppi
       shift 2;;
     *)
       showhelp

@@ -10,13 +10,16 @@
 # $source - The full URL to the maven-metadata.xml file. Format should be in URI standard (http:// file:// ssh:// svn://)  
 # $deploy_root (Optional) - The destination directory where the war files have to be deployed
 # $user (Optional) - The user to be used for deploy operations  (owner of the files in $deploy_root)
+# $jar_root (Optional) - The destination directory where the jar is copied. If set a jar file is searched in Maven 
+# $jar_user (Optional) - The user to be used for deploy operations of the jar (owner of the files deployed in $jar_root)
+# $jar_suffix (Optional) - The suffix (Maven qualifier) that might be appended to the jar
 # $document_suffix (Optional) - The suffix (Maven qualifier) that might be appended to the static files tarballs ("src tar")
-# $document_root (Optional) - The destination directory where the src tar in unpacked
+# $document_root (Optional) - The destination directory where the src tar is unpacked
 # $document_init_source (Optional) - The full URL to be used to retrieve, for the first time, the project files present in the src tar.
 #                           They are copied to the $document_root. Format should be in URI standard (http:// file:// ssh:// svn://)
 # $document_user (Optional) - The user to be used for deploy operations of src tar (owner of the files in $document_root)
 # $config_suffix (Optional) - The suffix (Maven qualifier) that might be appended to configuration tarballs ("cfg tar")
-# $config_root (Optional) - The destination directory where the cfg tar in unpacked
+# $config_root (Optional) - The destination directory where the cfg tar is unpacked
 # $config_init_source (Optional) - The full URL to be used to retrieve, for the first time, the project files present in the cfg tar.
 #                           They are copied to the $document_root. Format should be in URI standard (http:// file:// ssh:// svn://)
 # $config_user (Optional) - The user to be used for deploy operations of cfg tar (owner of the files in $config_root)
@@ -50,6 +53,9 @@ define puppi::project::maven (
     $source,
     $deploy_root="",
     $user="",
+    $jar_root="",
+    $jar_user="",
+    $jar_suffix="suffixnotset",
     $document_suffix="suffixnotset", # Do no change this crap default setting - Override in your defines
     $document_root="",
     $document_init_source="",
@@ -100,6 +106,11 @@ define puppi::project::maven (
         default => $document_user,
     }
 
+    $jar_real_user = $jar_user ? {
+        ''      => $user,
+        default => $jar_user,
+    }
+
     # Create Project
     puppi::project { $name: enable => $enable }
 
@@ -130,7 +141,7 @@ if ($config_init_source != "") {
              user => "root" , project => "$name" , enable => $enable;
         "${name}-Extract_Maven_Metadata":
              priority => "22" , command => "get_metadata.sh" ,
-             arguments => "-m $document_suffix -mc $config_suffix" ,
+             arguments => "-m $document_suffix -mc $config_suffix -mj $jar_suffix" ,
              user => "root" , project => "$name" , enable => $enable;
         "${name}-Run_POST-Checks":
              priority => "80" , command => "check_project.sh" , arguments => "$name" ,
@@ -163,9 +174,8 @@ if ($deploy_root != "") {
              priority => "30" , command => "archive.sh" , arguments => "-r $deploy_root -t war -o '$backup_rsync_options'" ,
              user => "$user" , project => "$name" , enable => $enable;
     }
-}
 
-if ($check_deploy == "yes") {
+  if ($check_deploy) {
     puppi::deploy {
         "${name}-Check_undeploy":
              priority => "31" , command => "checkwardir.sh" , arguments => "-a $deploy_root -c deploy_warpath" ,
@@ -174,7 +184,30 @@ if ($check_deploy == "yes") {
              priority => "33" , command => "checkwardir.sh" , arguments => "-p $deploy_root -c deploy_warpath" ,
              user => "$user" , project => "$name" , enable => $enable;
     }
+  }
 }
+
+# JAR deployment is done only if jar_root is defined
+if ($jar_root != "") {
+    puppi::deploy {
+        "${name}-Get_Maven_Files_JAR":
+             priority => "25" , command => "get_maven_files.sh" , arguments => "$source jarfile" ,
+             user => "root" , project => "$name" , enable => $enable ;
+        "${name}-Backup_existing_JAR":
+             priority => "30" , command => "archive.sh" , arguments => "-b $jar_root -t jar -s move -o '$backup_rsync_options' -n $backup_retention" ,
+             user => "root" , project => "$name" , enable => $enable;
+        "${name}-Deploy_Maven_JAR":
+             priority => "32" , command => "deploy.sh" , arguments => "$jar_root" ,
+             user => "$jar_real_user" , project => "$name" , enable => $enable;
+    }
+    puppi::rollback {
+        "${name}-Recover_JAR":
+             priority => "30" , command => "archive.sh" , arguments => "-r $deploy_root -t jar -o '$backup_rsync_options'" ,
+             user => "$user" , project => "$name" , enable => $enable;
+    }
+}
+
+
 
 # Config tar is managed only if $config_root is set
 if ($config_root != "") {

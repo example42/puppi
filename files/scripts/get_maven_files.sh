@@ -32,6 +32,12 @@ case $2 in
         cp -a $warfile $predeploydir/$artifact.war
         save_runtime_config "deploy_warpath=$deploy_root/$artifact.war"
     ;;
+    jarfile)
+        curl -s -f $1/$version/$jarfile -O
+        check_retcode
+        cp -a $jarfile $predeploydir/$artifact.jar
+        save_runtime_config "deploy_jarpath=$deploy_root/$artifact.jar"
+    ;;
     configfile)
         curl -s -f $1/$version/$configfile -O
         check_retcode

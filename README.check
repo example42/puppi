@@ -9,6 +9,7 @@ puppi check : Run host-wide checks.
 puppi check myapp : Run project "myapp" specific tests AND host-wide checks
 puppi check -r fail : Run checks and send reports only if some of them fail
 puppi check -r yes : Run checks and send reports
+puppi check -s fail : Run checks and show only failed ones
 
 EXAMPLES (puppet)
 The basic define related to a check is:

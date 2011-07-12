@@ -12,6 +12,7 @@ showhelp () {
     echo "It has some, not required, options:"
     echo "-m <magicstring> - The string to use as *fix in custom metadata info provided "
     echo "-mc <anotherstring> - The string to use as qualifier for Maven metadata config tars"
+    echo "-mj <anotherstring> - The string to use as qualifier for Maven metadata jars"
 }
 
 while [ $# -gt 0 ]; do
@@ -21,6 +22,9 @@ while [ $# -gt 0 ]; do
       shift 2 ;;
     -mc)
       config_suffix=$2
+      shift 2 ;;
+    -mj)
+      jar_suffix=$2
       shift 2 ;;
     -h)
       showhelp ;;
@@ -62,11 +66,18 @@ case $source_type in
         configfile=$artifact-$version.tar
     fi
 
+    if [[ x$jar_suffix != "xsuffixnotset" ]] ; then
+        jarfile=$artifact-$version-$jar_suffix.jar
+    else
+        jarfile=$artifact-$version.jar
+    fi
+
     # Store metadata
     save_runtime_config "version=$version" 
     save_runtime_config "artifact=$artifact"
     # Store filenames
     save_runtime_config "warfile=$warfile"
+    save_runtime_config "jarfile=$jarfile"
     save_runtime_config "srcfile=$srcfile" 
     save_runtime_config "configfile=$configfile" 
     ;;

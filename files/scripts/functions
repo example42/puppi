@@ -74,24 +74,31 @@ check_retcode () {
 handle_result () {
         RETVAL=$?
         if [ "$RETVAL" = "0" ] ; then
-            echo_success
+            showresult="echo_success"
             result="OK"
         fi
         if [ "$RETVAL" = "1" ] ; then
-            echo_warning
+            showresult="echo_warning"
             EXITWARN="1"
             result="WARNING"
         fi
         if [ "$RETVAL" = "2" ] ; then
-            echo_failure
+            showresult="echo_failure"
             EXITCRIT="1"
             result="CRITICAL"
         fi
 
-        echo
-        echo -e "$output"
-        # echo -e $output
-        echo
+        if [ x$show == "xyes" ] ; then
+            $showresult
+            echo
+            echo -e "$output"
+            echo
+        elif [ x$show == "xfail" ] && [ x$RETVAL != "x0" ] ; then
+            $showresult
+            echo
+            echo -e "$output"
+            echo
+        fi
 
         # Output to file
         if [ ! -d $logdir/$project/$tag ] ; then
@@ -162,22 +169,34 @@ overwrite_runtime_config () {
 }
 
 ask_interactive () {
-   if [ "$interactive" = "yes" ] ; then
-       echo 
-       echo "INTERACTIVE MODE: Press 'x' to exit or just return to go on" 
-       read press
-       case $press in 
-           x) exit 2 ;;
-           *) return
-       esac
-   fi
+    if [ x$show == "xyes" ] ; then
+        echo -n $title
+    fi
+
+    if [ "$interactive" = "yes" ] ; then
+        echo 
+        echo "INTERACTIVE MODE: Press 'x' to exit or just return to go on" 
+        read press
+        case $press in 
+            x) exit 2 ;;
+            *) return
+        esac
+    fi
 }
 
 # Shows or executes a command
 show_command () {
    echo
    $SETCOLOR_BOLD ; echo "$HOSTNAME: $*" ; $SETCOLOR_NORMAL
+
    bash -c "$*"
+
+# Grep filter at show_command level
+#   if [ ! -z "$greppattern" ] ; then
+#       bash -c "$*" | grep $greppattern
+#   else
+#       bash -c "$*"
+#   fi
 }
 
 # Filtering out only:  $ ; ` | < >
@@ -190,6 +209,6 @@ shell_filter_strict () {
 #    echo $1 | sed 's/\$//g' | sed 's/;//g' | sed 's/`//g' | sed 's/|//g' | sed 's/<//g' | sed 's/>//g'  | sed 's/=//g' | sed 's/!//g' | sed 's/{//g' | sed 's/}//g' | sed 's/\[//g' | sed 's/\]//g' | sed 's/\///g' | sed 's/\\//g' | sed 's/#//g' | sed 's/&//g'
 
 # Filtering out: all but accepted chars
-     echo $1 | sed "s/[^a-Z0-9_\-]//g"
+     echo $1 | sed "s/[^a-Z0-9_\-]//Ig"
 }
 

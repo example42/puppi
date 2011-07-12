@@ -30,7 +30,7 @@ puppi init myapp : Make the first deploy of "myapp". Can be optional and may req
 puppi rollback myapp : Rollbacks myapp to a previous archived state. User is asked to choose which
                        deploy to override. Note that by default you have 5 backups to rollback from.
                        Older backups are automatically removed.
-
+puppi rollback myapp latest : Automatically rollbacks to the latest saved state (unattended).
 
 EXAMPLES (puppet)
 Here follow some sample defines you can use out of the box in your manifests once you include puppi.

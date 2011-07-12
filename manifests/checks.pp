@@ -41,5 +41,11 @@ class puppi::checks {
         hostwide => "yes" ,
     }
 
+    puppi::check { "DNS_Resolution":
+        command  => "check_dns -H example.com" ,
+        priority => "15" ,
+        hostwide => "yes" ,
+    }
+
 
 }
