@@ -175,7 +175,7 @@ if ($deploy_root != "") {
              user => "$user" , project => "$name" , enable => $enable;
     }
 
-  if ($check_deploy) {
+  if ($check_deploy == "yes") {
     puppi::deploy {
         "${name}-Check_undeploy":
              priority => "31" , command => "checkwardir.sh" , arguments => "-a $deploy_root -c deploy_warpath" ,
