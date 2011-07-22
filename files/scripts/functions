@@ -22,6 +22,17 @@ echo_success() {
   return 0
 }
 
+echo_dontdeploy() {
+  [ "$BOOTUP" = "color" ] && $MOVE_TO_COL
+  echo -n "["
+  [ "$BOOTUP" = "color" ] && $SETCOLOR_SUCCESS
+  echo -n $" NO NEED TO DEPLOY "
+  [ "$BOOTUP" = "color" ] && $SETCOLOR_NORMAL
+  echo -n "]"
+  echo -ne "\r"
+  return 0
+}
+
 echo_failure() {
   [ "$BOOTUP" = "color" ] && $MOVE_TO_COL
   echo -n "["
@@ -87,7 +98,11 @@ handle_result () {
             EXITCRIT="1"
             result="CRITICAL"
         fi
-
+        if [ "$RETVAL" = "99" ] ; then
+            showresult="echo_dontdeploy"
+            DONTDEPLOY="1"
+            result="OK"
+        fi
         if [ x$show == "xyes" ] ; then
             $showresult
             echo

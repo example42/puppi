@@ -18,6 +18,8 @@ showhelp () {
     echo "-s <source_file> - The URL of the file to get"
     echo "-t <file_type> - The type of file that is retrieved: list|tarball|maven-metadata|dir"
     echo "-d <local_dir> - An alternative destination directory (default is automatically chosen)"
+    echo "-a <yes|no> - If 'no' return a special error code (99) if the download checksum is the same of the one previously downloaded"
+    echo "              This option can be used for automatic deploys (ie via cron) that actually deploy only new changes"
 }
 
 while [ $# -gt 0 ]; do
@@ -67,6 +69,9 @@ while [ $# -gt 0 ]; do
     -d)
       # Enforces and overrides and alternative downloaddir
       downloaddir=$2
+      shift 2 ;;
+    -a)
+      alwaysdeploy=$2
       shift 2 ;;
     *)
       showhelp
@@ -118,3 +123,14 @@ case $type in
     ;;
 
 esac
+
+if [ x$alwaysdeploy == "xno" ] ; then
+    # Here is checked the md5sum of the downloaded file against a previously save one
+    # If the sums are the same the scripts exits 99 and puppi will stop the deploy without any warning or notification
+    [ -d $archivedir/$project ] || mkdir -p $archivedir/$project
+    touch $archivedir/$project/md5sum
+    md5sum $downloaddir/$downloadfilename > $workdir/$project/md5sum_downloaded
+    cat $archivedir/$project/md5sum > $workdir/$project/md5sum_deployed
+    diff $workdir/$project/md5sum_downloaded $workdir/$project/md5sum_deployed && exit 99
+    md5sum $downloaddir/$downloadfilename > $archivedir/$project/md5sum
+fi

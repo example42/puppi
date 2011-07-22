@@ -8,7 +8,7 @@ EXAMPLES (cli)
 puppi log : Tails (tail -10f) all the known logs. 
 puppi log apache : Tails only the logs related to the given topic
 puppi log -i : Choose interactively which logs to show
-puppi log -g <string> : Grep the output with the string defined 
+puppi log -g <string> : Grep the output with the string defined
 
 EXAMPLES (puppet)
 The basic define related to a log is:
