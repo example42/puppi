@@ -26,7 +26,7 @@ fi
 
 # Main functions
 check_host () {
-    for command in $(ls -v1 $checksdir) ; do
+    for command in $(ls -1 $checksdir) ; do
         title="$HOSTNAME check: $command"
         code=$(cat "$checksdir/$command")
         ask_interactive
@@ -36,7 +36,7 @@ check_host () {
 }
 
 check () {
-    for command in $(ls -v1 $projectsdir/$project/check) ; do
+    for command in $(ls -1 $projectsdir/$project/check) ; do
         title="$HOSTNAME check: $command"
         code=$(cat "$projectsdir/$project/check/$command")
         ask_interactive
@@ -154,7 +154,7 @@ rollback () {
         save_runtime_config "rollbackversion=$rollbackversion" || initerr=1
     fi
     
-    for command in $(ls -v1 $projectsdir/$project/rollback) ; do
+    for command in $(ls -1 $projectsdir/$project/rollback) ; do
         title="$HOSTNAME Rollback: $command"
         code=$(cat "$projectsdir/$project/rollback/$command")
         ask_interactive
@@ -167,7 +167,7 @@ rollback () {
 }
 
 deploy () {
-    for command in $(ls -v1 $projectsdir/$project/deploy) ; do
+    for command in $(ls -1 $projectsdir/$project/deploy) ; do
         title="$HOSTNAME Deploy: $command"
         code=$(cat "$projectsdir/$project/deploy/$command")
         ask_interactive
@@ -181,7 +181,7 @@ deploy () {
 }
 
 initialize () {
-    for command in $(ls -v1 $projectsdir/$project/initialize) ; do
+    for command in $(ls -1 $projectsdir/$project/initialize) ; do
         title="$HOSTNAME Init: $command"
         code=$(cat "$projectsdir/$project/initialize/$command")
         ask_interactive
@@ -211,7 +211,7 @@ save_summary () {
     echo "Job result: $result" >> $logdir/$project/$tag/summary
     echo "Actions executed:" >> $logdir/$project/$tag/summary
     cd $logdir/$project/$tag/
-    for message in $(ls -v1 $logdir/$project/$tag/ | grep -v summary ) ; do
+    for message in $(ls -1 $logdir/$project/$tag/ | grep -v summary ) ; do
         msg_title=$(head -1 $message)
         msg_code=$(head -2 $message | tail -1) 
         msg_result=$(head -3 $message | tail -1) 
@@ -231,7 +231,7 @@ save_summary () {
 send_reports () {
     if [[ "x$report" == "xyes" ]] ; then
         save_summary
-        for command in $(ls -v1 $projectsdir/$project/report) ; do
+        for command in $(ls -1 $projectsdir/$project/report) ; do
             title="Reporting: $command"
             code=$(cat "$projectsdir/$project/report/$command")
             echo -n $title

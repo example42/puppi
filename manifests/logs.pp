@@ -15,6 +15,10 @@ class puppi::logs {
             puppi::log { "auth": description => "Users and authentication" , log => "/var/log/secure" }
             puppi::log { "mail": description => "Mail messages" , log => "/var/log/maillog" }
         }
+        Solaris: {
+            puppi::log { "system": description => "General System Messages" , log => "/var/adm/messages" }
+            puppi::log { "auth": description => "Users and authentication" , log => "/var/log/authlog" }
+        }
         default: { }
     }
 

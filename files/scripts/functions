@@ -206,9 +206,9 @@ shell_filter () {
 
 shell_filter_strict () {
 # Filtering out:  $ ; ` | < > = ! { } [ ] / \ # &
-#    echo $1 | sed 's/\$//g' | sed 's/;//g' | sed 's/`//g' | sed 's/|//g' | sed 's/<//g' | sed 's/>//g'  | sed 's/=//g' | sed 's/!//g' | sed 's/{//g' | sed 's/}//g' | sed 's/\[//g' | sed 's/\]//g' | sed 's/\///g' | sed 's/\\//g' | sed 's/#//g' | sed 's/&//g'
+    echo $1 | sed 's/\$//g' | sed 's/;//g' | sed 's/`//g' | sed 's/|//g' | sed 's/<//g' | sed 's/>//g'  | sed 's/=//g' | sed 's/!//g' | sed 's/{//g' | sed 's/}//g' | sed 's/\[//g' | sed 's/\]//g' | sed 's/\///g' | sed 's/\\//g' | sed 's/#//g' | sed 's/&//g'
 
 # Filtering out: all but accepted chars
-     echo $1 | sed "s/[^a-Z0-9_\-]//Ig"
+#     echo $1 | sed "s/[^a-Z0-9_\-]//Ig"
 }
 
