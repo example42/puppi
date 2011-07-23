@@ -37,6 +37,8 @@
 #                                    IE: "--exclude .snapshot --exclude cache --exclude www/cache"
 # $backup_retention (Optional) - Number of backup archives to keep on the filesystem. (Default 5). Lower if your backups 
 #                                are too large and may fill up the filesystem
+# $always_deploy (Optional) - If you always deploy what has been downloaded. Default="yes", if set to "no" a checksum is made between the files
+#                             previously downloaded and the new files. If they are the same the deploy is not done.
 #
 define puppi::project::war (
     $source,
@@ -56,6 +58,7 @@ define puppi::project::war (
     $report_email="",
     $backup_rsync_options="--exclude .snapshot",
     $backup_retention="5",
+    $always_deploy="yes",
     $enable = 'true' ) {
 
     require puppi::params
@@ -83,6 +86,16 @@ define puppi::project::war (
     # We need the war filename
     $war_file = urlfilename($source)
 
+    $real_always_deploy = $always_deploy ? {
+        "no"    => "no",
+        "false" => "no",
+        false   => "no",
+        "yes"   => "yes",
+        "true"  => "yes",
+        true    => "yes",
+    }
+
+
     # Create Project
     puppi::project { $name: enable => $enable }
 
@@ -99,7 +112,7 @@ define puppi::project::war (
              priority => "10" , command => "check_project.sh" , arguments => "$name" ,
              user => "root" , project => "$name" , enable => $enable;
         "${name}-Retrieve_WAR":
-             priority => "20" , command => "get_file.sh" , arguments => "-s $source" ,
+             priority => "20" , command => "get_file.sh" , arguments => "-s $source -a $real_always_deploy" ,
              user => "root" , project => "$name" , enable => $enable ;
         "${name}-Backup_existing_WAR":
              priority => "30" , command => "archive.sh" , arguments => "-b $deploy_root -t war -s move -o '$backup_rsync_options' -n $backup_retention" ,

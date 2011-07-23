@@ -44,6 +44,8 @@
 # $backup_retention (Optional) - Number of backup archives to keep on the filesystem. (Default 5). Lower if your backups 
 #                                are too large and may fill up the filesystem
 # $run_checks (Optional) - If you want to run local puppi checks before and after the deploy procedure. Default: "true"
+# $always_deploy (Optional) - If you always deploy what has been downloaded. Default="yes", if set to "no" a checksum is made between the files
+#                             previously downloaded and the new files. If they are the same the deploy is not done.
 #
 define puppi::project::builder (
     $source,
@@ -66,6 +68,7 @@ define puppi::project::builder (
     $backup_rsync_options="--exclude .snapshot",
     $backup_retention="5",
     $run_checks="true",
+    $always_deploy="yes",
     $enable = 'true' ) {
 
     require puppi::params
@@ -94,6 +97,15 @@ define puppi::project::builder (
         "list"           => "list",
     }
 
+    $real_always_deploy = $always_deploy ? {
+        "no"    => "no",
+        "false" => "no",
+        false   => "no",
+        "yes"   => "yes",
+        "true"  => "yes",
+        true    => "yes",
+    }
+
     $source_filename = urlfilename($source)
 
 # Create Project
@@ -112,7 +124,7 @@ if ($init_source != "") {
 # Common Defines
     puppi::deploy {
         "${name}-Retrieve_SourceFile":
-             priority => "20" , command => "get_file.sh" , arguments => "-s $source -t $real_source_type" ,
+             priority => "20" , command => "get_file.sh" , arguments => "-s $source -t $real_source_type -a $real_always_deploy" ,
              user => "root" , project => "$name" , enable => $enable ;
         "${name}-Deploy":
              priority => "40" , command => "deploy.sh" , arguments => "$deploy_root" ,

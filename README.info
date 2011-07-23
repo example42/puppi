@@ -11,7 +11,7 @@ puppi info : Show host-wide infos. Much stuff.
 puppi info apache : Show info about apache (connections, processes, config, logs...)
 puppi info -i : Interactively select the info topics you want to show
 puppi info -r yes : Show complete info and send reports (email, rest ... )
-puppi info -g <string> : Grep the output with the string defined 
+puppi info -g <string> : Grep the output with the string defined
 
 EXAMPLES (puppet)
 The basic define related to a info is puppi::info, it creates a script executed
