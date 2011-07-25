@@ -58,7 +58,7 @@ mysql_run () {
       run)
         file $downloadedfile | grep gzip &>/dev/null 2>&1 && sqlfile_type="gzip"
         file $downloadedfile | grep Zip &>/dev/null 2>&1 && sqlfile_type="zip"
-        case "sqlfile_type" in
+        case "$sqlfile_type" in
           gzip)
             zcat $downloadedfile | mysql -u $db_user -p$db_password -h $db_host $db_name
             check_retcode ;;
