@@ -19,6 +19,11 @@ class puppi::logs {
             puppi::log { "system": description => "General System Messages" , log => "/var/adm/messages" }
             puppi::log { "auth": description => "Users and authentication" , log => "/var/log/authlog" }
         }
+        Archlinux: {
+            puppi::log { "system": description => "General System Messages" , log => ["/var/log/messages.log","/var/log/syslog.log"] }
+            puppi::log { "auth": description => "Users and authentication" , log => ["/var/log/user.log","/var/log/auth.log"] }
+            puppi::log { "mail": description => "Mail messages" , log => "/var/log/mail.log" }
+        }
         default: { }
     }
 
