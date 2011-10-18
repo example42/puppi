@@ -16,7 +16,7 @@
 define puppi::info (
     $description="",
     $templatefile="puppi/info.erb",
-    $run ) {
+    $run="" ) {
 
     require puppi::params
 
