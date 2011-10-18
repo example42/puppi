@@ -84,7 +84,7 @@ define puppi::project::war (
     }
 
     # We need the war filename
-    $war_file = urlfilename($source)
+    $war_file = get_urlfilename($source)
 
     $real_always_deploy = $always_deploy ? {
         "no"    => "no",

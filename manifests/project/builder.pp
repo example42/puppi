@@ -106,7 +106,7 @@ define puppi::project::builder (
         true    => "yes",
     }
 
-    $source_filename = urlfilename($source)
+    $source_filename = get_urlfilename($source)
 
 # Create Project
     puppi::project { $name: enable => $enable }
