@@ -75,7 +75,7 @@ define puppi::project::mysql (
 
     $real_source_type = "mysql"
 
-    $source_filename = urlfilename($source)
+    $source_filename = get_urlfilename($source)
 
     $real_always_deploy = $always_deploy ? {
         "no"    => "no",
