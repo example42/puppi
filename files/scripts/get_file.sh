@@ -117,7 +117,8 @@ case $type in
         save_runtime_config "downloadedfile=$downloaddir/$downloadfilename"
     ;;
     rsync)
-        rsync -rlptD $url .
+        rsync -a $url .
+        # rsync -rlptD $url . # Why not preserving users/groups?
         check_retcode
         save_runtime_config "downloadedfile=$downloaddir/$downloadfilename"
     ;;

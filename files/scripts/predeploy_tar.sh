@@ -28,7 +28,7 @@ untar () {
     cd $predeploydir
 #    file $deployfile | grep gzip 2>&1>/dev/null
 #    if [ $? == "0"] ; then
-        tar -zxvf $deployfile
+        tar -zxf $deployfile
 #    else
 #        tar -xvf $deployfile
 #    fi

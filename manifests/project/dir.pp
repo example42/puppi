@@ -37,6 +37,8 @@
 #                                    IE: "--exclude .snapshot --exclude cache --exclude www/cache"
 # $backup_retention (Optional) - Number of backup archives to keep on the filesystem. (Default 5). Lower if your backups 
 #                                are too large and may fill up the filesystem
+# $skip_predeploy (Optional) - For large data to deploy predeploy copy in /tmp/puppi might full the filesystem. Set to "yes" to deploy
+#                              directly to $deploy_root. Default: no (files are first predeployed in /tmp/puppi then copied to $deploy_root)
 #
 define puppi::project::dir (
     $source,
@@ -56,6 +58,7 @@ define puppi::project::dir (
     $report_email="",
     $backup_rsync_options="--exclude .snapshot",
     $backup_retention="5",
+    $skip_predeploy="no",
     $enable = 'true' ) {
 
     require puppi::params
@@ -91,19 +94,33 @@ if ($init_source != "") {
         "${name}-Run_PRE-Checks":
              priority => "10" , command => "check_project.sh" , arguments => "$name" ,
              user => "root" , project => "$name" , enable => $enable;
-        "${name}-Sync_Files":
-             priority => "20" , command => "get_file.sh" , arguments => "-s $source -t dir" ,
-             user => "root" , project => "$name" , enable => $enable ;
         "${name}-Backup_existing_Files":
              priority => "30" , command => "archive.sh" , arguments => "-b $deploy_root -o '$backup_rsync_options' -n $backup_retention" ,
              user => "root" , project => "$name" , enable => $enable;
-        "${name}-Deploy":
-             priority => "40" , command => "deploy.sh" , arguments => "$deploy_root" ,
-             user => "$user" , project => "$name" , enable => $enable;
         "${name}-Run_POST-Checks":
              priority => "80" , command => "check_project.sh" , arguments => "$name" ,
              user => "root" , project => "$name" , enable => $enable ;
     }
+
+if ($skip_predeploy == "no") {
+    puppi::deploy {
+        "${name}-Sync_Files":
+             priority => "20" , command => "get_file.sh" , arguments => "-s $source -t dir" ,
+             user => "root" , project => "$name" , enable => $enable ;
+        "${name}-Deploy":
+             priority => "40" , command => "deploy.sh" , arguments => "$deploy_root" ,
+             user => "$user" , project => "$name" , enable => $enable;
+    }
+}
+
+if ($skip_predeploy == "yes") {
+    puppi::deploy {
+        "${name}-Deploy":
+             priority => "40" , command => "get_file.sh" , arguments => "-s $init_source -d $deploy_root" ,
+             user => "$user" , project => "$name" , enable => $enable;
+    }
+}
+
 
     puppi::rollback {
         "${name}-Recover_Files_To_Deploy":

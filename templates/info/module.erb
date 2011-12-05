@@ -79,9 +79,11 @@ show_command "ps -adef | grep <%= processname %> | grep -v grep"
 <% else -%>
 show_command "ps -adef | grep <%= processname %> | grep -v grep | head -20"
 <% end -%>
+<% port.each do |mport| -%>
 <% if verbose == "yes" -%>
-show_command "netstat -natup | grep ':<%= port %> '"
+show_command "netstat -natup | grep ':<%= mport %> '"
 <% else -%>
-show_command "netstat -natup | grep ':<%= port %> ' | head -20"
+show_command "netstat -natup | grep ':<%= mport %> ' | head -20"
+<% end -%>
 <% end -%>
 <% end -%>

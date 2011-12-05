@@ -175,7 +175,7 @@ if ($deploy_root != "") {
              priority => "25" , command => "get_maven_files.sh" , arguments => "$source warfile" ,
              user => "root" , project => "$name" , enable => $enable ;
         "${name}-Backup_existing_WAR":
-             priority => "30" , command => "archive.sh" , arguments => "-b $deploy_root -t war -s move -o '$backup_rsync_options' -n $backup_retention" ,
+             priority => "30" , command => "archive.sh" , arguments => "-b $deploy_root -t war -s move -m diff -o '$backup_rsync_options' -n $backup_retention" ,
              user => "root" , project => "$name" , enable => $enable;
         "${name}-Deploy_Maven_WAR":
              priority => "32" , command => "deploy.sh" , arguments => "$deploy_root" ,
@@ -206,7 +206,7 @@ if ($jar_root != "") {
              priority => "25" , command => "get_maven_files.sh" , arguments => "$source jarfile" ,
              user => "root" , project => "$name" , enable => $enable ;
         "${name}-Backup_existing_JAR":
-             priority => "30" , command => "archive.sh" , arguments => "-b $jar_root -t jar -s move -o '$backup_rsync_options' -n $backup_retention" ,
+             priority => "30" , command => "archive.sh" , arguments => "-b $jar_root -t jar -s move -m diff -o '$backup_rsync_options' -n $backup_retention" ,
              user => "root" , project => "$name" , enable => $enable;
         "${name}-Deploy_Maven_JAR":
              priority => "32" , command => "deploy.sh" , arguments => "$jar_root" ,
