@@ -147,7 +147,7 @@ recovery () {
 }
 
 delete_old () {
-    # We don't count the "latest" symlink
+    # We don't count the "latest" symlink
     bakret=$(expr $bakret + 1 )
 
     cd $archivedir/$project

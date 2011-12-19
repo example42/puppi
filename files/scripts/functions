@@ -143,7 +143,7 @@ xml_parse () {
 # Stores the passed arguments in Project runtime config file
 # Only if the parameter is not already defined
 # Usage:
-# save_runtime_config parameter=value # Sets or overrides parameter
+# save_runtime_config parameter=value # Sets or overrides parameter
 # save_runtime_config parameter=value notforce # Sets parameters only if is not already set
 save_runtime_config () {
     parameter=$(echo $1 | cut -d '=' -f1)

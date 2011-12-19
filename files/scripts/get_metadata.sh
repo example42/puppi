@@ -52,7 +52,7 @@ case $source_type in
     # Definition of qualifiers for Maven has changed from the (wrong) assumption
     # of having cfg-$suffix and src-$suffix for staticfiles and config tarballs
     # to a more flexible management of qualifiers names with two different params (-m and -mc)
-    # The "suffixnotset" string is passed by default by the Puppi maven define
+    # The "suffixnotset" string is passed by default by the Puppi maven define
     # YES, it's crap. 
     if [[ x$suffix != "xsuffixnotset" ]] ; then
         srcfile=$artifact-$version-$suffix.tar
