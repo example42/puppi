@@ -109,4 +109,12 @@ class puppi::skel {
         require => File["puppi_basedir"],
     }
 
+    # PUPPI 2 Basedir
+    file { "puppi_basedir2":
+        path    => "${settings::vardir}/puppi",
+        mode    => "755",
+        owner   => "${puppi::params::configfile_owner}",
+        group   => "${puppi::params::configfile_group}",
+        ensure  => directory,
+    }
 }

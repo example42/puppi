@@ -43,6 +43,10 @@ while [ $# -gt 0 ]; do
           downloaddir=$storedir
           save_runtime_config "source_type=tarball"
           ;;
+          tar)
+          downloaddir=$storedir
+          save_runtime_config "source_type=tar"
+          ;;
           zip)
           downloaddir=$storedir
           save_runtime_config "source_type=zip"

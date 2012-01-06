@@ -37,7 +37,7 @@ EXAMPLES (with example42 puppet modules)
 If you use the whole Example42 modules set you get automatically many service related checks out of the box.
 Just set (via an ENC, facts or manifests) these puppet variables:
 $monitor="yes" # To enable automagic monitoring
-$monitor_tool = "puppi"  # As monitoring tool define at least puppi. If you like Nagios, you may use:
+$monitor_tool = "puppi"  # As monitoring tool define at least puppi. If you like Nagios, you may use:
 $monitor_tool = ["nagios","puppi"] # This enables the below checks both for Puppi and Nagios
 $puppi=yes # To enable puppi extensions autoloading
 
