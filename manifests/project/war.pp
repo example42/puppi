@@ -127,7 +127,7 @@ define puppi::project::war (
              priority => "20" , command => "get_file.sh" , arguments => "-s $source -a $real_always_deploy" ,
              user => "root" , project => "$name" , enable => $enable ;
         "${name}-Backup_existing_WAR":
-             priority => "30" , command => "archive.sh" , arguments => "-b $deploy_root -t war -s move -o '$backup_rsync_options' -n $backup_retention" ,
+             priority => "30" , command => "archive.sh" , arguments => "-b $deploy_root -t war -s move -m diff -o '$backup_rsync_options' -n $backup_retention" ,
              user => "root" , project => "$name" , enable => $enable;
         "${name}-Deploy_WAR":
              priority => "40" , command => "deploy.sh" , arguments => "$deploy_root" ,

@@ -33,8 +33,8 @@ class puppi::infos {
         description => "Disks and filesystem information" ,
         run         => $operatingsystem ? {  
             Solaris => [ "df -h" , "mount" ],
-            default => [ "df -h" , "mount" , "fdisk -l" ],
-        }   
+            default => [ "df -h" , "mount" , "blkid" , "fdisk -l" ],
+        } 
     }
 
     puppi::info { "hardware":
@@ -42,7 +42,7 @@ class puppi::infos {
         run         => $operatingsystem ? {
             Solaris => [ "find /devices/" ],
             default => [ "lspci" , "cat /proc/cpuinfo" ],
-        }   
+        } 
     }
 
     puppi::info { "packages":

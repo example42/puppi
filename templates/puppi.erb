@@ -149,7 +149,7 @@ rollback () {
         save_runtime_config "rollbackversion=$rollbackversion" || initerr=1
     else
         echo "Choose deploy to rollback:"
-        ls -l $archivedir/$project
+        ls -1 $archivedir/$project
         read rollbackversion
         save_runtime_config "rollbackversion=$rollbackversion" || initerr=1
     fi
@@ -175,7 +175,7 @@ deploy () {
         handle_result
         [ "$EXITCRIT" = "1" ] && [ "$force" != "yes" ] && break
         if [ "$DONTDEPLOY" = "1" ] ; then
-             echo "No need to deploy: $downloadedfile is same of last deploy"
+             echo "No need to deploy: source file has not changed"
              echo "Type 'rm $archivedir/$project/md5sum' and run puppi again to force deployment" 
              exit 0
         fi
@@ -336,7 +336,7 @@ showhelp () {
    echo "-g <pattern> - Grep command output with the selected pattern"
    echo "-o \"parameter=value parameter2=value2\" - Set manual options to override defaults"
    echo " "
-   echo "Available projects:"
+   echo "Available deploy projects:"
    ls -1 $projectsdir
    echo 
    echo "Available info topics:"

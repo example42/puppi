@@ -15,9 +15,6 @@ handle_check () {
         if [ "$RETVAL" = "2" ] ; then
             EXITCRIT="1"
         fi
-
-	# For nicer output when launched via cli
-        echo -n "\n"
 }
 
 check () {
@@ -31,6 +28,9 @@ check () {
         handle_check
     done
 }
+
+# For nicer output when launched via cli
+echo -n "\n"
 
 # Run checks
 check
