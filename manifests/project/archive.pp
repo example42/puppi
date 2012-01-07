@@ -247,8 +247,8 @@ define puppi::project::archive (
     }
   }
 
-  # Puppi auto_run
-  if $real_auto_run != "ff" {
+  # Puppi auto_deploy
+  if $real_auto_deploy == true {
     puppi::run { "$name": }
   }
 

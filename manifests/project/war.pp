@@ -39,6 +39,8 @@
 #                                are too large and may fill up the filesystem
 # $always_deploy (Optional) - If you always deploy what has been downloaded. Default="yes", if set to "no" a checksum is made between the files
 #                             previously downloaded and the new files. If they are the same the deploy is not done.
+# [*auto_deploy*]
+#   (Optional) - If you want to automatically run a puppi deploy during Puppet run. Default: 'false'
 #
 define puppi::project::war (
     $source,
@@ -59,6 +61,7 @@ define puppi::project::war (
     $backup_rsync_options="--exclude .snapshot",
     $backup_retention="5",
     $always_deploy="yes",
+    $auto_deploy=false,
     $enable = 'true' ) {
 
     require puppi::params
@@ -87,6 +90,15 @@ define puppi::project::war (
     $war_file = get_urlfilename($source)
 
     $real_always_deploy = $always_deploy ? {
+        "no"    => "no",
+        "false" => "no",
+        false   => "no",
+        "yes"   => "yes",
+        "true"  => "yes",
+        true    => "yes",
+    }
+
+    $real_auto_deploy = $auto_deploy ? {
         "no"    => "no",
         "false" => "no",
         false   => "no",
@@ -245,6 +257,11 @@ if ($report_email != "") {
              user => "root" , project => "$name" , enable => $enable ;
     }
 }
+
+  # Puppi auto_deploy
+  if $real_auto_deploy == "yes" {
+    puppi::run { "$name": }
+  }
 
 }
 
