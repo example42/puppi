@@ -98,7 +98,7 @@ case $type in
         save_runtime_config "downloadedfile=$downloaddir/$downloadfilename"
     ;;
     http|https)
-        curl -s -f $url -O
+        curl -s -f -L $url -O
         check_retcode
         save_runtime_config "downloadedfile=$downloaddir/$downloadfilename"
     ;;
