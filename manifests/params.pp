@@ -19,6 +19,7 @@ class puppi::params  {
     $infodir     = '/etc/puppi/info'
     $tododir     = '/etc/puppi/todo'
     $projectsdir = '/etc/puppi/projects'
+    $datadir     = '/etc/puppi/data'
     $workdir     = '/tmp/puppi'
     $libdir      = '/var/lib/puppi'
     $archivedir  = '/var/lib/puppi/archive'

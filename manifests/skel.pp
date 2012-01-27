@@ -75,6 +75,18 @@ class puppi::skel {
     force   => true,
   }
 
+  file { 'puppi_datadir':
+    ensure  => directory,
+    path    => $puppi::params::datadir,
+    mode    => '0750',
+    owner   => $puppi::params::configfile_owner,
+    group   => $puppi::params::configfile_group,
+    require => File['puppi_basedir'],
+    recurse => true,
+    purge   => true,
+    force   => true,
+  }
+
   file { 'puppi_workdir':
     ensure  => directory,
     path    => $puppi::params::workdir,
