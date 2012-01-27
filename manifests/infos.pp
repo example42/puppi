@@ -51,6 +51,7 @@ class puppi::infos {
       /(?i:Debian|Ubuntu|Mint)/       => [ 'apt-config dump' , 'apt-cache stats' , 'apt-key list' , 'dpkg -l' ],
       /(Solaris)/                     => [ 'pkginfo' ],
       /(Archlinux)/                   => [ 'pacman -Qet' ],
+      default                         => [ 'echo' ],
     },
   }
 
