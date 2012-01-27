@@ -1,6 +1,6 @@
 #
 # Class puppi::extra
-# This class is autoincluded if you set $puppi_extra to something different than "no"
+# This class is autoincluded if $puppi_extra is not set to false
 # Extra resources needed for full puppi functionality:
 # curl, rsync, mailx, nagios plugins
 #
@@ -9,9 +9,9 @@
 #
 class puppi::extra {
 
-    package { curl: ensure => present, }
+  package { 'curl': ensure => present, }
 #    include rsync::client
 #    include nagios::plugins
-    include mailx
+  include mailx
 
 }
