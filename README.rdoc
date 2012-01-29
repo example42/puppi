@@ -33,15 +33,15 @@ The puppi command has these possibile actions:
 
 * [ puppi deploy project_name ] : Deploys the defined project
 
-* [ puppi rollback project_name [state] ] : Rollback to a previous deploy state 
+* [ puppi rollback project_name ] : Rollback to a previous deploy state 
 
-* [ puppi check [project_name] ] : Runs project specific and host wide checks 
+* [ puppi check ] : Runs project specific and host wide checks 
 
-* [ puppi log [project_name] ] : Tails system wide or project specific logs 
+* [ puppi log ] : Tails system wide or project specific logs 
 
-* [ puppi info [topic] ] : Show system information (for all or only the specified topic)
+* [ puppi info topic_name ] : Show system information (for all or only the specified topic)
 
-* [ puppi todo [topic] ] : Show things to do (or done) manually on the system
+* [ puppi todo ] : Show things to do (or done) manually on the system
 
 The deploy/rollback/init actions puppi run the commands in /etc/puppi/projects/$project_name/$action,
 log their status and then run the commands in /etc/puppi/projects/$project_name/report to
