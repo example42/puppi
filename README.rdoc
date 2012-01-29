@@ -1,4 +1,4 @@
-# Puppi: A Deploy Automation and SysAdmin helper Puppet module
+= Puppi: A Deploy Automation and SysAdmin helper Puppet module
 
 Written by Alessandro Franceschi / al @ lab42.it
 
@@ -23,7 +23,7 @@ The module provides:
 
 * Puppet defines to populate the output of the different actions
 
-## USAGE OF THE PUPPI COMMAND
+== USAGE OF THE PUPPI COMMAND
 
         puppi <action> <project_name> [ -options ]
 
@@ -63,7 +63,7 @@ Some usage examples:
         puppi deploy myapp : Deploys myapp according to the logic defined in Puppet manifests
 
 
-## THE PUPPI MODULE
+== THE PUPPI MODULE
 
 The set of commands needed for each of these actions s entirely managed with specific
 Puppet "basic defines":
@@ -92,7 +92,7 @@ Puppet "basic defines":
 Read details in the relevant READMEs
 
 
-## FILE PATHS (all of them are provided, and can be configured, in the puppi module):
+== FILE PATHS (all of them are provided, and can be configured, in the puppi module):
 
 /usr/sbin/puppi - Where the puppi command is placed. Currently is a bash script.
 
@@ -126,7 +126,7 @@ Read details in the relevant READMEs
   information that changes on every puppi run (such as the deploy datetime, used for backups).
 
 
-## HOW TO CUSTOMIZE
+== HOW TO CUSTOMIZE
 It should be clear that with puppi you have full flexibility in the definition of a deployment 
 procedure, since the puppi command is basically a wrapper that executes arbitrary scripts with
 a given sequence, in pure KISS logic.
@@ -164,7 +164,7 @@ There are different parts where you can customize the behaviour of puppi:
   cases where the deployment procedure involves similar steps. Consider also that you can handle
   exceptions with variables (see the $loadbalancer_ip usage in puppi/manifests/project/maven.pp)
 
-## DEPENDENCIES
+== DEPENDENCIES
 The Example42 puppi module aims to be independent and easily droppable in your set of modules.
 In order to do something useful by default it need some packages that you probably already manage:
 - nagios plugins for the puppi check,
@@ -173,7 +173,7 @@ In order to do something useful by default it need some packages that you probab
 Extra elements for check, info and log are automatic included with the relevant application if you use
 the Example42 modules.
 
-## PROJECT STATUS
+== PROJECT STATUS
 Puppi is a work in progress. It has been originally designed to automate deployments in
 a specific environment and more project templates have to be written to manage different 
 scenarios. It has evolved with some commands useful to quickly understand what's 
