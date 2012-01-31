@@ -15,6 +15,7 @@ define puppi::log (
   $log,
   $description = '' ) {
 
+  require puppi
   require puppi::params
 
   file { "${puppi::params::logsdir}/${name}":

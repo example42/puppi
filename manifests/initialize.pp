@@ -19,6 +19,7 @@ define puppi::initialize (
   $user     = 'root',
   $enable   = true ) {
 
+  require puppi
   require puppi::params
 
   $ensure = bool2ensure($enable)

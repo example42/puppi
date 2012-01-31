@@ -33,6 +33,7 @@ define puppi::todo (
   $check_command = '',
   $run       = '' ) {
 
+  require puppi
   require puppi::params
 
   file { "${puppi::params::tododir}/${name}":

@@ -22,6 +22,7 @@ define puppi::info (
   $templatefile = 'puppi/info.erb',
   $run          = '' ) {
 
+  require puppi
   require puppi::params
 
   file { "${puppi::params::infodir}/${name}":

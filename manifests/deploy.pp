@@ -21,6 +21,7 @@ define puppi::deploy (
   $user      = 'root',
   $enable    = true ) {
 
+  require puppi
   require puppi::params
 
   $ensure = bool2ensure($enable)
