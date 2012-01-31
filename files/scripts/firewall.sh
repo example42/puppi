@@ -11,6 +11,7 @@ showhelp () {
     echo "\$1 (Required) - Remote Ip address to block (Generally a load balancer"
     echo "\$2 (Required) - Local port to block (0 for all ports"
     echo "\$3 (Required) - Set on or off to insert or remove the blocking rule"
+    echo "\$4 (Required) - Number of seconds to sleep after having set the rule"
     echo 
     echo "Examples:"
     echo "firewall.sh 10.42.0.1 0 on"
@@ -40,6 +41,12 @@ else
     exit 2
 fi
 
+if [ $4 ] ; then
+    delay=$4
+else
+    delay="1"
+fi
+
 # Block
 run_iptables () {
     if [ "$port" = "0" ] ; then
@@ -50,5 +57,7 @@ run_iptables () {
 }
 
 run_iptables
+echo "Sleeping for $delay seconds"
+sleep $delay
 
 # Sooner or later this script will have multiOS support

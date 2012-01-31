@@ -1,5 +1,5 @@
 name    'puppi'
-version '1.0.0'
+version '1.2.1'
 source  'git://github.com/example42/puppi'
 author  'lab42'
 license 'Apache'
