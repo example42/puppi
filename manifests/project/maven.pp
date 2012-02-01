@@ -148,7 +148,7 @@
 #
 define puppi::project::maven (
   $source,
-  $deploy_root,
+  $deploy_root              = '',
   $user                     = 'root',
   $jar_root                 = '',
   $jar_user                 = '',
@@ -384,7 +384,7 @@ define puppi::project::maven (
     }
   }
 
-  if ($bool_check_deploy == true) {
+  if ($bool_check_deploy == true) and ($deploy_root != '') {
     puppi::deploy { "${name}-Check_undeploy":
       priority  => '31' ,
       command   => 'checkwardir.sh' ,
