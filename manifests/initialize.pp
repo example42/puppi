@@ -13,11 +13,11 @@
 #
 define puppi::initialize (
   $command,
-  $arguments,
   $project,
-  $priority = '50',
-  $user     = 'root',
-  $enable   = true ) {
+  $arguments = '',
+  $priority  = '50',
+  $user      = 'root',
+  $enable    = true ) {
 
   require puppi
   require puppi::params

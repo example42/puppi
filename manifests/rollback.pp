@@ -14,10 +14,10 @@
 define puppi::rollback (
   $project,
   $command,
-  $arguments,
-  $priority = '50',
-  $user     = 'root',
-  $enable   = true ) {
+  $arguments = '',
+  $priority  = '50',
+  $user      = 'root',
+  $enable    = true ) {
 
   require puppi
   require puppi::params

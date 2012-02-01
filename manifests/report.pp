@@ -14,7 +14,7 @@
 define puppi::report (
   $project,
   $command,
-  $arguments,
+  $arguments = '',
   $priority  = '50',
   $user      = 'root',
   $enable    = true ) {
