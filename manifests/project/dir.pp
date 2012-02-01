@@ -97,6 +97,10 @@
 #    filesystem. Set to "yes" to deploy directly to $deploy_root. Default: no
 #    (files are first predeployed in /tmp/puppi then copied to $deploy_root)
 #
+# [*auto_deploy*]
+#   (Optional) - If you want to automatically run this puppi deploy when
+#   Puppet runs. Default: 'false'
+#
 define puppi::project::dir (
   $source,
   $deploy_root,
@@ -118,6 +122,7 @@ define puppi::project::dir (
   $backup_retention         = '5',
   $run_checks               = true,
   $skip_predeploy           = false,
+  $auto_deploy              = false,
   $enable                   = true ) {
 
   require puppi
@@ -136,6 +141,7 @@ define puppi::project::dir (
 
   $bool_run_checks = any2bool($run_checks)
   $bool_skip_predeploy = any2bool($skip_predeploy)
+  $bool_auto_deploy = any2bool($auto_deploy)
 
 ### CREATE PROJECT
     puppi::project { $name:
@@ -436,5 +442,9 @@ define puppi::project::dir (
     }
   }
 
-}
+### AUTO DEPLOY DURING PUPPET RUN
+  if ($bool_auto_deploy == true) {
+    puppi::run { "$name": }
+  }
 
+}

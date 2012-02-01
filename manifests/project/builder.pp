@@ -122,6 +122,10 @@
 #   enable                   => "true",
 # }
 #
+# [*auto_deploy*]
+#   (Optional) - If you want to automatically run this puppi deploy when
+#   Puppet runs. Default: 'false'
+#
 define puppi::project::builder (
   $source,
   $source_type,
@@ -145,6 +149,7 @@ define puppi::project::builder (
   $backup_retention         = '5',
   $run_checks               = true,
   $always_deploy            = true,
+  $auto_deploy              = false,
   $enable                   = true ) {
 
   require puppi
@@ -184,6 +189,7 @@ define puppi::project::builder (
   }
 
   $bool_run_checks = any2bool($run_checks)
+  $bool_auto_deploy = any2bool($auto_deploy)
 
   $source_filename = get_urlfilename($source)
 
@@ -536,6 +542,11 @@ define puppi::project::builder (
       project   => $name ,
       enable    => $enable ,
     }
+  }
+
+### AUTO DEPLOY DURING PUPPET RUN
+  if ($bool_auto_deploy == true) {
+    puppi::run { "$name": }
   }
 
 }

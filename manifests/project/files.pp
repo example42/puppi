@@ -112,6 +112,10 @@
 #   (Optional) - If you want to run local puppi checks before and after the
 #   deploy procedure. Default: "true".
 #
+# [*auto_deploy*]
+#   (Optional) - If you want to automatically run this puppi deploy when
+#   Puppet runs. Default: 'false'
+#
 define puppi::project::files (
   $source,
   $source_baseurl,
@@ -135,6 +139,7 @@ define puppi::project::files (
   $backup_rsync_options     = '--exclude .snapshot',
   $backup_retention         = '5',
   $run_checks               = true,
+  $auto_deploy              = false,
   $enable                   = true ) {
 
   require puppi
@@ -152,6 +157,7 @@ define puppi::project::files (
   }
 
   $bool_run_checks = any2bool($run_checks)
+  $bool_auto_deploy = any2bool($auto_deploy)
 
 ### CREATE PROJECT
     puppi::project { $name:
@@ -461,6 +467,11 @@ define puppi::project::files (
       project   => $name ,
       enable    => $enable ,
     }
+  }
+
+### AUTO DEPLOY DURING PUPPET RUN
+  if ($bool_auto_deploy == true) {
+    puppi::run { "$name": }
   }
 
 }

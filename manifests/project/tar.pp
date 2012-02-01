@@ -98,6 +98,10 @@
 #   if set to "no" a checksum is made between the files previously downloaded
 #   and the new files. If they are the same the deploy is not done.
 #
+# [*auto_deploy*]
+#   (Optional) - If you want to automatically run this puppi deploy when
+#   Puppet runs. Default: 'false'
+#
 define puppi::project::tar (
   $source,
   $deploy_root,
@@ -119,6 +123,7 @@ define puppi::project::tar (
   $backup_retention         = '5',
   $run_checks               = true,
   $always_deploy            = true,
+  $auto_deploy              = false,
   $enable                   = true ) {
 
   require puppi
@@ -150,6 +155,7 @@ define puppi::project::tar (
   }
 
   $bool_run_checks = any2bool($run_checks)
+  $bool_auto_deploy = any2bool($auto_deploy)
 
 
 ### CREATE PROJECT
@@ -445,5 +451,9 @@ define puppi::project::tar (
     }
   }
 
-}
+### AUTO DEPLOY DURING PUPPET RUN
+  if ($bool_auto_deploy == true) {
+    puppi::run { "$name": }
+  }
 
+}

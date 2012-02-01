@@ -100,6 +100,10 @@
 #   (Optional) - Checks if the war is deployed (Default yes). Set to no if
 #   you deploy on Jboss or the deployed dir is different for the war filename
 #
+# [*auto_deploy*]
+#   (Optional) - If you want to automatically run this puppi deploy when
+#   Puppet runs. Default: 'false'
+#
 define puppi::project::war (
   $source,
   $deploy_root,
@@ -122,6 +126,7 @@ define puppi::project::war (
   $run_checks               = true,
   $always_deploy            = true,
   $check_deploy             = true,
+  $auto_deploy              = false,
   $enable                   = true ) {
 
   require puppi
@@ -156,6 +161,7 @@ define puppi::project::war (
 
   $bool_run_checks = any2bool($run_checks)
   $bool_check_deploy = any2bool($check_deploy)
+  $bool_auto_deploy = any2bool($auto_deploy)
 
   $war_file = get_urlfilename($source)
 
@@ -495,6 +501,11 @@ define puppi::project::war (
       project   => $name ,
       enable    => $enable ,
     }
+  }
+
+### AUTO DEPLOY DURING PUPPET RUN
+  if ($bool_auto_deploy == true) {
+    puppi::run { "$name": }
   }
 
 }
