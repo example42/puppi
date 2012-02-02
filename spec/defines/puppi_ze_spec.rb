@@ -17,8 +17,7 @@ describe 'puppi::ze' do
     end
     it 'should populate correctly the puppi::ze data file' do
       content = catalogue.resource('file', 'puppize_sample').send(:parameters)[:content]
-      content.should match "--- \n  var1: get\n  var2: got"
-      # content.should match(/myapp,get/)
+      content.should match(/var1: get/)
     end
   end
 
