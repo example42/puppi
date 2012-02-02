@@ -1,6 +1,6 @@
 # Define puppi::ze
 #
-# The Puppi 2.0 define that transforms any class variable in data 
+# The Puppi 2.0 define that transforms any class variable in data
 # you can use with Puppi
 #
 # == Usage

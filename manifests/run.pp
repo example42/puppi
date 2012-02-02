@@ -22,7 +22,7 @@ define puppi::run (
   # This is a workaround to be avoid automatic puppi deploy at first Puppet run
   # when we are not sure that the puppi deploy project has beed correctly
   # setup.
-  # Sadly a beter solution hasn't been found 
+  # Sadly a better solution hasn't been found
   exec { "Run_Puppi_${name}_FirstTimeLock":
     command     => "touch ${puppi::params::archivedir}/puppirun_${name}_lock",
     path        => '/bin:/sbin:/usr/sbin:/usr/bin',
@@ -34,6 +34,7 @@ define puppi::run (
     path    => '/bin:/sbin:/usr/sbin:/usr/bin',
     onlyif  => "rm ${puppi::params::archivedir}/puppirun_${name}_lock",
     creates => "${puppi::params::archivedir}/puppirun_${name}",
+    before  => "Run_Puppi_${name}_FirstTimeLock",
   }
 
 }
