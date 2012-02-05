@@ -43,6 +43,7 @@ define puppi::info::module (
   $verbose        = 'no',
   $templatefile   = 'puppi/info/module.erb' ) {
 
+  require puppi
   require puppi::params
 
   file { "${puppi::params::infodir}/${name}":

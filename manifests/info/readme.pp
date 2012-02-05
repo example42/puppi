@@ -16,6 +16,7 @@ define puppi::info::readme (
   $run          = '',
   $templatefile = 'puppi/info/readme.erb' ) {
 
+  require puppi
   require puppi::params
 
   $bool_autoreadme = any2bool($autoreadme)

@@ -7,7 +7,7 @@ if [ ! $1 ] ; then
     exit 1
 fi
 
-filtered=$(echo $* | sed "s/[^a-Z0-9=_.\-]//Ig")
+filtered=$(echo $* | sed "s/[^a-Z0-9= _.\-]//Ig")
 
 randfile="$(mktemp)"
 

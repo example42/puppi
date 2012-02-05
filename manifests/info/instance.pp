@@ -18,6 +18,7 @@ define puppi::info::instance (
   $verbose      = 'no',
   $templatefile = 'puppi/info/instance.erb' ) {
 
+  require puppi
   require puppi::params
 
   file { "${puppi::params::infodir}/${name}":
