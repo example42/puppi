@@ -33,17 +33,16 @@ This fuction looks for the given variable name in a set of different sources:
 
     value = :undef
     var_name = arguments[0]
-    options = { 'default' => :undef, 'abs_lookup' => false }.merge(arguments[1] || {}) 
+    # options = { 'default' => :undef, 'abs_lookup' => false }.merge(arguments[1] || {}) 
     module_name = parent_module_name
     if Puppet::Parser::Functions.function('hiera')
-      value = function_hiera("#{var_name}",:undef) if options["abs_lookup"]
+      value = function_hiera("#{var_name}",:undef) if arguments[1] == 'global'
       value = function_hiera("#{module_name}_#{var_name}",:undef) 
     end
     if value == :undef
-      value = undef_as(:undef, lookupvar("::#{var_name}")) if options["abs_lookup"]
-      value = undef_as(:undef, lookupvar("::#{module_name}_#{var_name}")) 
-      value = undef_as(:undef, lookupvar("::#{module_name}::params::#{var_name}")) if value == :undef
-      value = undef_as(:undef, options["default"]) if value == :undef
+      value = lookupvar("::#{var_name}") if arguments[1] == 'global'
+      value = lookupvar("::#{module_name}_#{var_name}")
+      value = lookupvar("::#{module_name}::params::#{var_name}") if value == :undef
     end
     
     return value
