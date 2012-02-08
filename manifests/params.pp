@@ -46,6 +46,22 @@ class puppi::params  {
         default => $ntp_server ,
     }
 
+# Mcollective paths
+# TODO: Add Paths for Pupept Enterprise:
+# /opt/puppet/libexec/mcollective/mcollective/
+
+    $mcollective = $::operatingsystem ? {
+        debian  => "/usr/share/mcollective/plugins/mcollective",
+        ubuntu  => "/usr/share/mcollective/plugins/mcollective",
+        centos  => "/usr/libexec/mcollective/mcollective",
+        redhat  => "/usr/libexec/mcollective/mcollective",
+        default => "/usr/libexec/mcollective/mcollective",
+    }
+
+    $mcollective_user = 'root'
+    $mcollective_group = 'root'
+
+
 # Commands used in puppi info templates
 
     $info_package_query = $::operatingsystem ? {
