@@ -43,7 +43,7 @@ If no value is found in the defined sources, it returns an empty string ('')
     if value == ''
       value = lookupvar("::#{var_name}") if arguments[1] == 'global'
       value = lookupvar("::#{module_name}_#{var_name}")
-      value = lookupvar("::#{module_name}::params::#{var_name}") if value == ''
+      value = lookupvar("::#{module_name}::params::#{var_name}") if (value == :undefined || value == '') 
     end
     
     return value
