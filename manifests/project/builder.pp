@@ -191,7 +191,7 @@ define puppi::project::builder (
   $bool_run_checks = any2bool($run_checks)
   $bool_auto_deploy = any2bool($auto_deploy)
 
-  $source_filename = get_urlfilename($source)
+  $source_filename = url_parse($source,'filename')
 
 # Create Project
   puppi::project { $name: enable => $enable }

@@ -163,7 +163,7 @@ define puppi::project::war (
   $bool_check_deploy = any2bool($check_deploy)
   $bool_auto_deploy = any2bool($auto_deploy)
 
-  $war_file = get_urlfilename($source)
+  $war_file = url_parse($source,'filename')
 
 
 ### CREATE PROJECT

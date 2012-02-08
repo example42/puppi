@@ -157,7 +157,7 @@ define puppi::project::mysql (
   $real_source_type = 'mysql'
   $bool_auto_deploy = any2bool($auto_deploy)
 
-  $source_filename = get_urlfilename($source)
+  $source_filename = url_parse($source,'filename')
 
 ### CREATE PROJECT
     puppi::project { $name:
