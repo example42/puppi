@@ -34,7 +34,7 @@ define puppi::run (
     path    => '/bin:/sbin:/usr/sbin:/usr/bin',
     onlyif  => "rm ${puppi::params::archivedir}/puppirun_${name}_lock",
     creates => "${puppi::params::archivedir}/puppirun_${name}",
-    before  => "Run_Puppi_${name}_FirstTimeLock",
+    before  => Exec["Run_Puppi_${name}_FirstTimeLock"],
   }
 
 }
