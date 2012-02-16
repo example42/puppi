@@ -39,6 +39,15 @@ class puppi::skel {
     force   => true,
   }
 
+  file { 'puppi_helpersdir':
+    ensure  => directory,
+    path    => $puppi::params::helpersdir,
+    mode    => '0755',
+    owner   => $puppi::params::configfile_owner,
+    group   => $puppi::params::configfile_group,
+    require => File['puppi_basedir'],
+  }
+
   file { 'puppi_infodir':
     ensure  => directory,
     path    => $puppi::params::infodir,
@@ -130,6 +139,15 @@ class puppi::skel {
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,
     require => File['puppi_basedir'],
+  }
+
+  # MailPuppiCheck script
+  file { '/usr/bin/mailpuppicheck':
+    ensure  => 'present',
+    mode    => '0750',
+    owner   => $puppi::params::configfile_owner,
+    group   => $puppi::params::configfile_group,
+    source  => 'puppet:///modules/puppi/mailpuppicheck',
   }
 
 }

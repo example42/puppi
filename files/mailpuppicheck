@@ -1,0 +1,20 @@
+#!/bin/bash
+# File Managed by Puppet
+# Possible Usage:
+# Run this command at the end of each Puppet run to be 
+# immediately notified if a Puppet Runs has broken some service
+# 
+# In puppet.conf add something like:
+# postrun_command = "/usr/bin/mailpuppicheck roots@example.com"
+#
+if [ ! $1 ] ; then
+    echo "Provide at least an email addess"
+    exit 1
+fi
+
+randfile="$(mktemp)"
+trap "rm -f $randfile" SIGINT SIGTERM EXIT
+
+puppi check -s fail | tee $randfile
+grep FAILED $randfile && cat $randfile | mail -s "[puppet] Errors after Puppet run on $(hostname)" $1
+exit 0
