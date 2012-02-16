@@ -6,7 +6,7 @@
 # == Usage
 # Automatically included by Puppi
 #
-puppi::helpers {
+class puppi::helpers {
 
   # Standard helper for Example42 modules
   puppi::helper { 'standard':

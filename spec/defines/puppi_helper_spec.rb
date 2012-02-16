@@ -14,7 +14,7 @@ describe 'puppi::helper' do
     end
     it 'should populate correctly the helper file' do
       content = catalogue.resource('file', 'puppi_helper_standard').send(:parameters)[:content]
-      content.should match('template(puppi/helper/standard.yaml.erb)')
+      content.should match('info:')
     end
   end
 
