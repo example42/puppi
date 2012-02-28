@@ -18,6 +18,7 @@ options = rpcoptions do |parser, options|
     parser.separator "  check [project] - Run puppi check"
     parser.separator "  info [topic] - Run puppi info. For all or specified topic"
     parser.separator "  log [topic] - Run puppi log. For all or specified topic"
+    parser.separator "  todo - Run puppi todo"
     parser.separator "  deploy <project> - Run puppi deploy on the defined project"
     parser.separator "  rollback <project> - Run puppi rollback latest on the defined project"
     parser.separator "  init <project> - Run puppi init on the defined project"
@@ -35,8 +36,8 @@ if ARGV.length >= 1
     project = ARGV.shift
     puppioptions = ARGV.shift
 
-    unless command =~ /^(check|deploy|rollback|init|info|log)$/
-        puts("Command has to be check|info|log|deploy|rollback|init")
+    unless command =~ /^(check|deploy|rollback|init|info|log|todo)$/
+        puts("Command has to be check|info|log|deploy|rollback|init|todo")
         exit 1
     end
 else
