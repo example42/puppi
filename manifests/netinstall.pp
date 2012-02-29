@@ -70,7 +70,7 @@ define puppi::netinstall (
       '.tar.gz'  => 'tar -zxf',
       '.tar.bz2' => 'tar -jxf',
       '.tar'     => 'tar -xf',
-      '.zip'     => 'zip -d',
+      '.zip'     => 'unzip',
     },
     default => $extract_command,
   }
@@ -97,7 +97,7 @@ define puppi::netinstall (
   exec {
     "Extract $source_filename":
       command => "mkdir -p $destination_dir && cd $destination_dir && $real_extract_command $work_dir/$source_filename",
-      unless  => "find $destination_dir | grep $real_extracted_dir",
+      unless  => "ls ${destination_dir}/${real_extracted_dir}",
       creates => "${destination_dir}/${real_extracted_dir}",
       require => Exec["Retrieve $url"],
       path    => '/bin:/sbin:/usr/bin:/usr/sbin',
@@ -125,4 +125,3 @@ define puppi::netinstall (
   }
 
 }
-

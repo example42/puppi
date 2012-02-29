@@ -10,6 +10,7 @@
 class puppi::extra {
 
   package { 'curl': ensure => present, }
+  package { 'unzip': ensure => present, }
 #    include rsync::client
 #    include nagios::plugins
   include mailx
