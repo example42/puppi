@@ -4,12 +4,6 @@
 #
 class puppi::params  {
 
-## DEFAULTS FOR VARIABLES USERS CAN SET
-    $extra = $::puppi_extra ? {
-        ''      => 'no',
-        default => $::puppi_extra,
-    }
-
 ## INTERNALVARS
 
     $basedir     = '/etc/puppi'

@@ -6,12 +6,6 @@
 # - Make Application deployments easy
 # - Transfer "Puppet Knowledge to the shell"
 #
-# == Parameters
-# No parameters is needed.
-# If you set the variable $$::puppi::extra to "yes" the puppi::extra class
-# which delivers some Puppi's dependencies is automatically included
-# (But you can include puppi::extra directly)
-#
 class puppi {
 
   require puppi::params
@@ -55,14 +49,7 @@ class puppi {
   # Create Puppi workdirs
   include puppi::skel
 
-  # Some extra packages we use in Puppi scripts
-  # This class might conflict with your existing classes
-  # Just be sure to provide the requested packages
-  if $puppi::params::extra != 'no' { include puppi::extra }
-
-
   # To show some of the Puppi features some System-Wide general defines:
-
   # General system logs for puppi log
   include puppi::logs
   # General system infos for puppi info
