@@ -23,7 +23,7 @@ class puppi::logs {
       }
     }
 
-    RedHat,CentOS,Scientific: {
+    RedHat,CentOS,Scientific,Amazon,Linux: {
       puppi::log { 'system':
         description => 'General System Messages',
         log         => '/var/log/messages',
