@@ -47,7 +47,7 @@ class puppi::infos {
   puppi::info { 'packages':
     description => 'Packages information' ,
     run         => $::operatingsystem ? {
-      /(?i:RedHat|CentOS|Scientific)/ => [ 'yum repolist' , 'rpm -qa' ] ,
+      /(?i:RedHat|CentOS|Scientific|Amazon|Linux)/ => [ 'yum repolist' , 'rpm -qa' ] ,
       /(?i:Debian|Ubuntu|Mint)/       => [ 'apt-config dump' , 'apt-cache stats' , 'apt-key list' , 'dpkg -l' ],
       /(Solaris)/                     => [ 'pkginfo' ],
       /(Archlinux)/                   => [ 'pacman -Qet' ],

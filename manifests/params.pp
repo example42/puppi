@@ -29,11 +29,11 @@ class puppi::params  {
 # Directory where are placed the checks scripts
 # By default we use Nagios plugins
     $checkpluginsdir = $::operatingsystem ? {
-        /(?i:RedHat|CentOS|Scientific)/ => $::architecture ? {
+        /(?i:RedHat|CentOS|Scientific|Amazon|Linux)/ => $::architecture ? {
             x86_64  => '/usr/lib64/nagios/plugins',
             default => '/usr/lib/nagios/plugins',
         },
-        default                         => '/usr/lib/nagios/plugins',
+        default     => '/usr/lib/nagios/plugins',
     }
 
     $ntp = $ntp_server ? {
@@ -60,13 +60,13 @@ class puppi::params  {
 # Commands used in puppi info templates
 
     $info_package_query = $::operatingsystem ? {
-        /(?i:RedHat|CentOS|Scientific)/ => 'rpm -qi',
+        /(?i:RedHat|CentOS|Scientific|Amazon|Linux)/ => 'rpm -qi',
         /(?i:Ubuntu|Debian|Mint)/       => 'dpkg -s',
         default                         => 'echo',
     }
 
     $info_package_list = $::operatingsystem ? {
-        /(?i:RedHat|CentOS|Scientific)/ => 'rpm -ql',
+        /(?i:RedHat|CentOS|Scientific|Amazon|Linux)/ => 'rpm -ql',
         /(?i:Ubuntu|Debian|Mint)/       => 'dpkg -L',
         default                         => 'echo',
     }
