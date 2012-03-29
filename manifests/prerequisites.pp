@@ -8,12 +8,20 @@
 #
 class puppi::prerequisites {
 
-  package { 'curl': ensure => present, }
-  package { 'unzip': ensure => present, }
+  if ! defined(Package['curl']) {
+    package { 'curl' : ensure => present }
+  }
+
+  if ! defined(Package['unzip']) {
+    package { 'unzip' : ensure => present }
+  }
+
+  if ! defined(Package['rsync']) {
+    package { 'rsync' : ensure => present }
+  }
 
   # These are based on Example42 modules
-  include rsync::client
-  include nagios::plugins
-  include mailx
+  # include nagios::plugins
+  # include mailx
 
 }
