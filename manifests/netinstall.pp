@@ -75,6 +75,12 @@ define puppi::netinstall (
     default => $extract_command,
   }
 
+  $extract_command_second_arg = $real_extract_command ? {
+    /^cp.*/    => '.',
+    /^rsync.*/ => '.',
+    default    => '',
+  }
+
   if $preextract_command {
     exec {
       "PreExtract $source_filename":
@@ -96,7 +102,7 @@ define puppi::netinstall (
 
   exec {
     "Extract $source_filename":
-      command => "mkdir -p $destination_dir && cd $destination_dir && $real_extract_command $work_dir/$source_filename",
+      command => "mkdir -p $destination_dir && cd $destination_dir && $real_extract_command $work_dir/$source_filename $extract_command_second_arg",
       unless  => "ls ${destination_dir}/${real_extracted_dir}",
       creates => "${destination_dir}/${real_extracted_dir}",
       require => Exec["Retrieve $url"],
@@ -125,3 +131,4 @@ define puppi::netinstall (
   }
 
 }
+
