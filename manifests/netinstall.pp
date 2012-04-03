@@ -59,11 +59,6 @@ define puppi::netinstall (
   $source_filetype = url_parse($url,'filetype')
   $source_dirname = url_parse($url,'filedir')
 
-  $real_extracted_dir = $extracted_dir ? {
-    ''      => $source_dirname,
-    default => $extracted_dir,
-  }
-
   $real_extract_command = $extract_command ? {
     ''      => $source_filetype ? {
       '.tgz'     => 'tar -zxf',
@@ -79,6 +74,14 @@ define puppi::netinstall (
     /^cp.*/    => '.',
     /^rsync.*/ => '.',
     default    => '',
+  }
+
+  $real_extracted_dir = $extracted_dir ? {
+    ''      => $real_extract_command ? {
+      /(^cp.*|^rsync.*)/  => $source_filename,
+      default             => $source_dirname,
+    },
+    default => $extracted_dir,
   }
 
   if $preextract_command {
