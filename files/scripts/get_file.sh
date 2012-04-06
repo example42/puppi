@@ -109,7 +109,7 @@ case $type in
         svnserver=$(echo $svnuri | cut -d'@' -f2 | cut -d'/' -f1)
         svnpath=/$(echo $svnuri | cut -d'@' -f2 | cut -d'/' -f2-)
         mkdir -p $(dirname $svnpath)
-        svn export --force --username="$svnusername" --password="$svnpassword" http://$svnserver/$svnpath $(dirname $svnpath)
+        svn export --force --username="$svnusername" --password="$svnpassword" svn://$svnserver/$svnpath $downloaddir
         check_retcode
         save_runtime_config "downloadedfile=$downloaddir/$downloadfilename"
     ;;

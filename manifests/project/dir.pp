@@ -254,7 +254,7 @@ define puppi::project::dir (
     puppi::deploy { "${name}-Deploy":
       priority  => '40' ,
       command   => 'get_file.sh' ,
-      arguments => "-s $init_source -d $deploy_root" ,
+      arguments => "-s $source -d $deploy_root" ,
       user      => $user ,
       project   => $name ,
       enable    => $enable ,
