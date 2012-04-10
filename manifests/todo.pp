@@ -45,4 +45,7 @@ define puppi::todo (
     content => template('puppi/todo.erb'),
     tag     => 'puppi_todo',
   }
+
+  Puppi::Todo[$name] -> Anchor['puppi::is_installed']
+
 }

@@ -91,4 +91,6 @@ define puppi::project (
       require => File["${puppi::params::projectsdir}/${name}"];
   }
 
+  Puppi::Project[$name] -> Anchor['puppi::is_installed']
+
 }

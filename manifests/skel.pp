@@ -150,4 +150,6 @@ class puppi::skel {
     source  => 'puppet:///modules/puppi/mailpuppicheck',
   }
 
+  Class['puppi::skel'] -> Anchor['puppi::is_installed']
+
 }

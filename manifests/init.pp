@@ -18,6 +18,7 @@ class puppi {
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,
     content => template('puppi/puppi.conf.erb'),
+    before  => Anchor['puppi::is_installed'],
     require => File['puppi_basedir'],
   }
 
@@ -29,6 +30,7 @@ class puppi {
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,
     content => template('puppi/puppi.erb'),
+    before  => Anchor['puppi::is_installed'],
     require => File['puppi_basedir'],
   }
 
@@ -43,6 +45,7 @@ class puppi {
     recurse => true,
 #   purge   => true,
     ignore  => '.svn',
+    before  => Anchor['puppi::is_installed'],
     require => File['puppi_basedir'],
   }
 
@@ -59,4 +62,21 @@ class puppi {
 
   # Include prerequisits
   include puppi::prerequisites
-}
+
+  # This will create the Anchor['puppi::is_installed']
+  # which marks the point where all Puppi files are installed
+  # and before Puppi::Run
+  include puppi::is_installed
+
+}  # class puppi
+
+
+
+###################################################
+
+
+class puppi::is_installed {
+
+  anchor { 'puppi::is_installed': }
+
+}  # class puppi::is_installed

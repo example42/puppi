@@ -68,5 +68,7 @@ class puppi::logs {
 
   }
 
+  Class['puppi::logs'] -> Anchor['puppi::is_installed']
+
 }
 

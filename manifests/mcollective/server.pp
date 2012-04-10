@@ -29,4 +29,6 @@ class puppi::mcollective::server {
     source  => 'puppet:///modules/puppi/mcollective/puppi.rb',
   }
 
+  Class['puppi::mcollective::server'] -> Anchor['puppi::is_installed']
+
 }
