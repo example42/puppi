@@ -68,15 +68,4 @@ class puppi {
   # and before Puppi::Run
   include puppi::is_installed
 
-}  # class puppi
-
-
-
-###################################################
-
-
-class puppi::is_installed {
-
-  anchor { 'puppi::is_installed': }
-
-}  # class puppi::is_installed
+}
