@@ -41,6 +41,6 @@ define puppi::check (
     tag     => 'puppi_check',
   }
 
-  Puppi::Check[$name] -> Anchor['puppi::is_installed']
+  Puppi::Check[$name] -> Class['puppi::is_installed']
 
 }

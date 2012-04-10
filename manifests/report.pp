@@ -35,6 +35,6 @@ define puppi::report (
     tag     => 'puppi_report',
   }
 
-  Puppi::Report[$name] -> Anchor['puppi::is_installed']
+  Puppi::Report[$name] -> Class['puppi::is_installed']
 
 }

@@ -46,6 +46,6 @@ class puppi::checks {
     hostwide => 'yes' ,
   }
 
-  Class['puppi::checks'] -> Anchor['puppi::is_installed']
+  Class['puppi::checks'] -> Class['puppi::is_installed']
 
 }

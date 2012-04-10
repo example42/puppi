@@ -35,6 +35,6 @@ define puppi::info (
     tag     => 'puppi_info',
   }
 
-  Puppi::Info[$name] -> Anchor['puppi::is_installed']
+  Puppi::Info[$name] -> Class['puppi::is_installed']
 
 }

@@ -95,6 +95,6 @@ class puppi::params  {
         default: { $general_base_source=$::base_source }
     }
 
-    Class['puppi::params'] -> Anchor['puppi::is_installed']
+    Class['puppi::params'] -> Class['puppi::is_installed']
 
 }

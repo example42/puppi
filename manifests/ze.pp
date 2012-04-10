@@ -26,6 +26,6 @@ define puppi::ze (
     content => inline_template('<%= variables.to_yaml %>'),
   }
 
-  Puppi::Ze[$name] -> Anchor['puppi::is_installed']
+  Puppi::Ze[$name] -> Class['puppi::is_installed']
 
 }

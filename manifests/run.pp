@@ -23,7 +23,7 @@ define puppi::run (
     command => "puppi deploy ${name} && touch ${puppi::params::archivedir}/puppirun_${name}",
     path    => '/bin:/sbin:/usr/sbin:/usr/bin',
     creates => "${puppi::params::archivedir}/puppirun_${name}",
-    require => Anchor['puppi::is_installed'],
+    require => Class['puppi::is_installed'],
   }
 
 }

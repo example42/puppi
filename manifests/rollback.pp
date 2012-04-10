@@ -33,7 +33,7 @@ define puppi::rollback (
     tag     => 'puppi_rollback',
   }
 
-  Puppi::Rollback[$name] -> Anchor['puppi::is_installed']
+  Puppi::Rollback[$name] -> Class['puppi::is_installed']
 
 }
 

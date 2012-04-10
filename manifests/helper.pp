@@ -26,6 +26,6 @@ define puppi::helper (
     content => template($template),
   }
 
-  Puppi::Helper[$name] -> Anchor['puppi::is_installed']
+  Puppi::Helper[$name] -> Class['puppi::is_installed']
 
 }

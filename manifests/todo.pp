@@ -46,6 +46,6 @@ define puppi::todo (
     tag     => 'puppi_todo',
   }
 
-  Puppi::Todo[$name] -> Anchor['puppi::is_installed']
+  Puppi::Todo[$name] -> Class['puppi::is_installed']
 
 }

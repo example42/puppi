@@ -133,7 +133,7 @@ define puppi::netinstall (
     }
   }
 
-  Puppi::Netinstall[$name] -> Anchor['puppi::is_installed']
+  Puppi::Netinstall[$name] -> Class['puppi::is_installed']
 
 }
 
