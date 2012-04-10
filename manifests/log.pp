@@ -27,4 +27,7 @@ define puppi::log (
     content => template('puppi/log.erb'),
     tag     => 'puppi_log',
   }
+
+  Puppi::Log[$name] -> Anchor['puppi::is_installed']
+
 }

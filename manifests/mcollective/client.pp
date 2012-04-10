@@ -56,4 +56,6 @@ class puppi::mcollective::client {
     source  => 'puppet:///modules/puppi/mcollective/puppideploy',
   }
 
+  Class['puppi::mcollective::client'] -> Anchor['puppi::is_installed']
+
 }

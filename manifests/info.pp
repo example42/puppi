@@ -14,7 +14,7 @@
 #   description => "Network status and information" ,
 #   run  => [ "ifconfig" , "route -n" ],
 # }
-# 
+#
 # :include:../README.info
 #
 define puppi::info (
@@ -34,4 +34,7 @@ define puppi::info (
     content => template($templatefile),
     tag     => 'puppi_info',
   }
+
+  Puppi::Info[$name] -> Anchor['puppi::is_installed']
+
 }

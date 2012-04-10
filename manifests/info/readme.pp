@@ -62,4 +62,6 @@ define puppi::info::readme (
     }
   }
 
+  Puppi::Info::Readme[$name] -> Anchor['puppi::is_installed']
+
 }

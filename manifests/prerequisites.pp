@@ -24,4 +24,6 @@ class puppi::prerequisites {
   # include nagios::plugins
   # include mailx
 
+  Class['puppi::prerequisites'] -> Anchor['puppi::is_installed']
+
 }

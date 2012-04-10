@@ -34,5 +34,6 @@ define puppi::initialize (
     tag     => 'puppi_initialize',
   }
 
-}
+  Puppi::Initialize[$name] -> Anchor['puppi::is_installed']
 
+}
