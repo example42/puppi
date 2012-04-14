@@ -133,7 +133,5 @@ define puppi::netinstall (
     }
   }
 
-  Puppi::Netinstall[$name] -> Class['puppi::is_installed']
-
 }
 
