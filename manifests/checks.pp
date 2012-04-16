@@ -46,4 +46,6 @@ class puppi::checks {
     hostwide => 'yes' ,
   }
 
+  Class['puppi::checks'] -> Class['puppi::is_installed']
+
 }

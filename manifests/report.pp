@@ -35,4 +35,6 @@ define puppi::report (
     tag     => 'puppi_report',
   }
 
+  Puppi::Report[$name] -> Class['puppi::is_installed']
+
 }

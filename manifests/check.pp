@@ -41,4 +41,6 @@ define puppi::check (
     tag     => 'puppi_check',
   }
 
+  Puppi::Check[$name] -> Class['puppi::is_installed']
+
 }

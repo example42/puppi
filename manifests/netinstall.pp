@@ -1,6 +1,6 @@
 # Define: puppi::netinstall
 #
-# This defines simplifies the installation of a file 
+# This defines simplifies the installation of a file
 # downloaded from the web. It provides arguments to manage
 # different kind of downloads and custom commands.
 # It's used, among the others, by NextGen modules of webapps
@@ -8,16 +8,16 @@
 #
 # == Variables
 #
-# [*url*] 
+# [*url*]
 #   The Url of the file to retrieve. Required.
 #   Example: http://www.example42.com/file.tar.gz
 #
-# [*destination_dir*] 
-#   The final destination where to unpack or copy what has been 
+# [*destination_dir*]
+#   The final destination where to unpack or copy what has been
 #   downloaded. Required.
 #   Example: /var/www/html
 #
-# [*extracted_dir*] 
+# [*extracted_dir*]
 #   The name of the directory created after the extraction of the file
 #   Needed only if its name is different from the downloaded file name
 #   (without suffixes). Optional.
@@ -30,16 +30,16 @@
 #
 # [*work_dir*]
 #   A temporary work dir where file is downloaded. Default: /tmp
-# 
+#
 # [*extract_command*]
 #   The command used to extract the downloaded file.
 #   By default is autocalculated accoring to the file extension
 #   Set 'rsync' if the file has to be placed in the destination_dir
 #   as is (for example for war files)
-# 
+#
 # [*preextract_command*]
 #   An optional custom command to run before extracting the file.
-# 
+#
 # [*postextract_command*]
 #   An optional custom command to run after having extracted the file.
 #

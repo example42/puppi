@@ -62,4 +62,6 @@ define puppi::info::readme (
     }
   }
 
+  Puppi::Info::Readme[$name] -> Class['puppi::is_installed']
+
 }

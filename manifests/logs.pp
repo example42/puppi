@@ -68,5 +68,7 @@ class puppi::logs {
 
   }
 
+  Class['puppi::logs'] -> Class['puppi::is_installed']
+
 }
 

@@ -66,4 +66,6 @@ class puppi::infos {
 #   run         => "ls -lR ${puppi::params::logdir}/puppi-data/",
   }
 
+  Class['puppi::infos'] -> Class['puppi::is_installed']
+
 }

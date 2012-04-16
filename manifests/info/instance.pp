@@ -29,4 +29,7 @@ define puppi::info::instance (
     content => template($templatefile),
     tag     => 'puppi_info',
   }
+
+  Puppi::Info::Instance[$name] -> Class['puppi::is_installed']
+
 }

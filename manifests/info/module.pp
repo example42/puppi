@@ -55,4 +55,7 @@ define puppi::info::module (
     content => template($templatefile),
     tag     => 'puppi_info',
   }
+
+  Puppi::Info::Module[$name] -> Class['puppi::is_installed']
+
 }
