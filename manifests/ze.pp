@@ -23,7 +23,7 @@ define puppi::ze (
     mode    => '0644',
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,
-    content => inline_template('<%= variables.to_yaml %>'),
+    content => inline_template('<%= Hash[variables.sort].to_yaml %>'),
   }
 
   Puppi::Ze[$name] -> Class['puppi::is_installed']

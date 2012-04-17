@@ -8,6 +8,8 @@
 #
 class puppi::prerequisites {
 
+  require puppi::params
+
   if ! defined(Package['curl']) {
     package { 'curl' : ensure => present }
   }
@@ -20,9 +22,13 @@ class puppi::prerequisites {
     package { 'rsync' : ensure => present }
   }
 
-  # These are based on Example42 modules
-  # include nagios::plugins
-  # include mailx
+  if ! defined(Package[$puppi::params::package_nagiosplugins]) {
+    package { $puppi::params::package_nagiosplugins : ensure => present }
+  }
+
+  if ! defined(Package[$puppi::params::package_mail]) {
+    package { $puppi::params::package_mail : ensure => present }
+  }
 
   Class['puppi::prerequisites'] -> Class['puppi::is_installed']
 

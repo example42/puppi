@@ -36,6 +36,16 @@ class puppi::params  {
         default     => '/usr/lib/nagios/plugins',
     }
 
+    $package_nagiosplugins = $operatingsystem ? {
+        /(?i:RedHat|CentOS|Scientific|Amazon|Linux|Fedora)/ => 'nagios-plugins-all',
+        default                                             => 'nagios-plugins',
+    }
+
+    $package_mail = $operatingsystem ? {
+        /(?i:Debian|Ubuntu|Mint)/ => 'bsd-mailx',
+        default                   => 'mailx',
+    }
+
     $ntp = $ntp_server ? {
         ''      => 'pool.ntp.org' ,
         default => $ntp_server ,
