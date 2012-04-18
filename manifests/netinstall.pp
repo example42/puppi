@@ -18,7 +18,7 @@
 #   Example: /var/www/html
 #
 # [*extracted_dir*]
-#   The name of the directory created after the extraction of the file
+#   The name of a directory or file created after the extraction 
 #   Needed only if its name is different from the downloaded file name
 #   (without suffixes). Optional.
 #
@@ -85,51 +85,47 @@ define puppi::netinstall (
   }
 
   if $preextract_command {
-    exec {
-      "PreExtract $source_filename":
-        command     => $preextract_command,
-        before      => Exec["Extract $source_filename"],
-        refreshonly => true,
-        path        => '/bin:/sbin:/usr/bin:/usr/sbin',
+    exec { "PreExtract $source_filename":
+      command     => $preextract_command,
+      before      => Exec["Extract $source_filename"],
+      refreshonly => true,
+      path        => '/bin:/sbin:/usr/bin:/usr/sbin',
     }
   }
 
-  exec {
-    "Retrieve $url":
-      cwd     => $work_dir,
-      command => "wget $url",
-      creates => "$work_dir/$source_filename",
-      timeout => 3600,
-      path    => '/bin:/sbin:/usr/bin:/usr/sbin',
+  exec { "Retrieve $url":
+    cwd     => $work_dir,
+    command => "wget $url",
+    creates => "$work_dir/$source_filename",
+    timeout => 3600,
+    path    => '/bin:/sbin:/usr/bin:/usr/sbin',
   }
 
-  exec {
-    "Extract $source_filename":
-      command => "mkdir -p $destination_dir && cd $destination_dir && $real_extract_command $work_dir/$source_filename $extract_command_second_arg",
-      unless  => "ls ${destination_dir}/${real_extracted_dir}",
-      creates => "${destination_dir}/${real_extracted_dir}",
-      require => Exec["Retrieve $url"],
-      path    => '/bin:/sbin:/usr/bin:/usr/sbin',
+  exec { "Extract $source_filename":
+    command => "mkdir -p $destination_dir && cd $destination_dir && $real_extract_command $work_dir/$source_filename $extract_command_second_arg",
+    unless  => "ls ${destination_dir}/${real_extracted_dir}",
+    creates => "${destination_dir}/${real_extracted_dir}",
+    require => Exec["Retrieve $url"],
+    path    => '/bin:/sbin:/usr/bin:/usr/sbin',
+    notify  => Exec["Chown $source_filename"],
   }
 
-  exec {
-    "Chown $source_filename":
-      command     => "chown -R $owner:$group $destination_dir/$real_extracted_dir",
-      refreshonly => true,
-      require     => Exec["Extract $source_filename"],
-      path        => '/bin:/sbin:/usr/bin:/usr/sbin',
+  exec { "Chown $source_filename":
+    command     => "chown -R $owner:$group $destination_dir/$real_extracted_dir",
+    refreshonly => true,
+    require     => Exec["Extract $source_filename"],
+    path        => '/bin:/sbin:/usr/bin:/usr/sbin',
   }
 
   if $postextract_command {
-    exec {
-      "PostExtract $source_filename":
-        command     => $postextract_command,
-        cwd         => "$destination_dir/$real_extracted_dir",
-        subscribe   => Exec["Extract $source_filename"],
-        refreshonly => true,
-        timeout     => 3600,
-        require     => Exec["Retrieve $url"],
-        path        => '/bin:/sbin:/usr/bin:/usr/sbin',
+    exec { "PostExtract $source_filename":
+      command     => $postextract_command,
+      cwd         => "$destination_dir/$real_extracted_dir",
+      subscribe   => Exec["Extract $source_filename"],
+      refreshonly => true,
+      timeout     => 3600,
+      require     => Exec["Retrieve $url"],
+      path        => '/bin:/sbin:/usr/bin:/usr/sbin',
     }
   }
 
