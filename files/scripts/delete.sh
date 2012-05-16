@@ -19,8 +19,8 @@ fi
 
 # Move file
 move () {
-    mkdir /tmp/puppi/$project/deleted
-    mv $tobedeleted /tmp/puppi/$project/deleted
+    mkdir $workdir/$project/deleted
+    mv $tobedeleted $workdir/$project/deleted
 }
 
 move

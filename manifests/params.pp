@@ -15,11 +15,19 @@ class puppi::params  {
     $projectsdir = '/etc/puppi/projects'
     $datadir     = '/etc/puppi/data'
     $helpersdir  = '/etc/puppi/helpers'
-    $workdir     = '/tmp/puppi'
     $libdir      = '/var/lib/puppi'
-    $archivedir  = '/var/lib/puppi/archive'
     $readmedir   = '/var/lib/puppi/readme'
     $logdir      = '/var/log/puppi'
+
+    $archivedir = $puppi_archivedir ? {
+       ''      => '/var/lib/puppi/archive',
+       default => $puppi_archivedir ,
+    }
+
+    $workdir = $puppi_workdir ? {
+       ''      => '/tmp/puppi',
+       default => $puppi_workdir ,
+    }
 
     $configfile_mode  = '0644'
     $configfile_owner = 'root'
@@ -33,7 +41,7 @@ class puppi::params  {
             x86_64  => '/usr/lib64/nagios/plugins',
             default => '/usr/lib/nagios/plugins',
         },
-        default     => '/usr/lib/nagios/plugins',
+        default                                      => '/usr/lib/nagios/plugins',
     }
 
     $package_nagiosplugins = $operatingsystem ? {
@@ -71,14 +79,14 @@ class puppi::params  {
 
     $info_package_query = $::operatingsystem ? {
         /(?i:RedHat|CentOS|Scientific|Amazon|Linux)/ => 'rpm -qi',
-        /(?i:Ubuntu|Debian|Mint)/       => 'dpkg -s',
-        default                         => 'echo',
+        /(?i:Ubuntu|Debian|Mint)/                    => 'dpkg -s',
+        default                                      => 'echo',
     }
 
     $info_package_list = $::operatingsystem ? {
         /(?i:RedHat|CentOS|Scientific|Amazon|Linux)/ => 'rpm -ql',
-        /(?i:Ubuntu|Debian|Mint)/       => 'dpkg -L',
-        default                         => 'echo',
+        /(?i:Ubuntu|Debian|Mint)/                    => 'dpkg -L',
+        default                                      => 'echo',
     }
 
     $info_service_check = $::operatingsystem ? {
@@ -104,7 +112,5 @@ class puppi::params  {
         }
         default: { $general_base_source=$::base_source }
     }
-
-    Class['puppi::params'] -> Class['puppi::is_installed']
 
 }
