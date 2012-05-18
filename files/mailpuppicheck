@@ -4,11 +4,16 @@
 # Run this command at the end of each Puppet run to be 
 # immediately notified if a Puppet Runs has broken some service
 # 
+# Options:
+# -m destination_email
+# -i <interval> (in seconds) before retrying a Puppi check
+# -r <number_of_retries> how many attempts to retry if there are failures
+#
 # In puppet.conf add something like:
 # postrun_command = "/usr/bin/mailpuppicheck -m roots@example.com"
 #
 retries=1
-interval=8
+interval=2
 workdir="/tmp"
 counter=0
 while [ $# -gt 0 ]; do
@@ -16,11 +21,11 @@ while [ $# -gt 0 ]; do
     -m)
       mail=$2
       shift 2 ;;
-    -r)
-      retries=$2
-      shift 2 ;;
     -i)
       internal=$2
+      shift 2 ;;
+    -r)
+      retries=$2
       shift 2 ;;
   esac
 done
@@ -30,14 +35,15 @@ if [ ! $mail ] ; then
     exit 1
 fi
 
-randfile="$(mktemp)"
+# randfile="$(mktemp)"
 lastrunfile=$workdir/puppicheck_lastrun
 savedfile=$workdir/puppicheck_saved
 
 while [ $counter -lt $retries ] ; do
-  puppi check -s fail | grep -A1 FAILED > $lastrunfile
-  if [ $(grep FAILED $lastrunfile) ] ; then
+  puppi check | grep FAILED > $lastrunfile
+  if [ "x$?" == "x0" ] ; then
     errors="yes"
+    sleep $interval
   else
     errors="no"
     echo "Run $counter - Errors $errors"
@@ -49,7 +55,7 @@ while [ $counter -lt $retries ] ; do
 done
 
 diff $lastrunfile $savedfile
-if [ $? == 0 ] ; then
+if [ "x$?" == "x0" ] ; then
   echo "No changes detected"
 else
   echo "Changes detected"
@@ -57,8 +63,9 @@ else
 fi
 
 cp $lastrunfile $savedfile
-if [ x$notify == "xyes" ] ; then 
-  cat $lastrunfile | mail -s "[puppet] Errors after Puppet run on $(hostname -f)" $mail
+if [ "x$notify" == "xyes" ] ; then 
+  # Yes, it's ugly
+  cat -v $lastrunfile  | sed -e 's:\^\[\[60G\[\^\[\[0;31m: :g' | sed -e 's:\^\[\[0;39m\]\^M: :g' | mail -s "[puppet] Errors after Puppet run on $(hostname -f)" $mail
   echo "Sent notification"
 fi
 
