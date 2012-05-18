@@ -13,6 +13,7 @@ showhelp () {
     echo "-m <magicstring> - The string to use as *fix in custom metadata info provided "
     echo "-mc <anotherstring> - The string to use as qualifier for Maven metadata config tars"
     echo "-mj <anotherstring> - The string to use as qualifier for Maven metadata jars"
+    echo "-mw <anotherstring> - The string to use as qualifier for Maven metadata wars"
 }
 
 while [ $# -gt 0 ]; do
@@ -25,6 +26,9 @@ while [ $# -gt 0 ]; do
       shift 2 ;;
     -mj)
       jar_suffix=$2
+      shift 2 ;;
+    -mw)
+      war_suffix=$2
       shift 2 ;;
     -h)
       showhelp ;;
@@ -47,7 +51,6 @@ case $source_type in
     maven)
     [ ${#version} -eq 0 ] && version=$(xml_parse release $downloadedfile )
     artifact=$(xml_parse artifactId $downloadedfile )
-    warfile=$artifact-$version.war
 
     # Definition of qualifiers for Maven has changed from the (wrong) assumption
     # of having cfg-$suffix and src-$suffix for staticfiles and config tarballs
@@ -70,6 +73,12 @@ case $source_type in
         jarfile=$artifact-$version-$jar_suffix.jar
     else
         jarfile=$artifact-$version.jar
+    fi
+
+    if [[ x$war_suffix != "xsuffixnotset" ]] ; then
+        warfile=$artifact-$version-$war_suffix.war
+    else
+        warfile=$artifact-$version.war
     fi
 
     # Store metadata

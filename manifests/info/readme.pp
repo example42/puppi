@@ -10,11 +10,12 @@
 #  }
 #
 define puppi::info::readme (
-  $description  = '',
-  $readme       = '',
-  $autoreadme   = 'no',
-  $run          = '',
-  $templatefile = 'puppi/info/readme.erb' ) {
+  $description       = '',
+  $readme            = '',
+  $autoreadme        = 'no',
+  $run               = '',
+  $source_module     = 'undefined',
+  $templatefile      = 'puppi/info/readme.erb' ) {
 
   require puppi
   require puppi::params
@@ -38,7 +39,7 @@ define puppi::info::readme (
     group   => $puppi::params::configfile_group,
     require => File['puppi_readmedir'],
     source  => $readme ? {
-      ''       => [ "${puppi::params::general_base_source}/puppi/${my_project}/info/readme/readme",
+      ''       => [ "${puppi::params::general_base_source}/${source_module}/puppi/info/readme/readme",
                     "${puppi::params::general_base_source}/puppi/info/readme/readme" ],
       default  => "${readme}" ,
     },
@@ -52,9 +53,9 @@ define puppi::info::readme (
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,
     require => File['puppi_readmedir'],
-    source  => [  "${puppi::params::general_base_source}/puppi/${my_project}/info/readme/readme--${hostname}" ,
-                  "${puppi::params::general_base_source}/puppi/${my_project}/info/readme/readme-${role}" ,
-                  "${puppi::params::general_base_source}/puppi/${my_project}/info/readme/readme-default" ,
+    source  => [  "${puppi::params::general_base_source}/${source_module}/puppi/info/readme/readme--${hostname}" ,
+                  "${puppi::params::general_base_source}/${source_module}/puppi/info/readme/readme-${role}" ,
+                  "${puppi::params::general_base_source}/${source_module}/puppi/info/readme/readme-default" ,
                   "${puppi::params::general_base_source}/puppi/info/readme/readme--${hostname}" ,
                   "${puppi::params::general_base_source}/puppi/info/readme/readme-${role}" ,
                   "${puppi::params::general_base_source}/puppi/info/readme/readme-default" ],

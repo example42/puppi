@@ -11,7 +11,7 @@ class puppi::checks {
   }
 
   puppi::check { 'Disks_Usage':
-    command  => 'check_disk -w 20% -c 10% -A' ,
+    command  => 'check_disk -w 20% -c 10% -L -X tmpfs' ,
     priority => '10' ,
     hostwide => 'yes' ,
   }

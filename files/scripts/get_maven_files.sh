@@ -41,19 +41,19 @@ case $2 in
     configfile)
         curl -s -f $1/$version/$configfile -O
         check_retcode
-        mkdir /tmp/puppi/$project/deploy_configfile
-        cd /tmp/puppi/$project/deploy_configfile
+        mkdir $workdir/$project/deploy_configfile
+        cd $workdir/$project/deploy_configfile
         $tarcommand $storedir/$configfile
         check_retcode
-        save_runtime_config "predeploydir_configfile=/tmp/puppi/$project/deploy_configfile"
+        save_runtime_config "predeploydir_configfile=$workdir/$project/deploy_configfile"
     ;;
     srcfile)
         curl -s -f $1/$version/$srcfile -O
         check_retcode
-        mkdir /tmp/puppi/$project/deploy_srcfile
-        cd /tmp/puppi/$project/deploy_srcfile
+        mkdir $workdir/$project/deploy_srcfile
+        cd $workdir/$project/deploy_srcfile
         $tarcommand $storedir/$srcfile
         check_retcode
-        save_runtime_config "predeploydir_srcfile=/tmp/puppi/$project/deploy_srcfile"
+        save_runtime_config "predeploydir_srcfile=$workdir/$project/deploy_srcfile"
     ;;
 esac
