@@ -175,6 +175,14 @@ define puppi::project::mysql (
       project   => $name ,
       enable    => $enable ,
     }
+    puppi::initialize { "${name}-Run_SQL":
+      priority  => '42' ,
+      command   => 'database.sh' ,
+      arguments => "-t mysql -a run -u $mysql_user -p '$mysql_password' -d $mysql_database -h $mysql_host" ,
+      user      => 'root' ,
+      project   => $name ,
+      enable    => $enable ,
+    }
   }
 
 
