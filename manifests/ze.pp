@@ -9,9 +9,15 @@
 #   variables => get_class_args(),
 # }
 #
+# puppi::ze { "openssh":
+#   variables => get_class_args(),
+#   filter    => '.*content.*|.*key.*',
+# }
+#
 define puppi::ze (
   $variables,
   $helper = 'standard',
+  $filter = '.*content.*|.*password.*',
   $ensure = 'present' ) {
 
   require puppi
@@ -23,7 +29,7 @@ define puppi::ze (
     mode    => '0644',
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,
-    content => inline_template('<%= Hash[variables.sort].to_yaml %>'),
+    content => inline_template("<%= Hash[variables.sort].reject{ |k,v| k.to_s =~ /(${filter})/ }.to_yaml %>\n"),
   }
 
   Puppi::Ze[$name] -> Class['puppi::is_installed']
