@@ -142,6 +142,9 @@ do_install () {
     cd $gitdir
     git pull $verbosity origin $branch
     git checkout $verbosity $branch
+    if [ "x$?" != "x0" ] ; then
+      git checkout -b $verbosity $branch
+    fi
   else
     git clone $verbosity --branch $branch --recursive $source $gitdir
     cd $gitdir
