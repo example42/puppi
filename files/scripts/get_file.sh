@@ -19,6 +19,8 @@ showhelp () {
     echo "-t <file_type> - The type of file that is retrieved: list|tarball|maven-metadata|dir"
     echo "-d <local_dir> - An alternative destination directory (default is automatically chosen)"
     echo "-a <yes|no> - If 'no' return a special error code (99) if the download checksum is the same of the one previously downloaded"
+    echo "-u <http_user> - in case of type http, specify a http_user for curl"
+    echo "-p <http_password> - in case of type http, specifiy http_user for curl"
     echo "              This option can be used for automatic deploys (ie via cron) that actually deploy only new changes"
 }
 
@@ -77,6 +79,12 @@ while [ $# -gt 0 ]; do
     -a)
       alwaysdeploy=$2
       shift 2 ;;
+    -u)
+      http_user=$2
+      shift 2 ;;
+    -p)
+      http_password=$2
+      shift 2 ;;
     *)
       showhelp
       exit
@@ -98,7 +106,11 @@ case $type in
         save_runtime_config "downloadedfile=$downloaddir/$downloadfilename"
     ;;
     http|https)
-        curl -s -f -L $url -O
+        if [ -z "$http_password" ] ; then
+          curl -s -f -L $url -O
+        else
+          curl -s -f -L --anyauth --user $http_user:$http_password $url -O
+	fi
         check_retcode
         save_runtime_config "downloadedfile=$downloaddir/$downloadfilename"
     ;;
