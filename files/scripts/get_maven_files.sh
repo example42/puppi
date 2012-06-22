@@ -4,9 +4,27 @@
 # It uses variables defined in the general and project runtime configuration files.
 # It uses curl to retrieve files so the $1 argument (base url of the maven repository) 
 # has to be in curl friendly format
+#   It has the following options:
+#   -u <http_user> - in case of type http, specify a http_user for curl
+#   -p <http_password> - in case of type http, specifiy http_user for curl
 
 # Sources common header for Puppi scripts
 . $(dirname $0)/header || exit 10
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -u)
+      http_user=$2
+      shift 2 ;;
+    -p)
+      http_password=$2
+      shift 2 ;;
+    *)
+      url=$1
+      ftype=$2
+      shift 2 ;;
+  esac
+done
 
 # Obtain the value of the variable with name passed as second argument
 # If no one is given, we take all the files in storedir
@@ -25,21 +43,28 @@ else
 fi
 
 cd $storedir
-case $2 in
+
+if [ -z "$http_password" ] ; then
+    authparam=""
+else
+    authparam="--anyauth --user $http_user:$http_password"
+fi
+
+case $ftype in
     warfile)
-        curl -s -f $1/$version/$warfile -O
+        curl -s -f $authparam $url/$version/$warfile -O
         check_retcode
         cp -a $warfile $predeploydir/$artifact.war
         save_runtime_config "deploy_warpath=$deploy_root/$artifact.war"
     ;;
     jarfile)
-        curl -s -f $1/$version/$jarfile -O
+        curl -s -f $authparam $url/$version/$jarfile -O
         check_retcode
         cp -a $jarfile $predeploydir/$artifact.jar
         save_runtime_config "deploy_jarpath=$deploy_root/$artifact.jar"
     ;;
     configfile)
-        curl -s -f $1/$version/$configfile -O
+        curl -s -f $authparam $url/$version/$configfile -O
         check_retcode
         mkdir $workdir/$project/deploy_configfile
         cd $workdir/$project/deploy_configfile
@@ -48,7 +73,7 @@ case $2 in
         save_runtime_config "predeploydir_configfile=$workdir/$project/deploy_configfile"
     ;;
     srcfile)
-        curl -s -f $1/$version/$srcfile -O
+        curl -s -f $authparam $url/$version/$srcfile -O
         check_retcode
         mkdir $workdir/$project/deploy_srcfile
         cd $workdir/$project/deploy_srcfile
