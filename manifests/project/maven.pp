@@ -16,6 +16,12 @@
 #   The full URL of the maven-metadata.xml file to retrieve.
 #   Format should be in URI standard (http:// file:// ssh:// rsync://).
 #
+# [*http_password*]
+#   The http_password to use for authentication to the source in case of http.
+#
+# [*http_user*]
+#   The http_user to use for authentication to the source in case of http.
+#
 # [*deploy_root*]
 #   The destination directory where file(s) are deployed.
 #
@@ -151,6 +157,8 @@
 #
 define puppi::project::maven (
   $source,
+  $http_user                = '',
+  $http_password            = '',
   $deploy_root              = '',
   $user                     = 'root',
   $war_suffix               = 'suffixnotset',
@@ -272,7 +280,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Get_Maven_Metadata_File":
       priority  => '20' ,
       command   => 'get_file.sh' ,
-      arguments => "-s $source/maven-metadata.xml -t maven-metadata -a $real_always_deploy" ,
+      arguments => $http_password ? { '' => "-s $source/maven-metadata.xml -t maven-metadata -a $real_always_deploy" , default => "-s $source/maven-metadata.xml -t maven-metadata -a $real_always_deploy -u $http_user -p $http_password" } ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -292,7 +300,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Get_Maven_Files_WAR":
       priority  => '25' ,
       command   => 'get_maven_files.sh' ,
-      arguments => "$source warfile" ,
+      arguments =>  $http_password ? { '' => "$source warfile" , default => "-u $http_user -p $http_password $source warfile" } ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
