@@ -36,9 +36,15 @@ If no value is found in the defined sources, it returns an empty string ('')
     var_name = arguments[0]
     module_name = parent_module_name
     
-    if Puppet::Parser::Functions.function('hiera')
-      value = function_hiera("#{var_name}",'') if arguments[1] == 'global'
-      value = function_hiera("#{module_name}_#{var_name}",'') if ( function_hiera("#{module_name}_#{var_name}",'') != :undefined && function_hiera("#{module_name}_#{var_name}",'') != '' ) 
+
+    lookup_type = arguments[2]
+
+    lookup_func = method(:"function_hiera_#{lookup_type}") if Puppet::Parser::Functions.function("hiera_#{lookup_type}")
+    lookup_func = method(:function_hiera) if !lookup_func && Puppet::Parser::Functions.function('hiera')
+
+    if lookup_func
+      value = lookup_func.call("#{var_name}",'') if arguments[1] == 'global'
+      value = lookup_func.call("#{module_name}_#{var_name}",'') if ( lookup_func.call("#{module_name}_#{var_name}",'') != :undefined && lookup_func.call("#{module_name}_#{var_name}",'') != '' )
     end
 
     if value == ''
