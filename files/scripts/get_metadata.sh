@@ -14,6 +14,8 @@ showhelp () {
     echo "-mc <anotherstring> - The string to use as qualifier for Maven metadata config tars"
     echo "-mj <anotherstring> - The string to use as qualifier for Maven metadata jars"
     echo "-mw <anotherstring> - The string to use as qualifier for Maven metadata wars"
+    echo "-at <anotherstring> - The type to obtain the artifact, should be \"release\", "
+    echo "                      \"latest\" or \"snapshot\""
 }
 
 while [ $# -gt 0 ]; do
@@ -30,11 +32,28 @@ while [ $# -gt 0 ]; do
     -mw)
       war_suffix=$2
       shift 2 ;;
+    -at)
+      artifact_type=$2
+      shift 2 ;;
     -h)
       showhelp ;;
   esac
 done
 
+# validating input
+# see http://docs.codehaus.org/display/MAVEN/Repository+Metadata for specs
+case $artifact_type in
+    release)
+    ;;
+    latest)
+    ;;
+    snapshot)
+    ;;
+    *)
+    # defaulting to release for invalid arguments
+    artifact_type=release
+    ;;
+esac
 
 case $source_type in
     list)
@@ -49,7 +68,7 @@ case $source_type in
     tarball)
     ;;
     maven)
-    [ ${#version} -eq 0 ] && version=$(xml_parse release $downloadedfile )
+    [ ${#version} -eq 0 ] && version=$(xml_parse $artifact_type $downloadedfile )
     artifact=$(xml_parse artifactId $downloadedfile )
 
     # Definition of qualifiers for Maven has changed from the (wrong) assumption

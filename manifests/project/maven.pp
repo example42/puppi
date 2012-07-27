@@ -22,6 +22,11 @@
 # [*http_user*]
 #   The http_user to use for authentication to the source in case of http.
 #
+# [*artifact_type*]
+#   The artifact_type to parse the maven-metadata.xml. Either "release" or "latest"
+#   Default is "release". With artifactory, don't use the 
+#   "Maven Snapshot Version Behavior" "unique" for your repository.
+#
 # [*deploy_root*]
 #   The destination directory where file(s) are deployed.
 #
@@ -159,6 +164,7 @@ define puppi::project::maven (
   $source,
   $http_user                = '',
   $http_password            = '',
+  $artifact_type            = 'release',
   $deploy_root              = '',
   $user                     = 'root',
   $war_suffix               = 'suffixnotset',
@@ -289,7 +295,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Extract_Maven_Metadata":
       priority  => '22' ,
       command   => 'get_metadata.sh' ,
-      arguments => "-m $document_suffix -mc $config_suffix -mj $jar_suffix -mw $war_suffix" ,
+      arguments => "-m $document_suffix -mc $config_suffix -mj $jar_suffix -mw $war_suffix -at $artifact_type" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
