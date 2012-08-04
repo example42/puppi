@@ -6,8 +6,14 @@
 # The function is intended to be used in templates.
 # If no option is found in the options hash, default value (second argument), is returned.
 #
-# Example usage:
-# <%= scope.function_options_lookup(['PasswordAuthentication', 'no']) %>
+# Example usages:
+#
+# Default value of no
+#   <%= scope.function_options_lookup(['PasswordAuthentication', 'no']) %>
+# Empty default value
+#   <%= scope.function_options_lookup(['PasswordAuthentication', '']) %>
+# Fact or param based default value
+#   <%= scope.function_options_lookup(['Listen', ipaddress]) %>
 #
 # Mike Nowak <mailto:mnowak@hiveworx.co.uk>
 # 
@@ -18,8 +24,12 @@ option key in the calling modules options hash, and returns the value.
 The function is intended to be used in templates.
 If no option is found in the options hash, default value (second argument), is returned.
 
-Example usage:
-<%= scope.function_options_lookup(['PasswordAuthentication', 'no']) %>
+Default value of no
+  <%= scope.function_options_lookup(['PasswordAuthentication', 'no']) %>
+Empty default value
+  <%= scope.function_options_lookup(['PasswordAuthentication', '']) %>
+Fact or param based default value
+   <%= scope.function_options_lookup(['Listen', ipaddress]) %>
 
 EOS
   ) do |args|
