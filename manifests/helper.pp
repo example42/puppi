@@ -19,7 +19,7 @@ define puppi::helper (
 
   file { "puppi_helper_${name}":
     ensure  => $ensure,
-    path    => "${puppi::params::helperdir}/${name}.yaml",
+    path    => "${puppi::params::helpersdir}/${name}.yml",
     mode    => '0644',
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,

@@ -10,7 +10,7 @@ class puppi::helpers {
 
   # Standard helper for Example42 modules
   puppi::helper { 'standard':
-    template => 'puppi/helpers/standard.yaml.erb',
+    template => 'puppi/helpers/standard.yml.erb',
   }
 
   Class['puppi::helpers'] -> Class['puppi::is_installed']

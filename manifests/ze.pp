@@ -25,7 +25,7 @@ define puppi::ze (
 
   file { "puppize_${name}":
     ensure  => $ensure,
-    path    => "${puppi::params::datadir}/${helper}_${name}.yaml",
+    path    => "${puppi::params::datadir}/${helper}_${name}.yml",
     mode    => '0644',
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,

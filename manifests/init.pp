@@ -60,6 +60,9 @@ class puppi {
   # General system checks for puppi check
   include puppi::checks
 
+  # Puppi helpers
+  include puppi::helpers
+
   # Include prerequisits
   include puppi::prerequisites
 
