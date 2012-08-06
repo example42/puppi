@@ -14,6 +14,7 @@ showhelp () {
     echo "-mc <anotherstring> - The string to use as qualifier for Maven metadata config tars"
     echo "-mj <anotherstring> - The string to use as qualifier for Maven metadata jars"
     echo "-mw <anotherstring> - The string to use as qualifier for Maven metadata wars"
+    echo "-mz <anotherstring> - The string to use as qualifier for Maven metadata zips"
     echo "-at <anotherstring> - The type to obtain the artifact, should be \"release\", "
     echo "                      \"latest\" or \"snapshot\""
 }
@@ -31,6 +32,9 @@ while [ $# -gt 0 ]; do
       shift 2 ;;
     -mw)
       war_suffix=$2
+      shift 2 ;;
+    -mz)
+      zip_suffix=$2
       shift 2 ;;
     -at)
       artifact_type=$2
@@ -100,10 +104,17 @@ case $source_type in
         warfile=$artifact-$version.war
     fi
 
+    if [[ x$zip_suffix != "xsuffixnotset" ]] ; then
+        zipfile=$artifact-$version-$zip_suffix.zip
+    else
+        zipfile=$artifact-$version.zip
+    fi
+
     # Store metadata
     save_runtime_config "version=$version" 
     save_runtime_config "artifact=$artifact"
     # Store filenames
+    save_runtime_config "zipfile=$zipfile"
     save_runtime_config "warfile=$warfile"
     save_runtime_config "jarfile=$jarfile"
     save_runtime_config "srcfile=$srcfile" 

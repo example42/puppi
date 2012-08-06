@@ -42,6 +42,12 @@ else
     tarcommand="tar -xf"
 fi
 
+if [ $debug ] ; then
+    zipcommand="unzip"
+else
+    zipcommand="unzip -q"
+fi
+
 cd $storedir
 
 if [ -z "$http_password" ] ; then
@@ -80,5 +86,14 @@ case $ftype in
         $tarcommand $storedir/$srcfile
         check_retcode
         save_runtime_config "predeploydir_srcfile=$workdir/$project/deploy_srcfile"
+    ;;
+    zipfile)
+        curl -s -f $authparam $url/$version/$zipfile -O
+        check_retcode
+        mkdir $workdir/$project/deploy_zipfile
+        cd $workdir/$project/deploy_zipfile
+        $zipcommand $storedir/$zipfile
+        check_retcode
+        save_runtime_config "predeploydir_zipfile=$workdir/$project/deploy_zipfile"
     ;;
 esac
