@@ -1,8 +1,8 @@
-# = Define puppi::project::maven
+# = Define puppi::project::y4maven
 #
 # This is a shortcut define to build a puppi project for the
-# deploy of war and tar files generated via Maven and published on
-# a repository like Sonar.
+# deploying hybris-production-zips via Maven and published on
+# a repository like artifactory.
 #
 # It uses different "core" defines (puppi::project, puppi:deploy (many),
 # puppi::rollback (many)) to build a full featured template project for
@@ -163,7 +163,7 @@
 #   (Optional) - If you want to automatically run this puppi deploy when
 #   Puppet runs. Default: 'false'
 #
-define puppi::project::maven (
+define puppi::project::y4maven (
   $source,
   $http_user                = '',
   $http_password            = '',
@@ -287,17 +287,18 @@ define puppi::project::maven (
     }
   }
 
-    puppi::deploy { "${name}-Get_Maven_Metadata_File":
+    # First: hybrisServer-Platform
+    puppi::deploy { "${name}-Get_Maven_Metadata_hybrisServer-Platform_File":
       priority  => '20' ,
       command   => 'get_file.sh' ,
-      arguments => $http_password ? { '' => "-s $source/maven-metadata.xml -t maven-metadata -a $real_always_deploy" , default => "-s $source/maven-metadata.xml -t maven-metadata -a $real_always_deploy -u $http_user -p $http_password" } ,
+      arguments => $http_password ? { '' => "-s $source/hybrisServer-Platform/maven-metadata.xml -t maven-metadata -a $real_always_deploy" , default => "-s $source/hybrisServer-Platform/maven-metadata.xml -t maven-metadata -a $real_always_deploy -u $http_user -p $http_password" } ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
     }
 
-    puppi::deploy { "${name}-Extract_Maven_Metadata":
-      priority  => '22' ,
+    puppi::deploy { "${name}-Extract_Maven_Metadata_hybrisServer-Platform":
+      priority  => '21' ,
       command   => 'get_metadata.sh' ,
       arguments => "-m $document_suffix -mc $config_suffix -mj $jar_suffix -mw $war_suffix -mz $zip_suffix -at $artifact_type" ,
       user      => 'root' ,
@@ -307,43 +308,72 @@ define puppi::project::maven (
 
   # Files retrieval
   if ($deploy_root != '') {
-    puppi::deploy { "${name}-Get_Maven_Files_WAR":
-      priority  => '25' ,
+    puppi::deploy { "${name}-Get_Maven_Files_ZIP_hybrisServer-Platform":
+      priority  => '22' ,
       command   => 'get_maven_files.sh' ,
-      arguments =>  $http_password ? { '' => "$source warfile" , default => "-u $http_user -p $http_password $source warfile" } ,
+      arguments =>  $http_password ? { '' => "$source/hybrisServer-Platform zipfile" , default => "-u $http_user -p $http_password $source/hybrisServer-Platform zipfile" } ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
     }
   }
 
-  if ($jar_root != '') {
-    puppi::deploy { "${name}-Get_Maven_Files_JAR":
+    # Second: hybrisServer-AllExtensions
+    puppi::deploy { "${name}-Get_Maven_Metadata_hybrisServer-AllExtensions_File":
+      priority  => '23' ,
+      command   => 'get_file.sh' ,
+      arguments => $http_password ? { '' => "-s $source/hybrisServer-AllExtensions/maven-metadata.xml -t maven-metadata -a $real_always_deploy" , default => "-s $source/hybrisServer-AllExtensions/maven-metadata.xml -t maven-metadata -a $real_always_deploy -u $http_user -p $http_password" } ,
+      user      => 'root' ,
+      project   => $name ,
+      enable    => $enable ,
+    }
+
+    puppi::deploy { "${name}-Extract_Maven_Metadata_hybrisServer-AllExtensions":
+      priority  => '24' ,
+      command   => 'get_metadata.sh' ,
+      arguments => "-m $document_suffix -mc $config_suffix -mj $jar_suffix -mw $war_suffix -mz $zip_suffix -at $artifact_type" ,
+      user      => 'root' ,
+      project   => $name ,
+      enable    => $enable ,
+    }
+
+  # Files retrieval
+  if ($deploy_root != '') {
+    puppi::deploy { "${name}-Get_Maven_Files_ZIP_hybrisServer-AllExtensions":
       priority  => '25' ,
       command   => 'get_maven_files.sh' ,
-      arguments => "$source jarfile" ,
+      arguments =>  $http_password ? { '' => "$source/hybrisServer-AllExtensions zipfile" , default => "-u $http_user -p $http_password $source/hybrisServer-AllExtensions zipfile" } ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
     }
   }
+
 
   if ($config_root != '') {
-    puppi::deploy { "${name}-Get_Maven_Files_Config":
-      priority  => '25' ,
-      command   => 'get_maven_files.sh' ,
-      arguments => "$source configfile" ,
+    # Third: config-tarball (optional, right now not supported)
+    puppi::deploy { "${name}-Get_Maven_Metadata_config-tarball_File":
+      priority  => '26' ,
+      command   => 'get_file.sh' ,
+      arguments => $http_password ? { '' => "-s $source/config/maven-metadata.xml -t maven-metadata -a $real_always_deploy" , default => "-s $source/config/maven-metadata.xml -t maven-metadata -a $real_always_deploy -u $http_user -p $http_password" } ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
     }
-  }
 
-  if ($document_root != '') {
-    puppi::deploy { "${name}-Get_Maven_Files_SRC":
-      priority  => '25' ,
+    puppi::deploy { "${name}-Extract_Maven_Metadata_config-tarball":
+      priority  => '27' ,
+      command   => 'get_metadata.sh' ,
+      arguments => "-m $document_suffix -mc $config_suffix -mj $jar_suffix -mw $war_suffix -mz $zip_suffix -at $artifact_type" ,
+      user      => 'root' ,
+      project   => $name ,
+      enable    => $enable ,
+    }
+
+    puppi::deploy { "${name}-Get_Maven_Files_Config":
+      priority  => '28' ,
       command   => 'get_maven_files.sh' ,
-      arguments => "$source srcfile" ,
+      arguments => "$source configfile" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -406,17 +436,6 @@ define puppi::project::maven (
     }
   }
 
-  if ($bool_check_deploy == true) and ($deploy_root != '') {
-    puppi::deploy { "${name}-Check_undeploy":
-      priority  => '31' ,
-      command   => 'checkwardir.sh' ,
-      arguments => "-a $deploy_root -c deploy_warpath" ,
-      user      => $user ,
-      project   => $name ,
-      enable    => $enable ,
-    }
-  }
-
   if ($disable_services != '') {
     puppi::deploy { "${name}-Disable_extra_services":
       priority  => '36' ,
@@ -452,22 +471,11 @@ define puppi::project::maven (
 
   # Deploys
   if ($deploy_root != '') {
-    puppi::deploy { "${name}-Deploy_Maven_WAR":
+    puppi::deploy { "${name}-Deploy_Maven_ZIP":
       priority  => '40' ,
       command   => 'deploy.sh' ,
-      arguments => $deploy_root ,
+      arguments => "$deploy_root predeploydir_zipfile ",
       user      => $user ,
-      project   => $name ,
-      enable    => $enable ,
-    }
-  }
-
-  if ($jar_root != '') {
-    puppi::deploy { "${name}-Deploy_Maven_JAR":
-      priority  => '40' ,
-      command   => 'deploy.sh' ,
-      arguments => $jar_root ,
-      user      => $jar_real_user ,
       project   => $name ,
       enable    => $enable ,
     }
@@ -484,15 +492,13 @@ define puppi::project::maven (
     }
   }
 
-  if ($document_root != '') {
-    puppi::deploy { "${name}-Deploy_DocumentDir":
-      priority  => '40' ,
-      command   => 'deploy.sh' ,
-      arguments => "$document_root predeploydir_srcfile" ,
-      user      => $document_real_user ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  puppi::deploy { "${name}-yant":
+    priority  => '42' ,
+    command   => 'yant.sh' ,
+    arguments => "$deploy_root clean all" ,
+    user      => $user ,
+    project   => $name ,
+    enable    => $enable ,
   }
 
   if ($postdeploy_customcommand != '') {
@@ -508,7 +514,7 @@ define puppi::project::maven (
 
   if ($init_script != '') {
     puppi::deploy { "${name}-Service_start":
-      priority  => '42' ,
+      priority  => '44' ,
       command   => 'service.sh' ,
       arguments => "start $init_script" ,
       user      => 'root',
@@ -519,7 +525,7 @@ define puppi::project::maven (
 
   if ($disable_services != '') {
     puppi::deploy { "${name}-Enable_extra_services":
-      priority  => '44' ,
+      priority  => '45' ,
       command   => 'service.sh' ,
       arguments => "start $disable_services" ,
       user      => 'root',
@@ -528,20 +534,9 @@ define puppi::project::maven (
     }
   }
 
-  if ($bool_check_deploy == true) {
-    puppi::deploy { "${name}-Check_deploy":
-      priority  => '45' ,
-      command   => 'checkwardir.sh' ,
-      arguments => "-p $deploy_root -c deploy_warpath" ,
-      user      => $user ,
-      project   => $name ,
-      enable    => $enable ,
-    }
-  }
-
   if ($firewall_src_ip != '') {
     puppi::deploy { "${name}-Load_Balancer_Unblock":
-      priority  => '46' ,
+      priority  => '47' ,
       command   => 'firewall.sh' ,
       arguments => "$firewall_src_ip $firewall_dst_port off 0" ,
       user      => 'root',
@@ -609,22 +604,11 @@ define puppi::project::maven (
   }
 
   if ($deploy_root != '') {
-    puppi::rollback { "${name}-Recover_WAR":
+    puppi::rollback { "${name}-Recover_ZIP":
       priority  => '40' ,
       command   => 'archive.sh' ,
-      arguments => "-r $deploy_root -t war -o '$backup_rsync_options'" ,
+      arguments => "-r $deploy_root -t zip -o '$backup_rsync_options'" ,
       user      => $user ,
-      project   => $name ,
-      enable    => $enable ,
-    }
-  }
-
-  if ($jar_root != '') {
-    puppi::rollback { "${name}-Recover_JAR":
-      priority  => '40' ,
-      command   => 'archive.sh' ,
-      arguments => "-r $jar_root -t jar -o '$backup_rsync_options'" ,
-      user      => $jar_real_user ,
       project   => $name ,
       enable    => $enable ,
     }
@@ -636,17 +620,6 @@ define puppi::project::maven (
       command   => 'archive.sh' ,
       arguments => "-r $config_root -t config -o '$backup_rsync_options'" ,
       user      => $config_real_user ,
-      project   => $name ,
-      enable    => $enable ,
-    }
-  }
-
-  if ($document_root != '') {
-    puppi::rollback { "${name}-Recover_DocumentDir":
-      priority  => '40' ,
-      command   => 'archive.sh' ,
-      arguments => "-r $document_root -t docroot -o '$backup_rsync_options'" ,
-      user      => $document_real_user ,
       project   => $name ,
       enable    => $enable ,
     }
@@ -680,17 +653,6 @@ define puppi::project::maven (
       command   => 'service.sh' ,
       arguments => "start $disable_services" ,
       user      => 'root',
-      project   => $name ,
-      enable    => $enable ,
-    }
-  }
-
-  if ($bool_check_deploy == true) {
-    puppi::rollback { "${name}-Check_deploy":
-      priority  => '45' ,
-      command   => 'checkwardir.sh' ,
-      arguments => "-p $deploy_root -c deploy_warpath" ,
-      user      => $user ,
       project   => $name ,
       enable    => $enable ,
     }
