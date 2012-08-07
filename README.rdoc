@@ -8,7 +8,7 @@ Licence: Apache 2
 
 Puppi is a Puppet module that lets sysadmins standardize, manage and automate the
 deployment of web applications and provides quick and standard commands to obtain informations
-about the system and what's is going on it.
+about the system and what's going on on it.
 
 Its structure provides FULL flexibility on the actions required for virtually any kind of
 application deployment and information gathering.
@@ -44,7 +44,7 @@ if you use other modules, just be sure to provide somewhere the packages defined
 
 Once you have puppi included in your nodes you can use the puppi:: defines detailed below to add functionality and actions.
 
-If you use the whole Example42 module set you can activate automatic Puppi integration in these modules.
+If you use the whole Example42 module set, you can activate automatic Puppi integration in these modules.
 Example42 modules currently have 2 different basic layouts, the "Old" 1.0 modules and the "NextGen" 2.0 ones.
 Puppi integration (and the whole parameters evaluation approach) is done in a slightly different way.
 
@@ -96,7 +96,7 @@ The puppi command has these possibile actions:
 
 * [ puppi todo ] : Show things to do (or done) manually on the system
 
-The deploy/rollback/init actions puppi run the commands in /etc/puppi/projects/$project_name/$action,
+The deploy/rollback/init actions, puppi run the commands in /etc/puppi/projects/$project_name/$action,
 log their status and then run the commands in /etc/puppi/projects/$project_name/report to
 provide reporting, in whatever, pluggable, way.
 
@@ -125,7 +125,7 @@ Some usage examples:
 
 == THE PUPPI MODULE
 
-The set of commands needed for each of these actions s entirely managed with specific
+The set of commands needed for each of these actions are entirely managed with specific
 Puppet "basic defines":
 
 [ puppi::project ]  - Creates the main project structure. One or more different deployment projects can exist on a node.
@@ -149,19 +149,19 @@ Read details in the relevant READMEs
 
 == FILE PATHS (all of them are provided, and can be configured, in the puppi module):
 
-/usr/sbin/puppi - Where the puppi command is placed. Currently is a bash script.
+/usr/sbin/puppi - Where the puppi command is placed. Currently it's a bash script.
 
-/etc/puppi/puppi.conf - Puppi main config file. Here various puppi wide paths are defined
+/etc/puppi/puppi.conf - Puppi main config file. Various puppi wide paths are defined here.
 
-/etc/puppi/checks/ - $checksdir - Here can be placed all the host wide checks. If you use the Example42 monitor module and have "puppi" as $monitor_tool, this directory is automatically filled with Nagios plugins based checks.
+/etc/puppi/checks/ - $checksdir - Here all the host wide checks can be placed. If you use the Example42 monitor module and have "puppi" as $monitor_tool, this directory is automatically filled with Nagios plugins based checks.
 
 /etc/puppi/projects/ - $projectsdir - In this directory you can have one or more projects subdirs, with the commands to be run for deploy, rollback and check actions. They are completely built (and purged) by the Puppet module.
 
 /etc/puppi/scripts/ - $scriptsdir - The general-use scripts directory, these are used by the above commands and may require one or more arguments.
 
-/etc/puppi/logs/ - $logssdir - The general-use directory where are placed files containing the log paths to be used by puppi log
+/etc/puppi/logs/ - $logssdir - The general-use directory where files are placed which contain the log paths to be used by puppi log
 
-/etc/puppi/info/ - $infodir - The directory where are placed files containing the commands used by puppi info
+/etc/puppi/info/ - $infodir - The directory where files are placed which contain the commands used by puppi info
 
 /var/lib/puppi/archive/ - $archivedir - Where all data to rollback is placed.
 
@@ -169,7 +169,7 @@ Read details in the relevant READMEs
 
 /tmp/puppi/ - $workdir - Temporary, scratchable, directory where Puppi places temporary files.
 
-/tmp/puppi/$project/config - A runtime configuration file, where are dinamically placed variables usable by all the scripts invoked by puppi. This is necessary to mantain "state" information that changes on every puppi run (such as the deploy datetime, used for backups).
+/tmp/puppi/$project/config - A runtime configuration file, which is used by all all the the scripts invoked by puppi to read and write dynamic variables at runtime. This is necessary to mantain "state" information that changes on every puppi run (such as the deploy datetime, used for backups).
 
 
 == HOW TO CUSTOMIZE
@@ -180,8 +180,8 @@ a given sequence, in pure KISS logic.
 The advantanges though, are various:
 * You have a common syntax to manage deploys and rollbacks on an host
 
-* In your Puppet manifests you can set in simple, coherent and still flexible and customizable
-  defines all the elements you need for your application deployments. 
+* In your Puppet manifests, you can set in simple, coherent and still flexible and customizable
+  defines all the elements, you need for your application deployments. 
   Think about it: with just a Puppet define you build the whole deploy logic
 
 * Reporting for each deploy/rollback is built-in and extensible 
@@ -194,7 +194,7 @@ The advantanges though, are various:
 
 There are different parts where you can customize the behaviour of puppi:
 
-* The set of general-use scripts in /etc/puppi/scripts/ ( this dir is filled with the content
+* The set of general-use scripts in /etc/puppi/scripts/ ( this directory is filled with the content
   of puppi/files/scripts/ ) can/should be enhanced. These can be arbitrary scripts in whatever
   language. If you want to follow puppi's logic, though, consider that they should import the
   common and runtime configuration files and have an exit code logic similar to the one of
