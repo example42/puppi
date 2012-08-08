@@ -15,7 +15,7 @@
 # Fact or param based default value
 #   <%= scope.function_options_lookup(['Listen', ipaddress]) %>
 #
-# Mike Nowak <mailto:mnowak@hiveworx.co.uk>
+# Michal Nowak <mailto:michal@casanowak.com>
 # 
 module Puppet::Parser::Functions
   newfunction(:options_lookup, :type => :rvalue, :doc => <<-EOS
