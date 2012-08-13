@@ -13,7 +13,7 @@
 # Major help has been given by  Brice Figureau, Peter Meier
 # and Ohad Levy during the Fosdem 2012 days (thanks guys)
 # 
-# Tested ad adapted to Puppet 2.6.x and later
+# Tested and adapted to Puppet 2.6.x and later
 #
 # Alessandro Franceschi al@lab42.it
 # 
@@ -35,20 +35,28 @@ If no value is found in the defined sources, it returns an empty string ('')
     value = ''
     var_name = arguments[0]
     module_name = parent_module_name
-    
+
+    # Hiera Lookup
     if Puppet::Parser::Functions.function('hiera')
       value = function_hiera("#{var_name}",'') if arguments[1] == 'global'
-      value = function_hiera("#{module_name}_#{var_name}",'') if ( function_hiera("#{module_name}_#{var_name}",'') != :undefined && function_hiera("#{module_name}_#{var_name}",'') != '' ) 
+      value = function_hiera("#{module_name}_#{var_name}",'') if ( function_hiera("#{module_name}_#{var_name}",'') != :undefined && function_hiera("#{module_name}_#{var_name}",'') != '' )
     end
 
-    if value == ''
-      value = lookupvar("::#{var_name}") if arguments[1] == 'global'
-      value = lookupvar("::#{module_name}_#{var_name}") if ( lookupvar("::#{module_name}_#{var_name}") != :undefined && lookupvar("::#{module_name}_#{var_name}") != '' )
-      value = lookupvar("::#{module_name}::params::#{var_name}") if (value == :undefined || value == '') 
+    # Top Scope Variable Lookup
+    if ( value.nil? || value == '' || value == :undefined )
+      if ( lookupvar("::#{var_name}") != :undefined && lookupvar("::#{var_name}") != '' && ! lookupvar("::#{var_name}").nil? && arguments[1] == 'global' )
+        value = lookupvar("::#{var_name}")
+      end
+      if ( lookupvar("::#{module_name}_#{var_name}") != :undefined && lookupvar("::#{module_name}_#{var_name}") != '' )
+        value = lookupvar("::#{module_name}_#{var_name}")
+      end
+    end
+
+    # Params class lookup for default value
+    if ( value.nil? || value == '' || value == :undefined )
+      value = lookupvar("::#{module_name}::params::#{var_name}")
     end
 
     return value
   end
 end
-
-# vim: set ts=2 sw=2 et :
