@@ -23,7 +23,8 @@
 #   The http_user to use for authentication to the source in case of http.
 #
 # [*artifact_type*]
-#   The artifact_type to parse the maven-metadata.xml. Either "release" or "latest"
+#   The artifact_type to parse the maven-metadata.xml. Either "release", "latest" or
+#   a specific version (e.g. "2.5.0")
 #   Default is "release". With artifactory, don't use the 
 #   "Maven Snapshot Version Behavior" "unique" for your repository.
 #

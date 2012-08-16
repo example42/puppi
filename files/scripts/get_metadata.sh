@@ -16,7 +16,7 @@ showhelp () {
     echo "-mw <anotherstring> - The string to use as qualifier for Maven metadata wars"
     echo "-mz <anotherstring> - The string to use as qualifier for Maven metadata zips"
     echo "-at <anotherstring> - The type to obtain the artifact, should be \"release\", "
-    echo "                      \"latest\" or \"snapshot\""
+    echo "                      \"latest\", \"snapshot\" or a specific version (e.g. \"2.5.0\")"
 }
 
 while [ $# -gt 0 ]; do
@@ -54,8 +54,8 @@ case $artifact_type in
     snapshot)
     ;;
     *)
-    # defaulting to release for invalid arguments
-    artifact_type=release
+    # defaulting to version 
+    version=$artifact_type
     ;;
 esac
 
