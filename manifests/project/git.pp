@@ -17,6 +17,11 @@
 # [*deploy_root*]
 #   The destination directory where the retrieved file(s) are deployed.
 #
+# [*install_git*]
+#   If the git package hs to be installed. Default true.
+#   Set to false if you install git via other modules and have resource
+#   conflicts.
+#
 # [*git_subdir*]
 #   (Optional) - If you want to copy to the deploy_root only a subdir
 #   of the specified git repo, specify here the path of the directory
@@ -123,6 +128,7 @@
 define puppi::project::git (
   $source,
   $deploy_root,
+  $install_git              = true,
   $git_subdir               = 'undefined',
   $tag                      = 'undefined',
   $branch                   = 'master',
@@ -168,11 +174,16 @@ define puppi::project::git (
     default => $init_source,
   }
 
+  $bool_install_git = any2bool($install_git)
   $bool_keep_gitdata = any2bool($keep_gitdata)
   $bool_verbose = any2bool($verbose)
   $bool_run_checks = any2bool($run_checks)
   $bool_auto_deploy = any2bool($auto_deploy)
 
+### INSTALL GIT
+  if ($bool_install_git == true) {
+    if ! defined(Package['git']) { package { 'git': ensure => installed } }
+  }
 
 ### CREATE PROJECT
     puppi::project { $name:
