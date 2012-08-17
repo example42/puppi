@@ -13,16 +13,16 @@ showhelp () {
     echo "It has the following options:"
     echo "-d <path> (Required) - Destination directory where to deploy files"
     echo "-p <name> (Optional) - Name of the variable that identifies a specific predeploydir"
-    echo "-c <yes|no> (Default: no) - If to enabled the --delete option to the rsync command"
+    echo "-c <true|false> (Default: false) - If to enabled the --delete option to the rsync command"
     echo 
     echo "Examples:"
     echo "deploy_files.sh -d /var/www/html/my_app"
     echo "deploy_files.sh -d /var/www/html/my_app/conf -p config"
-    echo "deploy_files.sh -d /var/www/html/my_app/conf -c yes"
+    echo "deploy_files.sh -d /var/www/html/my_app/conf -c true"
 }
 
 deploy_sourcedir="$predeploydir"
-clean_destdir="no"
+clean_destdir="false"
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -44,7 +44,7 @@ while [ $# -gt 0 ]; do
 done
 
 rsync_delete=""
-if [ x$clean_destdir == "xyes" ] ; then
+if [ x$clean_destdir == "xtrue" ] ; then
   rsync_delete="--delete"
 fi
 

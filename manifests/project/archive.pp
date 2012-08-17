@@ -69,6 +69,16 @@
 #   (Optional) - The (space separated) email(s) to notify of deploy/rollback
 #   operations. If none is specified, no email is sent.
 #
+# [*clean_deploy*]
+#   (Optional, default false) - If during the deploy procedure, all the
+#   existing files that are not on the source have to be deleted.
+#   (When true, a --delete option is added to the rsync command)
+#   Do not set to true if source files are incremental.
+#
+# [*backup_enable*]
+#   (Optional, default true) - If the backup of files in the deploy dir
+#   is done (before deploy). If set to false, rollback is disabled.
+#
 # [*backup_rsync_options*]
 #   (Optional) - The extra options to pass to rsync for backup operations. Use
 #   it, for example, to exclude directories that you don't want to archive.
@@ -107,6 +117,8 @@ define puppi::project::archive (
   $firewall_dst_port        = '0',
   $firewall_delay           = '1',
   $report_email             = '',
+  $clean_deploy             = false,
+  $backup_enable            = true,
   $backup_rsync_options     = '--exclude .snapshot',
   $backup_retention         = '5',
   $run_checks               = true,
@@ -137,7 +149,10 @@ define puppi::project::archive (
     true    => 'yes',
   }
 
+
   $bool_run_checks = any2bool($run_checks)
+  $bool_clean_deploy = any2bool($clean_deploy)
+  $bool_backup_enable = any2bool($backup_enable)
   $bool_auto_deploy = any2bool($auto_deploy)
 
   $source_type = url_parse($source,filetype)
@@ -196,6 +211,7 @@ define puppi::project::archive (
     }
   }
 
+  if ($bool_backup_enable == true) {
     puppi::deploy { "${name}-Backup_existing_Files":
       priority  => '30' ,
       command   => 'archive.sh' ,
@@ -204,6 +220,7 @@ define puppi::project::archive (
       project   => $name ,
       enable    => $enable ,
     }
+  }
 
   if ($disable_services != '') {
     puppi::deploy { "${name}-Disable_extra_services":
@@ -230,8 +247,8 @@ define puppi::project::archive (
     # Here is done the deploy on $deploy_root
     puppi::deploy { "${name}-Deploy":
       priority  => '40' ,
-      command   => 'deploy.sh' ,
-      arguments => $deploy_root ,
+      command   => 'deploy_files.sh' ,
+      arguments => "-d $deploy_root -c $bool_clean_deploy",
       user      => $user ,
       project   => $name ,
       enable    => $enable ,
@@ -284,92 +301,93 @@ define puppi::project::archive (
 
 ### ROLLBACK PROCEDURE
 
-  if ($firewall_src_ip != '') {
-    puppi::rollback { "${name}-Load_Balancer_Block":
-      priority  => '25' ,
-      command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port on $firewall_delay" ,
-      user      => 'root',
-      project   => $name ,
-      enable    => $enable ,
+  if ($bool_backup_enable == true) {
+    if ($firewall_src_ip != '') {
+      puppi::rollback { "${name}-Load_Balancer_Block":
+        priority  => '25' ,
+        command   => 'firewall.sh' ,
+        arguments => "$firewall_src_ip $firewall_dst_port on $firewall_delay" ,
+        user      => 'root',
+        project   => $name ,
+        enable    => $enable ,
+      }
+    }
+  
+    if ($disable_services != '') {
+      puppi::rollback { "${name}-Disable_extra_services":
+        priority  => '37' ,
+        command   => 'service.sh' ,
+        arguments => "stop $disable_services" ,
+        user      => 'root',
+        project   => $name ,
+        enable    => $enable ,
+      }
+    }
+  
+    if ($predeploy_customcommand != '') {
+      puppi::rollback { "${name}-Run_Custom_PreDeploy_Script":
+        priority  => $predeploy_priority ,
+        command   => 'execute.sh' ,
+        arguments => $predeploy_customcommand ,
+        user      => $predeploy_real_user ,
+        project   => $name ,
+        enable    => $enable ,
+      }
+    }
+  
+      puppi::rollback { "${name}-Recover_Files_To_Deploy":
+        priority  => '40' ,
+        command   => 'archive.sh' ,
+        arguments => "-r $deploy_root -o '$backup_rsync_options'" ,
+        user      => $user ,
+        project   => $name ,
+        enable    => $enable ,
+      }
+  
+    if ($postdeploy_customcommand != '') {
+      puppi::rollback { "${name}-Run_Custom_PostDeploy_Script":
+        priority  => $postdeploy_priority ,
+        command   => 'execute.sh' ,
+        arguments => $postdeploy_customcommand ,
+        user      => $postdeploy_real_user ,
+        project   => $name ,
+        enable    => $enable ,
+      }
+    }
+  
+    if ($disable_services != '') {
+      puppi::rollback { "${name}-Enable_extra_services":
+        priority  => '44' ,
+        command   => 'service.sh' ,
+        arguments => "start $disable_services" ,
+        user      => 'root',
+        project   => $name ,
+        enable    => $enable ,
+      }
+    }
+  
+    if ($firewall_src_ip != '') {
+      puppi::rollback { "${name}-Load_Balancer_Unblock":
+        priority  => '46' ,
+        command   => 'firewall.sh' ,
+        arguments => "$firewall_src_ip $firewall_dst_port off 0" ,
+        user      => 'root',
+        project   => $name ,
+        enable    => $enable ,
+      }
+    }
+  
+    if ($bool_run_checks == true) {
+      puppi::rollback { "${name}-Run_POST-Checks":
+        priority  => '80' ,
+        command   => 'check_project.sh' ,
+        arguments => $name ,
+        user      => 'root' ,
+        project   => $name ,
+        enable    => $enable ,
+      }
     }
   }
-
-  if ($disable_services != '') {
-    puppi::rollback { "${name}-Disable_extra_services":
-      priority  => '37' ,
-      command   => 'service.sh' ,
-      arguments => "stop $disable_services" ,
-      user      => 'root',
-      project   => $name ,
-      enable    => $enable ,
-    }
-  }
-
-  if ($predeploy_customcommand != '') {
-    puppi::rollback { "${name}-Run_Custom_PreDeploy_Script":
-      priority  => $predeploy_priority ,
-      command   => 'execute.sh' ,
-      arguments => $predeploy_customcommand ,
-      user      => $predeploy_real_user ,
-      project   => $name ,
-      enable    => $enable ,
-    }
-  }
-
-    puppi::rollback { "${name}-Recover_Files_To_Deploy":
-      priority  => '40' ,
-      command   => 'archive.sh' ,
-      arguments => "-r $deploy_root -o '$backup_rsync_options'" ,
-      user      => $user ,
-      project   => $name ,
-      enable    => $enable ,
-    }
-
-  if ($postdeploy_customcommand != '') {
-    puppi::rollback { "${name}-Run_Custom_PostDeploy_Script":
-      priority  => $postdeploy_priority ,
-      command   => 'execute.sh' ,
-      arguments => $postdeploy_customcommand ,
-      user      => $postdeploy_real_user ,
-      project   => $name ,
-      enable    => $enable ,
-    }
-  }
-
-  if ($disable_services != '') {
-    puppi::rollback { "${name}-Enable_extra_services":
-      priority  => '44' ,
-      command   => 'service.sh' ,
-      arguments => "start $disable_services" ,
-      user      => 'root',
-      project   => $name ,
-      enable    => $enable ,
-    }
-  }
-
-  if ($firewall_src_ip != '') {
-    puppi::rollback { "${name}-Load_Balancer_Unblock":
-      priority  => '46' ,
-      command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port off 0" ,
-      user      => 'root',
-      project   => $name ,
-      enable    => $enable ,
-    }
-  }
-
-  if ($bool_run_checks == true) {
-    puppi::rollback { "${name}-Run_POST-Checks":
-      priority  => '80' ,
-      command   => 'check_project.sh' ,
-      arguments => $name ,
-      user      => 'root' ,
-      project   => $name ,
-      enable    => $enable ,
-    }
-  }
-
 
 ### REPORTING
 
