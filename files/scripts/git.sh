@@ -166,7 +166,7 @@ do_install () {
 
 do_rollback () {
 
-  echo "Rollback"
+  echo "Rollback not yet supported"
 }
 
 # Action!
