@@ -54,9 +54,12 @@ class puppi::params  {
         default                   => 'mailx',
     }
 
-    $ntp = $ntp_server ? {
+    $ntp = $::ntp_server ? {
         ''      => 'pool.ntp.org' ,
-        default => $ntp_server ,
+        default => is_array($::ntp_server) ? {
+          false => $::ntp_server,
+          true  => $::ntp_server[0],
+        }
     }
 
 # Mcollective paths
