@@ -16,7 +16,7 @@ class puppi::infos {
     description => 'Users and logins information' ,
     run         => $::operatingsystem ? {
       Solaris => [ 'who' , 'last' ],
-      default => [ 'who' , 'last' , 'lastlog | grep -v \'Never logged in\'' ],
+      default => [ 'who' , 'last' , 'LANG=C lastlog | grep -v \'Never logged in\'' ],
     }
   }
 
