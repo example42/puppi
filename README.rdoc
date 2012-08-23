@@ -220,7 +220,7 @@ Extra elements for check, info and log are automatic included with the relevant 
 the Example42 modules.
 
 == PROJECT STATUS
-Puppi is a work in progress. It has been originally designed to automate deployments in
+Puppi has been originally designed to automate deployments in
 a specific environment and more project templates have to be written to manage different 
 scenarios. It has evolved with some commands useful to quickly understand what's 
 happening on the system and how it's configured.
@@ -228,3 +228,5 @@ It has greatly broadened its applications and possibilities with the introductio
 mcollective command and the relevant plugin.
 All the puppi commands you can issue to obtain information, check status and manage applications
 deployments are now usable via Mcollective.
+Puppi command first incarnation has been written in bash by Alessandro Franceschi a new pure ruby
+version is under development by Celso Fernandez and is going to be incorporated in the Puppi module.
