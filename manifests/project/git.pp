@@ -167,13 +167,6 @@ define puppi::project::git (
     default => $postdeploy_user,
   }
 
-  # Unless explicitely defined, we assume that the WAR file to use
-  # for initialization is the same to use for deploys
-  $init_real_source = $init_source ? {
-    ''      => $source,
-    default => $init_source,
-  }
-
   $bool_install_git = any2bool($install_git)
   $bool_keep_gitdata = any2bool($keep_gitdata)
   $bool_verbose = any2bool($verbose)

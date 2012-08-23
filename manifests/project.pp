@@ -16,6 +16,7 @@ define puppi::project (
     true    => 'directory',
     'true'  => 'directory',
     'yes'   => 'directory',
+    default => 'directory',
   }
 
   $ensurefile = bool2ensure($enable)
