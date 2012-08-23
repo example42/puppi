@@ -66,6 +66,7 @@ define puppi::netinstall (
       '.tar.bz2' => 'tar -jxf',
       '.tar'     => 'tar -xf',
       '.zip'     => 'unzip',
+      default    => 'tar -zxf',
     },
     default => $extract_command,
   }

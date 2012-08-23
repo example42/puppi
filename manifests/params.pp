@@ -19,14 +19,14 @@ class puppi::params  {
     $readmedir   = '/var/lib/puppi/readme'
     $logdir      = '/var/log/puppi'
 
-    $archivedir = $puppi_archivedir ? {
+    $archivedir = $::puppi_archivedir ? {
        ''      => '/var/lib/puppi/archive',
-       default => $puppi_archivedir ,
+       default => $::puppi_archivedir ,
     }
 
-    $workdir = $puppi_workdir ? {
+    $workdir = $::puppi_workdir ? {
        ''      => '/tmp/puppi',
-       default => $puppi_workdir ,
+       default => $::puppi_workdir ,
     }
 
     $configfile_mode  = '0644'
@@ -57,8 +57,9 @@ class puppi::params  {
     $ntp = $::ntp_server ? {
         ''      => 'pool.ntp.org' ,
         default => is_array($::ntp_server) ? {
-          false => $::ntp_server,
-          true  => $::ntp_server[0],
+          false   => $::ntp_server,
+          true    => $::ntp_server[0],
+          default => $::ntp_server,
         }
     }
 

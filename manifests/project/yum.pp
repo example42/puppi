@@ -110,12 +110,12 @@ define puppi::project::yum (
 
   # Set default values
   $predeploy_real_user = $predeploy_user ? {
-    ''      => $user,
+    ''      => 'root',
     default => $predeploy_user,
   }
 
   $postdeploy_real_user = $postdeploy_user ? {
-    ''      => $user,
+    ''      => 'root',
     default => $postdeploy_user,
   }
 
@@ -126,6 +126,7 @@ define puppi::project::yum (
     'yes'   => 'yes',
     'true'  => 'yes',
     true    => 'yes',
+    default => 'no',
   }
 
   $real_checks_required = $checks_required ? {
@@ -135,6 +136,7 @@ define puppi::project::yum (
     'yes'   => 'yes',
     'true'  => 'yes',
     true    => 'yes',
+    default => 'no',
   }
 
   $bool_run_checks = any2bool($run_checks)
