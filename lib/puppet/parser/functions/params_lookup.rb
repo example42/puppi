@@ -35,37 +35,37 @@ If no value is found in the defined sources, it returns an empty string ('')
     value = ''
     var_name = arguments[0]
     module_name = parent_module_name
-    classname = self.resource.name.downcase
-    loaded_classes = catalog.classes
 
     # Hiera Lookup
     if Puppet::Parser::Functions.function('hiera')
       value = function_hiera("#{var_name}",'') if arguments[1] == 'global'
-      value = function_hiera("#{module_name}_#{var_name}",'') if ( function_hiera("#{module_name}_#{var_name}",'') != :undefined && function_hiera("#{module_name}_#{var_name}",'') != '' )
+      value = function_hiera("#{module_name}_#{var_name}",'')
+      return value if (not value.nil?) && (value != :undefined) && (value != '')
     end
 
-    # Top Scope Variable Lookup
-    if ( value.nil? || value == '' || value == :undefined )
-      if ( lookupvar("::#{var_name}") != :undefined && lookupvar("::#{var_name}") != '' && ! lookupvar("::#{var_name}").nil? && arguments[1] == 'global' )
-        value = lookupvar("::#{var_name}")
-      end
-      if ( lookupvar("::#{module_name}_#{var_name}") != :undefined && lookupvar("::#{module_name}_#{var_name}") != '' )
-        value = lookupvar("::#{module_name}_#{var_name}")
-      end
+    # Top Scope Variable Lookup (::modulename_varname)
+    value = lookupvar("::#{module_name}_#{var_name}")
+    return value if (not value.nil?) && (value != :undefined) && (value == '')
+
+    # Look up ::varname (only if second argument is 'global')
+    if arguments[1] == 'global'
+      value = lookupvar("::#{var_name}")
+      return value if (not value.nil?) && (value != :undefined) && (value == '')
+    end
+
+    # needed for the next two lookups
+    classname = self.resource.name.downcase
+    loaded_classes = catalog.classes
+
+    # self::params class lookup for default value
+    if loaded_classes.include?("#{classname}::params"):
+      value = lookupvar("::#{classname}::params::#{var_name}")
+      return value if (not value.nil?) && (value != :undefined) && (value == '')
     end
 
     # Params class lookup for default value
-    if ( value.nil? || value == '' || value == :undefined )
-      if loaded_classes.include?("#{module_name}::params"):
-        value = lookupvar("::#{module_name}::params::#{var_name}")
-      end
-    end
-
-    # self::params class lookup for default value
-    if ( value.nil? || value == '' || value == :undefined )
-      if loaded_classes.include?("#{classname}::params"):
-        value = lookupvar("::#{classname}::params::#{var_name}")
-      end
+    if loaded_classes.include?("#{module_name}::params"):
+      value = lookupvar("::#{module_name}::params::#{var_name}")
     end
 
     return value
