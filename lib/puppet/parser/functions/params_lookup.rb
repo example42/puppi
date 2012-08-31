@@ -66,8 +66,9 @@ If no value is found in the defined sources, it returns an empty string ('')
     # Params class lookup for default value
     if loaded_classes.include?("#{module_name}::params"):
       value = lookupvar("::#{module_name}::params::#{var_name}")
+      return value if (not value.nil?) && (value != :undefined) && (value != '')
     end
 
-    return value
+    return ''
   end
 end
