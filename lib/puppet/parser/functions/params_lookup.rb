@@ -45,12 +45,12 @@ If no value is found in the defined sources, it returns an empty string ('')
 
     # Top Scope Variable Lookup (::modulename_varname)
     value = lookupvar("::#{module_name}_#{var_name}")
-    return value if (not value.nil?) && (value != :undefined) && (value == '')
+    return value if (not value.nil?) && (value != :undefined) && (value != '')
 
     # Look up ::varname (only if second argument is 'global')
     if arguments[1] == 'global'
       value = lookupvar("::#{var_name}")
-      return value if (not value.nil?) && (value != :undefined) && (value == '')
+      return value if (not value.nil?) && (value != :undefined) && (value != '')
     end
 
     # needed for the next two lookups
@@ -60,7 +60,7 @@ If no value is found in the defined sources, it returns an empty string ('')
     # self::params class lookup for default value
     if loaded_classes.include?("#{classname}::params"):
       value = lookupvar("::#{classname}::params::#{var_name}")
-      return value if (not value.nil?) && (value != :undefined) && (value == '')
+      return value if (not value.nil?) && (value != :undefined) && (value != '')
     end
 
     # Params class lookup for default value
