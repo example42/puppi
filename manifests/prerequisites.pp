@@ -14,6 +14,10 @@ class puppi::prerequisites {
     package { 'curl' : ensure => present }
   }
 
+  if ! defined(Package['wget']) {
+    package { 'wget' : ensure => present }
+  }
+
   if ! defined(Package['unzip']) {
     package { 'unzip' : ensure => present }
   }
