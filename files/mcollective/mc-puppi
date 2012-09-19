@@ -47,7 +47,11 @@ end
 
 mc = rpcclient("puppi", :options => options)
 mc.progress = true
-mc.send(command, {:project => project}) do |resp|
+# mc.send(command, {:project => project}) do |resp|
+args = {};
+args[:project] = project if project
+args[:puppioptions] = puppioptions if puppioptions
+mc.send(command, args) do |resp|
     begin
 #        puts resp[:serverid]
         puts resp[:body][:data]

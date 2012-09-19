@@ -1,5 +1,6 @@
 #!/bin/bash
 # File Managed by Puppet
+PATH=$PATH:/usr/local/bin
 
 if [ ! $1 ] ; then
     echo "Provide at least a match pattern. For example:"

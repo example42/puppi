@@ -11,42 +11,42 @@ module MCollective
 
             def check_action
 #                   validate :project, :shellsafe
-                    project = request[:project]
+                    project = request[:project] if request[:project]
                     reply.data = %x[puppi check #{project}].chomp
 #                    reply.exitcode = $?.exitstatus
             end
 
             def info_action
 #                   validate :project, :shellsafe
-                    project = request[:project]
+                    project = request[:project] if request[:project]
                     reply.data = %x[puppi info #{project}].chomp
 #                    reply.exitcode = $?.exitstatus
             end
 
             def log_action
 #                   validate :project, :shellsafe
-                    project = request[:project]
+                    project = request[:project] if request[:project]
                     reply.data = %x[puppi log #{project} -c 10].chomp
 #                    reply.exitcode = $?.exitstatus
             end
 
             def deploy_action
                     validate :project, :shellsafe
-                    project = request[:project]
+                    project = request[:project] if request[:project]
                     reply.data = %x[puppi deploy #{project}].chomp
 #                    reply.exitcode = $?.exitstatus
             end
 
             def rollback_action
                     validate :project, :shellsafe
-                    project = request[:project]
+                    project = request[:project] if request[:project]
                     reply.data = %x[puppi rollback #{project} latest].chomp
 #                    reply.exitcode = $?.exitstatus
             end
 
             def init_action
                     validate :project, :shellsafe
-                    project = request[:project]
+                    project = request[:project] if request[:project]
                     reply.data = %x[puppi init #{project}].chomp
 #                    reply.exitcode = $?.exitstatus
             end

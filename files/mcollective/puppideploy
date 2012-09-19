@@ -1,5 +1,6 @@
 #!/bin/bash
 # File Managed by Puppet
+PATH=$PATH:/usr/local/bin
 
 if [ ! $2 ] ; then
     echo "Provide the hostname and the project you want to deploy:"
