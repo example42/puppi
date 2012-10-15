@@ -41,8 +41,8 @@ EOS
     default_val = args[1]
     module_name = parent_module_name
     
-    value = lookupvar("#{module_name}::options").select{|k, v| k =~ /^#{option_name}$/ }.collect{ |k, v| "#{v}" }.to_s if (lookupvar("#{module_name}::options").size > 0)
-    value = "#{default_val}" if (value == :undefined || value == '')
+    value = lookupvar("#{module_name}::options")["#{option_name}"] if (lookupvar("#{module_name}::options").size > 0)
+    value = "#{default_val}" if (value == :undefined || value == '' || value == nil)
     
     return value
   end
