@@ -31,6 +31,10 @@
 # [*work_dir*]
 #   A temporary work dir where file is downloaded. Default: /tmp
 #
+# [*path*]
+#  Define the path for the exec commands.
+#  Default: /bin:/sbin:/usr/bin:/usr/sbin
+#
 # [*extract_command*]
 #   The command used to extract the downloaded file.
 #   By default is autocalculated accoring to the file extension
@@ -50,6 +54,7 @@ define puppi::netinstall (
   $owner               = 'root',
   $group               = 'root',
   $work_dir            = '/tmp',
+  $path                = '/bin:/sbin:/usr/bin:/usr/sbin',
   $extract_command     = '',
   $preextract_command  = '',
   $postextract_command = ''
@@ -90,7 +95,7 @@ define puppi::netinstall (
       command     => $preextract_command,
       before      => Exec["Extract $source_filename"],
       refreshonly => true,
-      path        => '/bin:/sbin:/usr/bin:/usr/sbin',
+      path        => $path,
     }
   }
 
@@ -99,7 +104,7 @@ define puppi::netinstall (
     command => "wget $url",
     creates => "$work_dir/$source_filename",
     timeout => 3600,
-    path    => '/bin:/sbin:/usr/bin:/usr/sbin',
+    path    => $path,
   }
 
   exec { "Extract $source_filename":
@@ -107,7 +112,7 @@ define puppi::netinstall (
     unless  => "ls ${destination_dir}/${real_extracted_dir}",
     creates => "${destination_dir}/${real_extracted_dir}",
     require => Exec["Retrieve $url"],
-    path    => '/bin:/sbin:/usr/bin:/usr/sbin',
+    path    => $path,
     notify  => Exec["Chown $source_filename"],
   }
 
@@ -115,7 +120,7 @@ define puppi::netinstall (
     command     => "chown -R $owner:$group $destination_dir/$real_extracted_dir",
     refreshonly => true,
     require     => Exec["Extract $source_filename"],
-    path        => '/bin:/sbin:/usr/bin:/usr/sbin',
+    path        => $path,
   }
 
   if $postextract_command {
@@ -126,7 +131,7 @@ define puppi::netinstall (
       refreshonly => true,
       timeout     => 3600,
       require     => Exec["Retrieve $url"],
-      path        => '/bin:/sbin:/usr/bin:/usr/sbin',
+      path        => $path,
     }
   }
 
