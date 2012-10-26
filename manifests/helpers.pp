@@ -13,6 +13,4 @@ class puppi::helpers {
     template => 'puppi/helpers/standard.yml.erb',
   }
 
-  Class['puppi::helpers'] -> Class['puppi::is_installed']
-
 }

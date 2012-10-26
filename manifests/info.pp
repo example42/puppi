@@ -35,6 +35,4 @@ define puppi::info (
     tag     => 'puppi_info',
   }
 
-  Puppi::Info[$name] -> Class['puppi::is_installed']
-
 }

@@ -1,12 +1,13 @@
-# Class puppi::prerequisites
+# Class puppi::dependencies
 #
 # This class provides commands and tools needed for full Puppi
 # functionality. Since you might already have these package
 # resources in your modules, to avoid conflicts you may decide
 # to include the needed packages somewhere else and avoid the
-# direct inclusion of puppi::prerequisites
+# direct inclusion of puppi::dependencies with the parameter:
+#   install_dependencies => false
 #
-class puppi::prerequisites {
+class puppi::dependencies {
 
   require puppi::params
 
@@ -33,7 +34,5 @@ class puppi::prerequisites {
   if ! defined(Package[$puppi::params::package_mail]) {
     package { $puppi::params::package_mail : ensure => present }
   }
-
-  Class['puppi::prerequisites'] -> Class['puppi::is_installed']
 
 }

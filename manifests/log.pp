@@ -28,6 +28,4 @@ define puppi::log (
     tag     => 'puppi_log',
   }
 
-  Puppi::Log[$name] -> Class['puppi::is_installed']
-
 }

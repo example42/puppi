@@ -25,6 +25,5 @@ define puppi::run (
     creates => "${puppi::params::archivedir}/puppirun_${name}",
   }
 
-  Puppi::Run[$name] -> Class['puppi::is_installed']
 
 }

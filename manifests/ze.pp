@@ -32,6 +32,4 @@ define puppi::ze (
     content => inline_template("<%= Hash[variables.sort].reject{ |k,v| k.to_s =~ /(${filter})/ }.to_yaml %>\n"),
   }
 
-  Puppi::Ze[$name] -> Class['puppi::is_installed']
-
 }

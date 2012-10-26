@@ -36,7 +36,5 @@ define puppi::deploy (
     tag     => 'puppi_deploy',
   }
 
-  Puppi::Deploy[$name] -> Class['puppi::is_installed']
-
 }
 

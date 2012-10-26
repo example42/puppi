@@ -34,6 +34,4 @@ define puppi::initialize (
     tag     => 'puppi_initialize',
   }
 
-  Puppi::Initialize[$name] -> Class['puppi::is_installed']
-
 }

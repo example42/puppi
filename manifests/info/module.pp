@@ -56,6 +56,4 @@ define puppi::info::module (
     tag     => 'puppi_info',
   }
 
-  Puppi::Info::Module[$name] -> Class['puppi::is_installed']
-
 }

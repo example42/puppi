@@ -39,8 +39,8 @@ define puppi::info::readme (
     group   => $puppi::params::configfile_group,
     require => File['puppi_readmedir'],
     source  => $readme ? {
-      ''       => [ "${puppi::params::general_base_source}/${source_module}/puppi/info/readme/readme",
-                    "${puppi::params::general_base_source}/puppi/info/readme/readme" ],
+      ''       => [ "puppet:///modules/puppi/info/readme/readme",
+                    "puppet:///modules/puppi/info/readme/readme" ],
       default  => "${readme}" ,
     },
     tag     => 'puppi_info',
@@ -53,16 +53,14 @@ define puppi::info::readme (
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,
     require => File['puppi_readmedir'],
-    source  => [  "${puppi::params::general_base_source}/${source_module}/puppi/info/readme/readme--${::hostname}" ,
-                  "${puppi::params::general_base_source}/${source_module}/puppi/info/readme/readme-${::role}" ,
-                  "${puppi::params::general_base_source}/${source_module}/puppi/info/readme/readme-default" ,
-                  "${puppi::params::general_base_source}/puppi/info/readme/readme--${::hostname}" ,
-                  "${puppi::params::general_base_source}/puppi/info/readme/readme-${::role}" ,
-                  "${puppi::params::general_base_source}/puppi/info/readme/readme-default" ],
+    source  => [  "puppet:///modules/${source_module}/puppi/info/readme/readme--${::hostname}" ,
+                  "puppet:///modules/${source_module}/puppi/info/readme/readme-${::role}" ,
+                  "puppet:///modules/${source_module}/puppi/info/readme/readme-default" ,
+                  "puppet:///modules/puppi/info/readme/readme--${::hostname}" ,
+                  "puppet:///modules/puppi/info/readme/readme-${::role}" ,
+                  "puppet:///modules/puppi/info/readme/readme-default" ],
     tag     => 'puppi_info',
     }
   }
-
-  Puppi::Info::Readme[$name] -> Class['puppi::is_installed']
 
 }

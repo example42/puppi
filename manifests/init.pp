@@ -1,74 +1,65 @@
-# Class: puppi
+# = Class: puppi
 #
-# This is Puppi. Include it and things happen.
+# This is Puppi NextGen
+# Includes both first generation of Puppi and the 
+# NextGen developments and modules integration
 #
-# Puppi is a Puppet module that has 2 functions:
-# - Make Application deployments easy
-# - Transfer "Puppet Knowledge to the shell"
+# == Parameters
 #
-class puppi {
+# [*version*]
+#   Define the Puppi version to use:
+#   1 - First generation of Puppi, compatible with old modules
+#   2 - NextGen version. Intended to work with NextGen modules
+#   Default: 1 , for the moment
+#
+# [*install_dependencies*]
+#   Set to false if you want to manage the sofware puppi needs
+#   with your local modules.
+#
+# [*template*]
+#   Sets the path to a custom template for /etc/puppi/puppi.conf 
+#
+# [*helpers_class*]
+#   Name of the class there default helpers are defined
+#   (Used on in Puppi 2)
+#
+# [*extra_class*]
+#   Name of the class where extra puppi resources are added
+#   Here, by default are placed general system commands for 
+#   puppi info, check and log
+#
+class puppi (
+  $version              = params_lookup( 'version' ),
+  $install_dependencies = params_lookup( 'install_dependencies' ),
+  $template             = params_lookup( 'template' ),
+  $helpers_class        = params_lookup( 'helpers_class' ),
+  $extra_class          = params_lookup( 'extra_class' )
+  ) inherits puppi::params {
 
-  require puppi::params
+  $bool_install_dependencies=any2bool($install_dependencies)
 
-  # Main configuration file
-  file { 'puppi.conf':
-    ensure  => present,
-    path    => "${puppi::params::basedir}/puppi.conf",
-    mode    => '0644',
-    owner   => $puppi::params::configfile_owner,
-    group   => $puppi::params::configfile_group,
-    content => template('puppi/puppi.conf.erb'),
-    before  => Class['puppi::is_installed'],
-    require => File['puppi_basedir'],
-  }
-
-  # The Puppi command
-  file { 'puppi':
-    ensure  => present,
+  # Manage Version
+  file { 'puppi.link':
+    ensure  => $puppi::version ? {
+      1 => '/usr/sbin/puppi.one',
+      2 => '/usr/local/bin/puppi',
+    },  
     path    => '/usr/sbin/puppi',
-    mode    => '0750',
-    owner   => $puppi::params::configfile_owner,
-    group   => $puppi::params::configfile_group,
-    content => template('puppi/puppi.erb'),
-    before  => Class['puppi::is_installed'],
-    require => File['puppi_basedir'],
   }
 
-  # Puppi common scripts
-  file { 'puppi.scripts':
-    ensure  => present,
-    path    => "${puppi::params::scriptsdir}/",
-    mode    => '0755',
-    owner   => $puppi::params::configfile_owner,
-    group   => $puppi::params::configfile_group,
-    source  => "${puppi::params::general_base_source}/puppi/scripts/",
-    recurse => true,
-#   purge   => true,
-    ignore  => '.svn',
-    before  => Class['puppi::is_installed'],
-    require => File['puppi_basedir'],
-  }
+  # Both Puppi versions are installed
+  include puppi::one
+  include puppi::two
 
-  # Create Puppi workdirs
+  # Create Puppi common dirs and scripts
   include puppi::skel
 
-  # To show some of the Puppi features some System-Wide general defines:
-  # General system logs for puppi log
-  include puppi::logs
-  # General system infos for puppi info
-  include puppi::infos
-  # General system checks for puppi check
-  include puppi::checks
+  # Include extra resources 
+  include $puppi::extra_class
 
-  # Puppi helpers
-  include puppi::helpers
-
-  # Include prerequisits
-  include puppi::prerequisites
-
-  # This will create the Class['puppi::is_installed']
-  # which marks the point where all Puppi files are installed
-  # and before Puppi::Run
-  include puppi::is_installed
+  # Include some packages needed by Puppi
+  if $bool_install_dependencies {
+    include puppi::dependencies
+  }
 
 }
