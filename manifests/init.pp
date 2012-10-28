@@ -47,9 +47,13 @@ class puppi (
     path    => '/usr/sbin/puppi',
   }
 
-  # Both Puppi versions are installed
+  # Puppi version one is always installed
   include puppi::one
-  include puppi::two
+
+  # Puppi 2 gem (still experimental) is installed only when forced
+  if $puppi::version == '2' {
+    include puppi::two
+  }
 
   # Create Puppi common dirs and scripts
   include puppi::skel
