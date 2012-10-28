@@ -29,7 +29,7 @@
 #   The group owner of the directory / file created. Default: root
 #
 # [*work_dir*]
-#   A temporary work dir where file is downloaded. Default: /tmp
+#   A temporary work dir where file is downloaded. Default: /var/tmp
 #
 # [*path*]
 #  Define the path for the exec commands.
@@ -53,7 +53,7 @@ define puppi::netinstall (
   $extracted_dir       = '',
   $owner               = 'root',
   $group               = 'root',
-  $work_dir            = '/tmp',
+  $work_dir            = '/var/tmp',
   $path                = '/bin:/sbin:/usr/bin:/usr/sbin',
   $extract_command     = '',
   $preextract_command  = '',
