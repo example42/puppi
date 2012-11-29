@@ -106,10 +106,10 @@ class puppi::extras {
   }
 
   puppi::info::module { 'puppi':
-    configfile  => "${puppi::params::basedir}/puppi.conf",
-    configdir   => $puppi::params::basedir,
-    datadir     => $puppi::params::archivedir,
-    logdir      => $puppi::params::logdir,
+    configfile  => ["${puppi::params::basedir}/puppi.conf"],
+    configdir   => [$puppi::params::basedir],
+    datadir     => [$puppi::params::archivedir],
+    logdir      => [$puppi::params::logdir],
     description => 'What Puppet knows about puppi' ,
     verbose     => 'yes',
 #   run         => "ls -lR ${puppi::params::logdir}/puppi-data/",
@@ -129,7 +129,7 @@ class puppi::extras {
       }
       puppi::log { 'mail':
         description => 'Mail messages',
-        log         => '/var/log/mail.log',
+        log         => ['/var/log/mail.log'],
       }
     }
 
