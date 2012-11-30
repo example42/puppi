@@ -124,14 +124,14 @@ gitdir=$deploy_root
 if [ "x$keep_gitdata" != "xtrue" ] ; then
   if [ ! -d $archivedir/$project-git ] ; then
     mkdir $archivedir/$project-git
-    chown -R $user:$user $archivedir/$project-git
+    chown -R $deploy_user:$deploy_user $archivedir/$project-git
   fi
   gitdir=$archivedir/$project-git/gitrepo
 fi
 if [ "x$git_subdir" != "xundefined" ] ; then
   if [ ! -d $archivedir/$project-git ] ; then
     mkdir $archivedir/$project-git
-    chown -R $user:$user $archivedir/$project-git
+    chown -R $deploy_user:$deploy_user $archivedir/$project-git
   fi
   gitdir=$archivedir/$project-git
   gitsubdir="$git_subdir/"
@@ -171,6 +171,6 @@ do_rollback () {
 
 # Action!
 case "$action" in
-    install) export -f do_install ; su $user -c do_install ;;
+    install) export -f do_install ; su $deploy_user -c do_install ;;
     rollback) do_rollback ;;
 esac
