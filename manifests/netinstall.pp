@@ -35,6 +35,12 @@
 #  Define the path for the exec commands.
 #  Default: /bin:/sbin:/usr/bin:/usr/sbin
 #
+# [*exec_env*]
+#   Define any additional environment variables to be used with the
+#   exec commands. Note that if you use this to set PATH, it will
+#   override the path attribute. Multiple environment variables 
+#   should be specified as an array.
+#
 # [*extract_command*]
 #   The command used to extract the downloaded file.
 #   By default is autocalculated accoring to the file extension
@@ -57,7 +63,8 @@ define puppi::netinstall (
   $path                = '/bin:/sbin:/usr/bin:/usr/sbin',
   $extract_command     = '',
   $preextract_command  = '',
-  $postextract_command = ''
+  $postextract_command = '',
+  $exec_env         = [],
   ) {
 
   $source_filename = url_parse($url,'filename')
@@ -96,24 +103,27 @@ define puppi::netinstall (
       before      => Exec["Extract $source_filename"],
       refreshonly => true,
       path        => $path,
+      environment => $exec_env,
     }
   }
 
   exec { "Retrieve $url":
-    cwd     => $work_dir,
-    command => "wget $url",
-    creates => "$work_dir/$source_filename",
-    timeout => 3600,
-    path    => $path,
+    cwd         => $work_dir,
+    command     => "wget $url",
+    creates     => "$work_dir/$source_filename",
+    timeout     => 3600,
+    path        => $path,
+    environment => $exec_env,
   }
 
   exec { "Extract $source_filename":
-    command => "mkdir -p $destination_dir && cd $destination_dir && $real_extract_command $work_dir/$source_filename $extract_command_second_arg",
-    unless  => "ls ${destination_dir}/${real_extracted_dir}",
-    creates => "${destination_dir}/${real_extracted_dir}",
-    require => Exec["Retrieve $url"],
-    path    => $path,
-    notify  => Exec["Chown $source_filename"],
+    command     => "mkdir -p $destination_dir && cd $destination_dir && $real_extract_command $work_dir/$source_filename $extract_command_second_arg",
+    unless      => "ls ${destination_dir}/${real_extracted_dir}",
+    creates     => "${destination_dir}/${real_extracted_dir}",
+    require     => Exec["Retrieve $url"],
+    path        => $path,
+    environment => $exec_env,
+    notify      => Exec["Chown $source_filename"],
   }
 
   exec { "Chown $source_filename":
@@ -121,6 +131,7 @@ define puppi::netinstall (
     refreshonly => true,
     require     => Exec["Extract $source_filename"],
     path        => $path,
+    environment => $exec_env,
   }
 
   if $postextract_command {
@@ -132,6 +143,7 @@ define puppi::netinstall (
       timeout     => 3600,
       require     => Exec["Retrieve $url"],
       path        => $path,
+      environment => $exec_env,
     }
   }
 
