@@ -35,7 +35,7 @@
 #  Define the path for the exec commands.
 #  Default: /bin:/sbin:/usr/bin:/usr/sbin
 #
-# [*environment*]
+# [*exec_env*]
 #   Define any additional environment variables to be used with the
 #   exec commands. Note that if you use this to set PATH, it will
 #   override the path attribute. Multiple environment variables 
@@ -64,7 +64,7 @@ define puppi::netinstall (
   $extract_command     = '',
   $preextract_command  = '',
   $postextract_command = '',
-  $environment         = [],
+  $exec_env         = [],
   ) {
 
   $source_filename = url_parse($url,'filename')
@@ -103,7 +103,7 @@ define puppi::netinstall (
       before      => Exec["Extract $source_filename"],
       refreshonly => true,
       path        => $path,
-      environment => $environment,
+      environment => $exec_env,
     }
   }
 
@@ -113,7 +113,7 @@ define puppi::netinstall (
     creates     => "$work_dir/$source_filename",
     timeout     => 3600,
     path        => $path,
-    environment => $environment,
+    environment => $exec_env,
   }
 
   exec { "Extract $source_filename":
@@ -122,7 +122,7 @@ define puppi::netinstall (
     creates     => "${destination_dir}/${real_extracted_dir}",
     require     => Exec["Retrieve $url"],
     path        => $path,
-    environment => $environment,
+    environment => $exec_env,
     notify      => Exec["Chown $source_filename"],
   }
 
@@ -131,7 +131,7 @@ define puppi::netinstall (
     refreshonly => true,
     require     => Exec["Extract $source_filename"],
     path        => $path,
-    environment => $environment,
+    environment => $exec_env,
   }
 
   if $postextract_command {
@@ -143,7 +143,7 @@ define puppi::netinstall (
       timeout     => 3600,
       require     => Exec["Retrieve $url"],
       path        => $path,
-      environment => $environment,
+      environment => $exec_env,
     }
   }
 
