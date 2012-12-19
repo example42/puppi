@@ -136,26 +136,26 @@ class puppi::extras {
     RedHat,CentOS,Scientific,Amazon,Linux: {
       puppi::log { 'system':
         description => 'General System Messages',
-        log         => '/var/log/messages',
+        log         => ['/var/log/messages'],
       }
       puppi::log { 'auth':
         description => 'Users and authentication',
-        log         => '/var/log/secure',
+        log         => ['/var/log/secure'],
       }
       puppi::log { 'mail':
         description => 'Mail messages',
-        log         => '/var/log/maillog',
+        log         => ['/var/log/maillog'],
       }
     }
 
     Solaris: {
       puppi::log { 'system':
         description => 'General System Messages',
-        log         => '/var/adm/messages',
+        log         => ['/var/adm/messages'],
       }
       puppi::log { 'auth':
         description => 'Users and authentication',
-        log         => '/var/log/authlog',
+        log         => ['/var/log/authlog'],
       }
     }
 
@@ -170,12 +170,12 @@ class puppi::extras {
       }
       puppi::log { 'mail':
         description => 'Mail messages',
-        log         => '/var/log/mail.log',
+        log         => ['/var/log/mail.log'],
       }
     }
 
     default: { }
 
   }
-  
+
 }
