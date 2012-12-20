@@ -137,6 +137,10 @@
 #   (Optional) - The (space separated) email(s) to notify of deploy/rollback
 #   operations. If none is specified, no email is sent.
 #
+# [*report_mongo*]
+#   (Optional) - The mongodb in the report will be stored. Append the database
+#   with a slash ("mymongo.mydomain.com/theNameOfDb")
+#
 # [*backup_rsync_options*]
 #   (Optional) - The extra options to pass to rsync for backup operations. Use
 #   it, for example, to exclude directories that you don't want to archive.
@@ -196,6 +200,7 @@ define puppi::project::maven (
   $firewall_dst_port        = '0',
   $firewall_delay           = '1',
   $report_email             = '',
+  $report_mongo             = '',
   $backup_rsync_options     = '--exclude .snapshot',
   $backup_retention         = '5',
   $run_checks               = true,
@@ -727,6 +732,17 @@ define puppi::project::maven (
       priority  => '20' ,
       command   => 'report_mail.sh' ,
       arguments => $report_email ,
+      user      => 'root',
+      project   => $name ,
+      enable    => $enable ,
+    }
+  }
+  
+  if ($report_mongo != '') {
+    puppi::report { "${name}-Mongo_Store":
+      priority  => '30' ,
+      command   => 'report_mongo.sh' ,
+      arguments => $report_mongo ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
