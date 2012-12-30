@@ -138,8 +138,8 @@
 #   operations. If none is specified, no email is sent.
 #
 # [*report_mongo*]
-#   (Optional) - The mongodb in the report will be stored. Append the database
-#   with a slash ("mymongo.mydomain.com/theNameOfDb")
+#   (Optional) - A mongourl with optional user:password to report to. Append the 
+#   database with a slash ("mongodb://user:password@mymongo.mydomain.com/theNameOfDb")
 #
 # [*backup_rsync_options*]
 #   (Optional) - The extra options to pass to rsync for backup operations. Use
