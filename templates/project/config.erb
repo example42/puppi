@@ -9,25 +9,25 @@
 #   example: puppi deploy $name -o "source=http://alt.com/file deploy_root=/var/tmp"
 
 # Common variables for project defines
-project="<%= scope.lookupvar('name') %>"
-source="<%= scope.lookupvar('source') %>"
-deploy_root="<%= scope.lookupvar('deploy_root') %>"
-user="<%= scope.lookupvar('user') %>"
-predeploy_customcommand="<%= scope.lookupvar('predeploy_customcommand') %>"
-postdeploy_customcommand="<%= scope.lookupvar('postdeploy_customcommand') %>"
-init_script="<%= scope.lookupvar('init_script') %>"
-disable_services="<%= scope.lookupvar('disable_services') %>"
-firewall_src_ip="<%= scope.lookupvar('firewall_src_ip') %>"
-firewall_dst_port="<%= scope.lookupvar('firewall_dst_port') %>"
-report_email="<%= scope.lookupvar('report_email') %>"
-enable="<%= scope.lookupvar('enable') %>"
+project="<%= @name %>"
+source="<%= @source %>"
+deploy_root="<%= @deploy_root %>"
+user="<%= @user %>"
+predeploy_customcommand="<%= @predeploy_customcommand %>"
+postdeploy_customcommand="<%= @postdeploy_customcommand %>"
+init_script="<%= @init_script %>"
+disable_services="<%= @disable_services %>"
+firewall_src_ip="<%= @firewall_src_ip %>"
+firewall_dst_port="<%= @firewall_dst_port %>"
+report_email="<%= @report_email %>"
+enable="<%= @enable %>"
 
 # Variables used by project::files
-files_prefix="<%= scope.lookupvar('files_prefix') %>"
-source_baseurl="<%= scope.lookupvar('source_baseurl') %>" 
+files_prefix="<%= @files_prefix %>"
+source_baseurl="<%= @source_baseurl %>"
 
 # Variables used by project::maven
-document_root="<%= scope.lookupvar('document_root') %>" 
-config_root="<%= scope.lookupvar('config_root') %>"
+document_root="<%= @document_root %>"
+config_root="<%= @config_root %>"
 
 # Variables added during runtime puppi operations
