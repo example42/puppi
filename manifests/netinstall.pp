@@ -64,7 +64,7 @@ define puppi::netinstall (
   $extract_command     = '',
   $preextract_command  = '',
   $postextract_command = '',
-  $exec_env         = [],
+  $exec_env            = []
   ) {
 
   $source_filename = url_parse($url,'filename')
