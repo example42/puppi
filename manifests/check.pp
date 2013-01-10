@@ -33,7 +33,7 @@ define puppi::check (
 
   $path = $bool_hostwide ? {
     true  => "${puppi::params::checksdir}/${priority}-${name}" ,
-    false => "${puppi::params::projectsdir}/$project/check/${priority}-${name}",
+    false => "${puppi::params::projectsdir}/${project}/check/${priority}-${name}",
   }
 
   file { "Puppi_check_${project}_${priority}_${name}":

@@ -24,7 +24,7 @@ define puppi::rollback (
 
   $ensure = bool2ensure($enable)
 
-  file { "${puppi::params::projectsdir}/$project/rollback/${priority}-${name}":
+  file { "${puppi::params::projectsdir}/${project}/rollback/${priority}-${name}":
     ensure  => $ensure,
     mode    => '0750',
     owner   => $puppi::params::configfile_owner,

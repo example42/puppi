@@ -147,7 +147,7 @@ class puppi::skel {
     mode    => '0750',
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,
-    source  => "puppet:///modules/puppi/mailpuppicheck",
+    source  => 'puppet:///modules/puppi/mailpuppicheck',
   }
 
   # Puppi common scripts
@@ -157,7 +157,7 @@ class puppi::skel {
     mode    => '0755',
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,
-    source  => "puppet:///modules/puppi/scripts/",
+    source  => 'puppet:///modules/puppi/scripts/',
     recurse => true,
 #   purge   => true,
     ignore  => '.svn',

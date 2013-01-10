@@ -143,12 +143,8 @@ define puppi::project::mysql (
     default => $init_source,
   }
 
-  $real_always_deploy = $always_deploy ? {
-    'no'    => 'no',
-    'false' => 'no',
+  $real_always_deploy = any2bool($always_deploy) ? {
     false   => 'no',
-    'yes'   => 'yes',
-    'true'  => 'yes',
     true    => 'yes',
   }
 
@@ -170,7 +166,7 @@ define puppi::project::mysql (
     puppi::initialize { "${name}-Deploy_Files":
       priority  => '40' ,
       command   => 'get_file.sh' ,
-      arguments => "-s $init_source -t $real_source_type" ,
+      arguments => "-s ${init_source} -t ${real_source_type}" ,
       user      => root ,
       project   => $name ,
       enable    => $enable ,
@@ -178,7 +174,7 @@ define puppi::project::mysql (
     puppi::initialize { "${name}-Run_SQL":
       priority  => '42' ,
       command   => 'database.sh' ,
-      arguments => "-t mysql -a run -u $mysql_user -p '$mysql_password' -d $mysql_database -h $mysql_host" ,
+      arguments => "-t mysql -a run -u ${mysql_user} -p '${mysql_password}' -d ${mysql_database} -h ${mysql_host}" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -201,7 +197,7 @@ define puppi::project::mysql (
     puppi::deploy { "${name}-Retrieve_SQLFile":
       priority  => '20' ,
       command   => 'get_file.sh' ,
-      arguments => "-s $source -t $real_source_type -a $real_always_deploy" ,
+      arguments => "-s ${source} -t ${real_source_type} -a ${real_always_deploy}" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -211,7 +207,7 @@ define puppi::project::mysql (
     puppi::deploy { "${name}-Load_Balancer_Block":
       priority  => '25' ,
       command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port on $firewall_delay" ,
+      arguments => "${firewall_src_ip} ${firewall_dst_port} on ${firewall_delay}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -222,7 +218,7 @@ define puppi::project::mysql (
     puppi::deploy { "${name}-Backup_Database":
       priority  => '30' ,
       command   => 'database.sh' ,
-      arguments => "-t mysql -a dump -u $mysql_user -p '$mysql_password' -d $mysql_database -h $mysql_host" ,
+      arguments => "-t mysql -a dump -u ${mysql_user} -p '${mysql_password}' -d ${mysql_database} -h ${mysql_host}" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -233,7 +229,7 @@ define puppi::project::mysql (
     puppi::deploy { "${name}-Disable_extra_services":
       priority  => '36' ,
       command   => 'service.sh' ,
-      arguments => "stop $disable_services" ,
+      arguments => "stop ${disable_services}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -255,7 +251,7 @@ define puppi::project::mysql (
     puppi::deploy { "${name}-Run_SQL":
       priority  => '40' ,
       command   => 'database.sh' ,
-      arguments => "-t mysql -a run -u $mysql_user -p '$mysql_password' -d $mysql_database -h $mysql_host" ,
+      arguments => "-t mysql -a run -u ${mysql_user} -p '${mysql_password}' -d ${mysql_database} -h ${mysql_host}" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -276,7 +272,7 @@ define puppi::project::mysql (
     puppi::deploy { "${name}-Enable_extra_services":
       priority  => '44' ,
       command   => 'service.sh' ,
-      arguments => "start $disable_services" ,
+      arguments => "start ${disable_services}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -287,7 +283,7 @@ define puppi::project::mysql (
     puppi::deploy { "${name}-Load_Balancer_Unblock":
       priority  => '46' ,
       command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port off 0" ,
+      arguments => "${firewall_src_ip} ${firewall_dst_port} off 0" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -312,7 +308,7 @@ define puppi::project::mysql (
     puppi::rollback { "${name}-Load_Balancer_Block":
       priority  => '25' ,
       command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port on $firewall_delay" ,
+      arguments => "${firewall_src_ip} ${firewall_dst_port} on ${firewall_delay}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -323,7 +319,7 @@ define puppi::project::mysql (
     puppi::rollback { "${name}-Backup_Database_PreRollback":
       priority  => '30' ,
       command   => 'database.sh' ,
-      arguments => "-t mysql -a dump -u $mysql_user -p '$mysql_password' -d $mysql_database -h $mysql_host" ,
+      arguments => "-t mysql -a dump -u ${mysql_user} -p '${mysql_password}' -d ${mysql_database} -h ${mysql_host}" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -334,7 +330,7 @@ define puppi::project::mysql (
     puppi::rollback { "${name}-Disable_extra_services":
       priority  => '37' ,
       command   => 'service.sh' ,
-      arguments => "stop $disable_services" ,
+      arguments => "stop ${disable_services}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -356,7 +352,7 @@ define puppi::project::mysql (
     puppi::rollback { "${name}-Recover_Database":
       priority  => '40' ,
       command   => 'database.sh' ,
-      arguments => "-t mysql -a restore -u $mysql_user -p '$mysql_password' -d $mysql_database -h $mysql_host" ,
+      arguments => "-t mysql -a restore -u ${mysql_user} -p '${mysql_password}' -d ${mysql_database} -h ${mysql_host}" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -378,7 +374,7 @@ define puppi::project::mysql (
     puppi::rollback { "${name}-Enable_extra_services":
       priority  => '44' ,
       command   => 'service.sh' ,
-      arguments => "start $disable_services" ,
+      arguments => "start ${disable_services}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -389,7 +385,7 @@ define puppi::project::mysql (
     puppi::rollback { "${name}-Load_Balancer_Unblock":
       priority  => '46' ,
       command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port off 0" ,
+      arguments => "${firewall_src_ip} ${firewall_dst_port} off 0" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -423,7 +419,7 @@ define puppi::project::mysql (
 
 ### AUTO DEPLOY DURING PUPPET RUN
   if ($bool_auto_deploy == true) {
-    puppi::run { "$name": }
+    puppi::run { $name: }
   }
 
 }

@@ -13,7 +13,7 @@ class puppi::one {
     mode    => '0644',
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,
-    content => template("$puppi::template"),
+    content => template($puppi::template),
     require => File['puppi_basedir'],
   }
 

@@ -18,7 +18,7 @@
 #   Example: /var/www/html
 #
 # [*extracted_dir*]
-#   The name of a directory or file created after the extraction 
+#   The name of a directory or file created after the extraction
 #   Needed only if its name is different from the downloaded file name
 #   (without suffixes). Optional.
 #
@@ -38,7 +38,7 @@
 # [*exec_env*]
 #   Define any additional environment variables to be used with the
 #   exec commands. Note that if you use this to set PATH, it will
-#   override the path attribute. Multiple environment variables 
+#   override the path attribute. Multiple environment variables
 #   should be specified as an array.
 #
 # [*extract_command*]
@@ -98,54 +98,52 @@ define puppi::netinstall (
   }
 
   if $preextract_command {
-    exec { "PreExtract $source_filename":
+    exec { "PreExtract ${source_filename}":
       command     => $preextract_command,
-      before      => Exec["Extract $source_filename"],
+      before      => Exec["Extract ${source_filename}"],
       refreshonly => true,
       path        => $path,
       environment => $exec_env,
     }
   }
 
-  exec { "Retrieve $url":
+  exec { "Retrieve ${url}":
     cwd         => $work_dir,
-    command     => "wget $url",
-    creates     => "$work_dir/$source_filename",
+    command     => "wget ${url}",
+    creates     => "${work_dir}/${source_filename}",
     timeout     => 3600,
     path        => $path,
     environment => $exec_env,
   }
 
-  exec { "Extract $source_filename":
-    command     => "mkdir -p $destination_dir && cd $destination_dir && $real_extract_command $work_dir/$source_filename $extract_command_second_arg",
+  exec { "Extract ${source_filename}":
+    command     => "mkdir -p ${destination_dir} && cd ${destination_dir} && ${real_extract_command} ${work_dir}/${source_filename} ${extract_command_second_arg}",
     unless      => "ls ${destination_dir}/${real_extracted_dir}",
     creates     => "${destination_dir}/${real_extracted_dir}",
-    require     => Exec["Retrieve $url"],
+    require     => Exec["Retrieve ${url}"],
     path        => $path,
     environment => $exec_env,
-    notify      => Exec["Chown $source_filename"],
+    notify      => Exec["Chown ${source_filename}"],
   }
 
-  exec { "Chown $source_filename":
-    command     => "chown -R $owner:$group $destination_dir/$real_extracted_dir",
+  exec { "Chown ${source_filename}":
+    command     => "chown -R ${owner}:${group} ${destination_dir}/${real_extracted_dir}",
     refreshonly => true,
-    require     => Exec["Extract $source_filename"],
+    require     => Exec["Extract ${source_filename}"],
     path        => $path,
     environment => $exec_env,
   }
 
   if $postextract_command {
-    exec { "PostExtract $source_filename":
+    exec { "PostExtract ${source_filename}":
       command     => $postextract_command,
-      cwd         => "$destination_dir/$real_extracted_dir",
-      subscribe   => Exec["Extract $source_filename"],
+      cwd         => "${destination_dir}/${real_extracted_dir}",
+      subscribe   => Exec["Extract ${source_filename}"],
       refreshonly => true,
       timeout     => 3600,
-      require     => Exec["Retrieve $url"],
+      require     => Exec["Retrieve ${url}"],
       path        => $path,
       environment => $exec_env,
     }
   }
-
 }
-

@@ -132,7 +132,7 @@ define puppi::project::service (
     puppi::deploy { "${name}-Load_Balancer_Block":
       priority  => '25' ,
       command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port on $firewall_delay" ,
+      arguments => "${firewall_src_ip} ${firewall_dst_port} on ${firewall_delay}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -143,7 +143,7 @@ define puppi::project::service (
     puppi::deploy { "${name}-Disable_extra_services":
       priority  => '36' ,
       command   => 'service.sh' ,
-      arguments => "stop $disable_services" ,
+      arguments => "stop ${disable_services}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -154,7 +154,7 @@ define puppi::project::service (
     puppi::deploy { "${name}-Service_stop":
       priority  => '38' ,
       command   => 'service.sh' ,
-      arguments => "stop $init_script" ,
+      arguments => "stop ${init_script}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -188,7 +188,7 @@ define puppi::project::service (
     puppi::deploy { "${name}-Service_start":
       priority  => '42' ,
       command   => 'service.sh' ,
-      arguments => "start $init_script" ,
+      arguments => "start ${init_script}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -199,7 +199,7 @@ define puppi::project::service (
     puppi::deploy { "${name}-Enable_extra_services":
       priority  => '44' ,
       command   => 'service.sh' ,
-      arguments => "start $disable_services" ,
+      arguments => "start ${disable_services}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -210,7 +210,7 @@ define puppi::project::service (
     puppi::deploy { "${name}-Load_Balancer_Unblock":
       priority  => '46' ,
       command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port off 0" ,
+      arguments => "${firewall_src_ip} ${firewall_dst_port} off 0" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -235,7 +235,7 @@ define puppi::project::service (
     puppi::rollback { "${name}-Load_Balancer_Block":
       priority  => '25' ,
       command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port on $firewall_delay" ,
+      arguments => "${firewall_src_ip} ${firewall_dst_port} on ${firewall_delay}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -246,7 +246,7 @@ define puppi::project::service (
     puppi::rollback { "${name}-Disable_extra_services":
       priority  => '37' ,
       command   => 'service.sh' ,
-      arguments => "stop $disable_services" ,
+      arguments => "stop ${disable_services}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -257,7 +257,7 @@ define puppi::project::service (
     puppi::rollback { "${name}-Service_stop":
       priority  => '38' ,
       command   => 'service.sh' ,
-      arguments => "stop $init_script" ,
+      arguments => "stop ${init_script}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -290,7 +290,7 @@ define puppi::project::service (
     puppi::rollback { "${name}-Service_start":
       priority  => '42' ,
       command   => 'service.sh' ,
-      arguments => "start $init_script" ,
+      arguments => "start ${init_script}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -301,7 +301,7 @@ define puppi::project::service (
     puppi::rollback { "${name}-Enable_extra_services":
       priority  => '44' ,
       command   => 'service.sh' ,
-      arguments => "start $disable_services" ,
+      arguments => "start ${disable_services}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -312,7 +312,7 @@ define puppi::project::service (
     puppi::rollback { "${name}-Load_Balancer_Unblock":
       priority  => '46' ,
       command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port off 0" ,
+      arguments => "${firewall_src_ip} ${firewall_dst_port} off 0" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -346,7 +346,7 @@ define puppi::project::service (
 
 ### AUTO DEPLOY DURING PUPPET RUN
   if ($bool_auto_deploy == true) {
-    puppi::run { "$name": }
+    puppi::run { $name: }
   }
 
 }
