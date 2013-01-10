@@ -9,13 +9,8 @@ define puppi::project (
 
   require puppi::params
 
-  $ensure = $enable ? {
+  $ensure = any2bool($enable) ? {
     false   => 'absent',
-    'false' => 'absent',
-    'no'    => 'absent',
-    true    => 'directory',
-    'true'  => 'directory',
-    'yes'   => 'directory',
     default => 'directory',
   }
 

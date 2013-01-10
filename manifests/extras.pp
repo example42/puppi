@@ -54,55 +54,67 @@ class puppi::extras {
 
 
   # Info Pages
+  $network_run = $::operatingsystem ? {
+    Solaris => [ 'ifconfig -a' , 'netstat -nr' , 'cat /etc/resolv.conf' , 'arp -an' , 'netstat -na' ],
+    default => [ 'ifconfig' , 'route -n' , 'cat /etc/resolv.conf' , 'arp -an' , 'netstat -natup | grep LISTEN' ],
+  }
+
   puppi::info { 'network':
     description => 'Network settings and stats' ,
-    run         => $::operatingsystem ? {
-      Solaris => [ 'ifconfig -a' , 'netstat -nr' , 'cat /etc/resolv.conf' , 'arp -an' , 'netstat -na' ],
-      default => [ 'ifconfig' , 'route -n' , 'cat /etc/resolv.conf' , 'arp -an' , 'netstat -natup | grep LISTEN' ],
-    }
+    run         => $network_run,
+  }
+
+  $users_run = $::operatingsystem ? {
+    Solaris => [ 'who' , 'last' ],
+    default => [ 'who' , 'last' , 'LANG=C lastlog | grep -v \'Never logged in\'' ],
   }
 
   puppi::info { 'users':
     description => 'Users and logins information' ,
-    run         => $::operatingsystem ? {
-      Solaris => [ 'who' , 'last' ],
-      default => [ 'who' , 'last' , 'LANG=C lastlog | grep -v \'Never logged in\'' ],
-    }
+    run         => $users_run,
+  }
+
+  $perf_run = $::operatingsystem ? {
+    Solaris => [ 'uptime' , 'vmstat 1 5' ],
+    default => [ 'uptime' , 'free' , 'vmstat 1 5' ],
   }
 
   puppi::info { 'perf':
     description => 'System performances and resources utilization' ,
-    run         => $::operatingsystem ? {
-      Solaris => [ 'uptime' , 'vmstat 1 5' ],
-      default => [ 'uptime' , 'free' , 'vmstat 1 5' ],
-    }
+    run         => $perf_run,
+  }
+
+  $disks_run = $::operatingsystem ? {
+    Solaris => [ 'df -h' , 'mount' ],
+    default => [ 'df -h' , 'mount' , 'blkid' , 'fdisk -l' ],
   }
 
   puppi::info { 'disks':
     description => 'Disks and filesystem information' ,
-    run         => $::operatingsystem ? {
-      Solaris => [ 'df -h' , 'mount' ],
-      default => [ 'df -h' , 'mount' , 'blkid' , 'fdisk -l' ],
-    }
+    run         => $disks_run,
+  }
+
+  $hardware_run = $::operatingsystem ? {
+    Solaris => [ 'find /devices/' ],
+    default => [ 'lspci' , 'cat /proc/cpuinfo' ],
   }
 
   puppi::info { 'hardware':
     description => 'Hardware information' ,
-    run         => $::operatingsystem ? {
-      Solaris => [ 'find /devices/' ],
-      default => [ 'lspci' , 'cat /proc/cpuinfo' ],
-    }
+    run         => $hardware_run,
+  }
+
+  $packages_run = $::operatingsystem ? {
+    /(?i:RedHat|CentOS|Scientific|Amazon|Linux)/ => [ 'yum repolist' , 'rpm -qa' ] ,
+    /(?i:Debian|Ubuntu|Mint)/                    => [ 'apt-config dump' , 'apt-cache stats' , 'apt-key list' , 'dpkg -l' ],
+    /(Solaris)/                                  => [ 'pkginfo' ],
+    /(Archlinux)/                                => [ 'pacman -Qet' ],
+    default                                      => [ 'echo' ],
   }
 
   puppi::info { 'packages':
     description => 'Packages information' ,
-    run         => $::operatingsystem ? {
-      /(?i:RedHat|CentOS|Scientific|Amazon|Linux)/ => [ 'yum repolist' , 'rpm -qa' ] ,
-      /(?i:Debian|Ubuntu|Mint)/       => [ 'apt-config dump' , 'apt-cache stats' , 'apt-key list' , 'dpkg -l' ],
-      /(Solaris)/                     => [ 'pkginfo' ],
-      /(Archlinux)/                   => [ 'pacman -Qet' ],
-      default                         => [ 'echo' ],
-    },
+    run         => $packages_run,
   }
 
   puppi::info::module { 'puppi':
