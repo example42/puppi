@@ -26,7 +26,7 @@ define puppi::deploy (
 
   $ensure = bool2ensure($enable)
 
-  file { "${puppi::params::projectsdir}/$project/deploy/${priority}-${name}":
+  file { "${puppi::params::projectsdir}/${project}/deploy/${priority}-${name}":
     ensure  => $ensure,
     mode    => '0750',
     owner   => $puppi::params::configfile_owner,

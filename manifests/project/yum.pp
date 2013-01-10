@@ -119,22 +119,12 @@ define puppi::project::yum (
     default => $postdeploy_user,
   }
 
-  $real_always_deploy = $always_deploy ? {
-    'no'    => 'no',
-    'false' => 'no',
-    false   => 'no',
-    'yes'   => 'yes',
-    'true'  => 'yes',
+  $real_always_deploy = any2bool($always_deploy) ? {
     true    => 'yes',
     default => 'no',
   }
 
-  $real_checks_required = $checks_required ? {
-    'no'    => 'no',
-    'false' => 'no',
-    false   => 'no',
-    'yes'   => 'yes',
-    'true'  => 'yes',
+  $real_checks_required = any2bool($checks_required) ? {
     true    => 'yes',
     default => 'no',
   }
@@ -152,7 +142,7 @@ define puppi::project::yum (
     puppi::deploy { "${name}-Run_PRE-Checks":
       priority  => '10' ,
       command   => 'check_project.sh' ,
-      arguments => "$name $real_checks_required",
+      arguments => "${name} ${real_checks_required}",
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -163,7 +153,7 @@ define puppi::project::yum (
     puppi::deploy { "${name}-Load_Balancer_Block":
       priority  => '25' ,
       command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port on $firewall_delay" ,
+      arguments => "${firewall_src_ip} ${firewall_dst_port} on ${firewall_delay}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -174,7 +164,7 @@ define puppi::project::yum (
     puppi::deploy { "${name}-Disable_extra_services":
       priority  => '36' ,
       command   => 'service.sh' ,
-      arguments => "stop $disable_services" ,
+      arguments => "stop ${disable_services}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -217,7 +207,7 @@ define puppi::project::yum (
     puppi::deploy { "${name}-Enable_extra_services":
       priority  => '44' ,
       command   => 'service.sh' ,
-      arguments => "start $disable_services" ,
+      arguments => "start ${disable_services}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -228,7 +218,7 @@ define puppi::project::yum (
     puppi::deploy { "${name}-Load_Balancer_Unblock":
       priority  => '46' ,
       command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port off 0" ,
+      arguments => "${firewall_src_ip} ${firewall_dst_port} off 0" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -253,7 +243,7 @@ define puppi::project::yum (
     puppi::rollback { "${name}-Load_Balancer_Block":
       priority  => '25' ,
       command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port on $firewall_delay" ,
+      arguments => "${firewall_src_ip} ${firewall_dst_port} on ${firewall_delay}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -264,7 +254,7 @@ define puppi::project::yum (
     puppi::rollback { "${name}-Disable_extra_services":
       priority  => '37' ,
       command   => 'service.sh' ,
-      arguments => "stop $disable_services" ,
+      arguments => "stop ${disable_services}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -306,7 +296,7 @@ define puppi::project::yum (
     puppi::rollback { "${name}-Enable_extra_services":
       priority  => '44' ,
       command   => 'service.sh' ,
-      arguments => "start $disable_services" ,
+      arguments => "start ${disable_services}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -317,7 +307,7 @@ define puppi::project::yum (
     puppi::rollback { "${name}-Load_Balancer_Unblock":
       priority  => '46' ,
       command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port off 0" ,
+      arguments => "${firewall_src_ip} ${firewall_dst_port} off 0" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -351,7 +341,7 @@ define puppi::project::yum (
 
 ### AUTO DEPLOY DURING PUPPET RUN
   if ($bool_auto_deploy == true) {
-    puppi::run { "$name": }
+    puppi::run { $name: }
   }
 
 }
