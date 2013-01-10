@@ -24,7 +24,7 @@ define puppi::initialize (
 
   $ensure = bool2ensure($enable)
 
-  file { "${puppi::params::projectsdir}/$project/initialize/${priority}-${name}":
+  file { "${puppi::params::projectsdir}/${project}/initialize/${priority}-${name}":
     ensure  => $ensure,
     mode    => '0750',
     owner   => $puppi::params::configfile_owner,

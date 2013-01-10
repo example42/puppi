@@ -12,28 +12,27 @@ class puppi::params  {
   $extra_class          = 'puppi::extras'
 
 ## INTERNALVARS
-
-  $basedir   = '/etc/puppi'
+  $basedir     = '/etc/puppi'
   $scriptsdir  = '/etc/puppi/scripts'
   $checksdir   = '/etc/puppi/checks'
-  $logsdir   = '/etc/puppi/logs'
-  $infodir   = '/etc/puppi/info'
-  $tododir   = '/etc/puppi/todo'
+  $logsdir     = '/etc/puppi/logs'
+  $infodir     = '/etc/puppi/info'
+  $tododir     = '/etc/puppi/todo'
   $projectsdir = '/etc/puppi/projects'
-  $datadir   = '/etc/puppi/data'
+  $datadir     = '/etc/puppi/data'
   $helpersdir  = '/etc/puppi/helpers'
-  $libdir    = '/var/lib/puppi'
+  $libdir      = '/var/lib/puppi'
   $readmedir   = '/var/lib/puppi/readme'
-  $logdir    = '/var/log/puppi'
+  $logdir      = '/var/log/puppi'
 
   $archivedir = $::puppi_archivedir ? {
-     ''    => '/var/lib/puppi/archive',
-     default => $::puppi_archivedir ,
+    ''      => '/var/lib/puppi/archive',
+    default => $::puppi_archivedir,
   }
 
   $workdir = $::puppi_workdir ? {
-     ''    => '/tmp/puppi',
-     default => $::puppi_workdir ,
+    ''      => '/tmp/puppi',
+    default => $::puppi_workdir,
   }
 
   $configfile_mode  = '0644'
@@ -74,11 +73,11 @@ class puppi::params  {
 # TODO: Add Paths for Pupept Enterprise:
 # /opt/puppet/libexec/mcollective/mcollective/
   $mcollective = $::operatingsystem ? {
-    debian  => "/usr/share/mcollective/plugins/mcollective",
-    ubuntu  => "/usr/share/mcollective/plugins/mcollective",
-    centos  => "/usr/libexec/mcollective/mcollective",
-    redhat  => "/usr/libexec/mcollective/mcollective",
-    default => "/usr/libexec/mcollective/mcollective",
+    debian  => '/usr/share/mcollective/plugins/mcollective',
+    ubuntu  => '/usr/share/mcollective/plugins/mcollective',
+    centos  => '/usr/libexec/mcollective/mcollective',
+    redhat  => '/usr/libexec/mcollective/mcollective',
+    default => '/usr/libexec/mcollective/mcollective',
   }
 
   $mcollective_user = 'root'
@@ -93,8 +92,8 @@ class puppi::params  {
   }
   $info_package_list = $::operatingsystem ? {
     /(?i:RedHat|CentOS|Scientific|Amazon|Linux)/ => 'rpm -ql',
-    /(?i:Ubuntu|Debian|Mint)/          => 'dpkg -L',
-    default                    => 'echo',
+    /(?i:Ubuntu|Debian|Mint)/                    => 'dpkg -L',
+    default                                      => 'echo',
   }
   $info_service_check = $::operatingsystem ? {
     default => '/etc/init.d/',

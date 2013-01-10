@@ -1,7 +1,7 @@
 # = Class: puppi
 #
 # This is Puppi NextGen
-# Includes both first generation of Puppi and the 
+# Includes both first generation of Puppi and the
 # NextGen developments and modules integration
 #
 # == Parameters
@@ -17,7 +17,7 @@
 #   with your local modules.
 #
 # [*template*]
-#   Sets the path to a custom template for /etc/puppi/puppi.conf 
+#   Sets the path to a custom template for /etc/puppi/puppi.conf
 #
 # [*helpers_class*]
 #   Name of the class there default helpers are defined
@@ -25,7 +25,7 @@
 #
 # [*extra_class*]
 #   Name of the class where extra puppi resources are added
-#   Here, by default are placed general system commands for 
+#   Here, by default are placed general system commands for
 #   puppi info, check and log
 #
 class puppi (
@@ -39,12 +39,14 @@ class puppi (
   $bool_install_dependencies=any2bool($install_dependencies)
 
   # Manage Version
+  $puppi_ensure = $puppi::version ? {
+    1 => '/usr/sbin/puppi.one',
+    2 => '/usr/local/bin/puppi',
+  }
+
   file { 'puppi.link':
-    ensure  => $puppi::version ? {
-      1 => '/usr/sbin/puppi.one',
-      2 => '/usr/local/bin/puppi',
-    },  
-    path    => '/usr/sbin/puppi',
+    ensure => $puppi_ensure,
+    path   => '/usr/sbin/puppi',
   }
 
   # Puppi version one is always installed
@@ -58,7 +60,7 @@ class puppi (
   # Create Puppi common dirs and scripts
   include puppi::skel
 
-  # Include extra resources 
+  # Include extra resources
   include $puppi::extra_class
 
   # Include some packages needed by Puppi

@@ -25,7 +25,7 @@
 # [*artifact_type*]
 #   The artifact_type to parse the maven-metadata.xml. Either "release", "latest" or
 #   a specific version (e.g. "2.5.0")
-#   Default is "release". With artifactory, don't use the 
+#   Default is "release". With artifactory, don't use the
 #   "Maven Snapshot Version Behavior" "unique" for your repository.
 #
 # [*deploy_root*]
@@ -138,7 +138,7 @@
 #   operations. If none is specified, no email is sent.
 #
 # [*report_mongo*]
-#   (Optional) - A mongourl with optional user:password to report to. Append the 
+#   (Optional) - A mongourl with optional user:password to report to. Append the
 #   database with a slash ("mongodb://user:password@mymongo.mydomain.com/theNameOfDb")
 #
 # [*backup_rsync_options*]
@@ -238,12 +238,8 @@ define puppi::project::maven (
     default => $jar_user,
   }
 
-  $real_always_deploy = $always_deploy ? {
-    'no'    => 'no',
-    'false' => 'no',
+  $real_always_deploy = any2bool($always_deploy) ? {
     false   => 'no',
-    'yes'   => 'yes',
-    'true'  => 'yes',
     true    => 'yes',
   }
 
@@ -263,7 +259,7 @@ define puppi::project::maven (
     puppi::initialize { "${name}-Deploy_Files":
       priority  => '40' ,
       command   => 'get_file.sh' ,
-      arguments => "-s $document_init_source -d $deploy_root" ,
+      arguments => "-s ${document_init_source} -d ${deploy_root}" ,
       user      => $document_real_user ,
       project   => $name ,
       enable    => $enable ,
@@ -274,7 +270,7 @@ define puppi::project::maven (
     puppi::initialize { "${name}-Deploy_CFG_Files":
       priority  => '40' ,
       command   => 'get_file.sh' ,
-      arguments => "-s $config_init_source -d $deploy_root" ,
+      arguments => "-s ${config_init_source} -d ${deploy_root}" ,
       user      => $config_real_user ,
       project   => $name ,
       enable    => $enable ,
@@ -293,30 +289,40 @@ define puppi::project::maven (
     }
   }
 
-    puppi::deploy { "${name}-Get_Maven_Metadata_File":
-      priority  => '20' ,
-      command   => 'get_file.sh' ,
-      arguments => $http_password ? { '' => "-s $source/maven-metadata.xml -t maven-metadata -a $real_always_deploy" , default => "-s $source/maven-metadata.xml -t maven-metadata -a $real_always_deploy -u $http_user -p $http_password" } ,
-      user      => 'root' ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  $metadata_arguments = $http_password ? {
+    '' => "-s ${source}/maven-metadata.xml -t maven-metadata -a ${real_always_deploy}",
+    default => "-s ${source}/maven-metadata.xml -t maven-metadata -a ${real_always_deploy} -u ${http_user} -p ${http_password}"
+  }
 
-    puppi::deploy { "${name}-Extract_Maven_Metadata":
-      priority  => '22' ,
-      command   => 'get_metadata.sh' ,
-      arguments => "-m $document_suffix -mc $config_suffix -mj $jar_suffix -mw $war_suffix -mz $zip_suffix -at $artifact_type" ,
-      user      => 'root' ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  puppi::deploy { "${name}-Get_Maven_Metadata_File":
+    priority  => '20' ,
+    command   => 'get_file.sh' ,
+    arguments => $metadata_arguments,
+    user      => 'root' ,
+    project   => $name ,
+    enable    => $enable ,
+  }
+
+  puppi::deploy { "${name}-Extract_Maven_Metadata":
+    priority  => '22' ,
+    command   => 'get_metadata.sh' ,
+    arguments => "-m ${document_suffix} -mc ${config_suffix} -mj ${jar_suffix} -mw ${war_suffix} -mz ${zip_suffix} -at ${artifact_type}" ,
+    user      => 'root' ,
+    project   => $name ,
+    enable    => $enable ,
+  }
 
   # Files retrieval
   if ($deploy_root != '') {
+    $war_arguments = $http_password ? {
+      '' => "${source} warfile",
+      default => "-u ${http_user} -p ${http_password} ${source} warfile"
+    }
+
     puppi::deploy { "${name}-Get_Maven_Files_WAR":
       priority  => '25' ,
       command   => 'get_maven_files.sh' ,
-      arguments =>  $http_password ? { '' => "$source warfile" , default => "-u $http_user -p $http_password $source warfile" } ,
+      arguments => $war_arguments,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -327,7 +333,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Get_Maven_Files_JAR":
       priority  => '25' ,
       command   => 'get_maven_files.sh' ,
-      arguments => "$source jarfile" ,
+      arguments => "${source} jarfile" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -338,7 +344,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Get_Maven_Files_Config":
       priority  => '25' ,
       command   => 'get_maven_files.sh' ,
-      arguments => "$source configfile" ,
+      arguments => "${source} configfile" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -349,7 +355,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Get_Maven_Files_SRC":
       priority  => '25' ,
       command   => 'get_maven_files.sh' ,
-      arguments => "$source srcfile" ,
+      arguments => "${source} srcfile" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -360,7 +366,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Load_Balancer_Block":
       priority  => '30' ,
       command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port on $firewall_delay" ,
+      arguments => "${firewall_src_ip} ${firewall_dst_port} on ${firewall_delay}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -372,7 +378,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Backup_Existing_WAR":
       priority  => '30' ,
       command   => 'archive.sh' ,
-      arguments => "-b $deploy_root -t war -s move -m diff -o '$backup_rsync_options' -n $backup_retention" ,
+      arguments => "-b ${deploy_root} -t war -s move -m diff -o '${backup_rsync_options}' -n ${backup_retention}" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -383,7 +389,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Backup_Existing_JAR":
       priority  => '30' ,
       command   => 'archive.sh' ,
-      arguments => "-b $jar_root -t jar -s move -m diff -o '$backup_rsync_options' -n $backup_retention" ,
+      arguments => "-b ${jar_root} -t jar -s move -m diff -o '${backup_rsync_options}' -n ${backup_retention}" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -394,7 +400,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Backup_Existing_ConfigDir":
       priority  => '30' ,
       command   => 'archive.sh' ,
-      arguments => "-b $config_root -t config -d predeploydir_configfile -o '$backup_rsync_options' -n $backup_retention" ,
+      arguments => "-b ${config_root} -t config -d predeploydir_configfile -o '${backup_rsync_options}' -n ${backup_retention}" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -405,7 +411,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Backup_Existing_DocumentDir":
       priority  => '30' ,
       command   => 'archive.sh' ,
-      arguments => "-b $document_root -t docroot -d predeploydir_configfile -o '$backup_rsync_options' -n $backup_retention" ,
+      arguments => "-b ${document_root} -t docroot -d predeploydir_configfile -o '${backup_rsync_options}' -n ${backup_retention}" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -416,7 +422,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Check_undeploy":
       priority  => '31' ,
       command   => 'checkwardir.sh' ,
-      arguments => "-a $deploy_root -c deploy_warpath" ,
+      arguments => "-a ${deploy_root} -c deploy_warpath" ,
       user      => $user ,
       project   => $name ,
       enable    => $enable ,
@@ -427,7 +433,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Disable_extra_services":
       priority  => '36' ,
       command   => 'service.sh' ,
-      arguments => "stop $disable_services" ,
+      arguments => "stop ${disable_services}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -438,7 +444,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Service_stop":
       priority  => '38' ,
       command   => 'service.sh' ,
-      arguments => "stop $init_script" ,
+      arguments => "stop ${init_script}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -483,7 +489,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Deploy_ConfigDir":
       priority  => '40' ,
       command   => 'deploy.sh' ,
-      arguments => "$config_root predeploydir_configfile" ,
+      arguments => "${config_root} predeploydir_configfile" ,
       user      => $config_real_user ,
       project   => $name ,
       enable    => $enable ,
@@ -494,7 +500,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Deploy_DocumentDir":
       priority  => '40' ,
       command   => 'deploy.sh' ,
-      arguments => "$document_root predeploydir_srcfile" ,
+      arguments => "${document_root} predeploydir_srcfile" ,
       user      => $document_real_user ,
       project   => $name ,
       enable    => $enable ,
@@ -516,7 +522,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Service_start":
       priority  => '42' ,
       command   => 'service.sh' ,
-      arguments => "start $init_script" ,
+      arguments => "start ${init_script}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -527,7 +533,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Enable_extra_services":
       priority  => '44' ,
       command   => 'service.sh' ,
-      arguments => "start $disable_services" ,
+      arguments => "start ${disable_services}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -538,7 +544,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Check_deploy":
       priority  => '45' ,
       command   => 'checkwardir.sh' ,
-      arguments => "-p $deploy_root -c deploy_warpath" ,
+      arguments => "-p ${deploy_root} -c deploy_warpath" ,
       user      => $user ,
       project   => $name ,
       enable    => $enable ,
@@ -549,7 +555,7 @@ define puppi::project::maven (
     puppi::deploy { "${name}-Load_Balancer_Unblock":
       priority  => '46' ,
       command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port off 0" ,
+      arguments => "${firewall_src_ip} ${firewall_dst_port} off 0" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -574,7 +580,7 @@ define puppi::project::maven (
     puppi::rollback { "${name}-Load_Balancer_Block":
       priority  => '25' ,
       command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port on $firewall_delay" ,
+      arguments => "${firewall_src_ip} ${firewall_dst_port} on ${firewall_delay}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -585,7 +591,7 @@ define puppi::project::maven (
     puppi::rollback { "${name}-Disable_extra_services":
       priority  => '37' ,
       command   => 'service.sh' ,
-      arguments => "stop $disable_services" ,
+      arguments => "stop ${disable_services}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -596,7 +602,7 @@ define puppi::project::maven (
     puppi::rollback { "${name}-Service_stop":
       priority  => '38' ,
       command   => 'service.sh' ,
-      arguments => "stop $init_script" ,
+      arguments => "stop ${init_script}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -618,7 +624,7 @@ define puppi::project::maven (
     puppi::rollback { "${name}-Recover_WAR":
       priority  => '40' ,
       command   => 'archive.sh' ,
-      arguments => "-r $deploy_root -t war -o '$backup_rsync_options'" ,
+      arguments => "-r ${deploy_root} -t war -o '${backup_rsync_options}'" ,
       user      => $user ,
       project   => $name ,
       enable    => $enable ,
@@ -629,7 +635,7 @@ define puppi::project::maven (
     puppi::rollback { "${name}-Recover_JAR":
       priority  => '40' ,
       command   => 'archive.sh' ,
-      arguments => "-r $jar_root -t jar -o '$backup_rsync_options'" ,
+      arguments => "-r ${jar_root} -t jar -o '${backup_rsync_options}'" ,
       user      => $jar_real_user ,
       project   => $name ,
       enable    => $enable ,
@@ -640,7 +646,7 @@ define puppi::project::maven (
     puppi::rollback { "${name}-Recover_ConfigDir":
       priority  => '40' ,
       command   => 'archive.sh' ,
-      arguments => "-r $config_root -t config -o '$backup_rsync_options'" ,
+      arguments => "-r ${config_root} -t config -o '${backup_rsync_options}'" ,
       user      => $config_real_user ,
       project   => $name ,
       enable    => $enable ,
@@ -651,7 +657,7 @@ define puppi::project::maven (
     puppi::rollback { "${name}-Recover_DocumentDir":
       priority  => '40' ,
       command   => 'archive.sh' ,
-      arguments => "-r $document_root -t docroot -o '$backup_rsync_options'" ,
+      arguments => "-r ${document_root} -t docroot -o '${backup_rsync_options}'" ,
       user      => $document_real_user ,
       project   => $name ,
       enable    => $enable ,
@@ -673,7 +679,7 @@ define puppi::project::maven (
     puppi::rollback { "${name}-Service_start":
       priority  => '42' ,
       command   => 'service.sh' ,
-      arguments => "start $init_script" ,
+      arguments => "start ${init_script}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -684,7 +690,7 @@ define puppi::project::maven (
     puppi::rollback { "${name}-Enable_extra_services":
       priority  => '44' ,
       command   => 'service.sh' ,
-      arguments => "start $disable_services" ,
+      arguments => "start ${disable_services}" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -695,7 +701,7 @@ define puppi::project::maven (
     puppi::rollback { "${name}-Check_deploy":
       priority  => '45' ,
       command   => 'checkwardir.sh' ,
-      arguments => "-p $deploy_root -c deploy_warpath" ,
+      arguments => "-p ${deploy_root} -c deploy_warpath" ,
       user      => $user ,
       project   => $name ,
       enable    => $enable ,
@@ -706,7 +712,7 @@ define puppi::project::maven (
     puppi::rollback { "${name}-Load_Balancer_Unblock":
       priority  => '46' ,
       command   => 'firewall.sh' ,
-      arguments => "$firewall_src_ip $firewall_dst_port off 0" ,
+      arguments => "${firewall_src_ip} ${firewall_dst_port} off 0" ,
       user      => 'root',
       project   => $name ,
       enable    => $enable ,
@@ -737,7 +743,7 @@ define puppi::project::maven (
       enable    => $enable ,
     }
   }
-  
+
   if ($report_mongo != '') {
     puppi::report { "${name}-Mongo_Store":
       priority  => '30' ,
@@ -751,7 +757,7 @@ define puppi::project::maven (
 
 ### AUTO DEPLOY DURING PUPPET RUN
   if ($bool_auto_deploy == true) {
-    puppi::run { "$name": }
+    puppi::run { $name: }
   }
 
 }
