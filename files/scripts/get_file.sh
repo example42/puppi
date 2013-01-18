@@ -107,9 +107,9 @@ case $type in
     ;;
     http|https)
         if [ -z "$http_password" ] ; then
-          curl -s -f -L $url -O
+          curl -s -f -L "$url" -O
         else
-          curl -s -f -L --anyauth --user $http_user:$http_password $url -O
+          curl -s -f -L --anyauth --user $http_user:$http_password "$url" -O
 	fi
         check_retcode
         save_runtime_config "downloadedfile=$downloaddir/$downloadfilename"
@@ -133,7 +133,7 @@ case $type in
         save_runtime_config "downloadedfile=$downloaddir/$downloadfilename"
     ;;
     rsync)
-        rsync -a $url .
+        rsync -a "$url" .
         # rsync -rlptD $url . # Why not preserving users/groups?
         check_retcode
         save_runtime_config "downloadedfile=$downloaddir/$downloadfilename"
