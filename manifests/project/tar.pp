@@ -179,7 +179,7 @@ define puppi::project::tar (
     puppi::initialize { "${name}-Deploy_Files":
       priority  => '40' ,
       command   => 'get_file.sh' ,
-      arguments => "-s ${init_source} -d ${deploy_root}" ,
+      arguments => "-s '${init_source}' -d ${deploy_root}" ,
       user      => $user ,
       project   => $name ,
       enable    => $enable ,
@@ -203,7 +203,7 @@ define puppi::project::tar (
     puppi::deploy { "${name}-Retrieve_TarBall":
       priority  => '20' ,
       command   => 'get_file.sh' ,
-      arguments => "-s ${source} -t tarball -a ${real_always_deploy}" ,
+      arguments => "-s '${source}' -t tarball -a ${real_always_deploy}" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
