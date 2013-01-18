@@ -133,9 +133,13 @@ The same deploy Nexus repository with some more options:
           enable           => 'true',
         }
 
-An elaborated war deploy: get from $source, execute /usr/local/bin/mychecks.sh as root before the deploy
-(or better with sequence number 39), in /data/tomcat/myapp/webapps as user pippo, stop and start
-tomcat-myapp but also monit and puppet and backup passing  $backup_rsync_options to rsync:
+An elaborated war deploy:
+- get from $source,
+- execute /usr/local/bin/mychecks.sh as root before the deploy
+(or better with sequence number 39)
+- deploy to /data/tomcat/myapp/webapps as user pippo
+- stop and start tomcat-myapp but also monit and puppet
+- backup passing  $backup_rsync_options to rsync:
         puppi::project::war { 'myapp':
           source                  => 'http://repo.example42.com/deploy/prod/myapp.war',
           deploy_root             => '/store/tomcat/myapp/webapps',
