@@ -21,6 +21,7 @@ showhelp () {
     echo "-a <yes|no> - If 'no' return a special error code (99) if the download checksum is the same of the one previously downloaded"
     echo "-u <http_user> - in case of type http, specify a http_user for curl"
     echo "-p <http_password> - in case of type http, specifiy http_user for curl"
+    echo "-k - tell curl not to validate ssl certs"
     echo "              This option can be used for automatic deploys (ie via cron) that actually deploy only new changes"
 }
 
@@ -85,6 +86,9 @@ while [ $# -gt 0 ]; do
     -p)
       http_password=$2
       shift 2 ;;
+    -k)
+      ssl_arg=$1
+      shift 1 ;;
     *)
       showhelp
       exit
@@ -107,9 +111,9 @@ case $type in
     ;;
     http|https)
         if [ -z "$http_password" ] ; then
-          curl -s -f -L "$url" -O
+          curl $ssl_arg -s -f -L "$url" -O
         else
-          curl -s -f -L --anyauth --user $http_user:$http_password "$url" -O
+          curl $ssl_arg -s -f -L --anyauth --user $http_user:$http_password "$url" -O
 	fi
         check_retcode
         save_runtime_config "downloadedfile=$downloaddir/$downloadfilename"
