@@ -147,7 +147,7 @@ xml_parse () {
 # save_runtime_config parameter=value notforce # Sets parameters only if is not already set
 save_runtime_config () {
     parameter=$(echo $1 | cut -d '=' -f1)
-    value=$(echo $1 | cut -d '=' -f2)
+    value=$(echo $1 | cut -d '=' -f2-)
     force=$2
 
     if [[ ! $(grep $parameter $workdir/$project/config) ]] ; then
