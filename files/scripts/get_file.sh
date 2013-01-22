@@ -99,7 +99,12 @@ done
 # Define what to use for downloads
 cd $downloaddir
 
-case $type in 
+case $type in
+    s3)
+        s3cmd get $url
+        check_retcode
+        save_runtime_config "downloadedfile=$downloaddir/$downloadfilename"
+    ;;
     ssh|scp) 
         # ssh://user@my.server/file/path
         scpuri=$(echo $url | cut -d'/' -f3-)
