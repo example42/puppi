@@ -1,6 +1,6 @@
 {
     "name": "example42/puppi",
-    "description": "Puppet Labs Apache module",
+    "description": "Puppet driven applications deployment tool",
     "homepage": "https://github.com/example42/puppi",
     "type": "library",
     "license": "Apache License, Version 2.0",
