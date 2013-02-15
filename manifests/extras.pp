@@ -160,6 +160,21 @@ class puppi::extras {
       }
     }
 
+    SLES,OpenSuSE: {
+      puppi::log { 'system':
+        description => 'General System Messages',
+        log         => ['/var/log/messages'],
+      }
+      puppi::log { 'mail':
+        description => 'Mail messages',
+        log         => ['/var/log/mail'],
+      }
+      puppi::log { 'zypper':
+        description => 'Zypper messages',
+        log         => ['/var/log/zypper.log'],
+      }
+    }
+
     Solaris: {
       puppi::log { 'system':
         description => 'General System Messages',
