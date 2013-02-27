@@ -20,10 +20,9 @@ define puppi::run (
   require puppi
 
   exec { "Run_Puppi_${name}":
-    command => "puppi deploy ${name} && touch ${puppi::params::archivedir}/puppirun_${name}",
+    command => "puppi deploy ${name}; [ $? -le "1" ] && touch ${puppi::params::archivedir}/puppirun_${name}",
     path    => '/bin:/sbin:/usr/sbin:/usr/bin',
     creates => "${puppi::params::archivedir}/puppirun_${name}",
   }
-
 
 }
