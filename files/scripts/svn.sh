@@ -24,6 +24,7 @@ showhelp () {
     echo "-c <commit> (Optional) Commit to deploy"
     echo "-v <true|false> (Optional) If verbose"
     echo "-k <true|false> (Optional) If .svn dir is kept on deploy_root"
+    echo "-e <true|false> (Optional) If use export instead of checkout for svn operations"
     echo 
     echo "Examples:"
     echo "svn.sh -a deploy -s $source -d $deploy_root -u $user -gs $svn_subdir -t $tag -b $branch -c $commit -v $bool_verbose -k $bool_keep_svndata"
@@ -121,6 +122,13 @@ while [ $# -gt 0 ]; do
         keep_svndata=$2
       fi
       shift 2 ;;
+    -e)
+      if [ $svn_export ] ; then
+        svn_export=$svn_export
+      else
+        svn_export=$2
+      fi
+      shift 2 ;;
     *)
       showhelp
       exit ;;
@@ -153,23 +161,25 @@ fi
 
 svnsubdir=""
 svndir=$deploy_root
-if [ "x$keep_svndata" != "xtrue" ] ; then
-  if [ ! -d $archivedir/$project-svn ] ; then
-    mkdir $archivedir/$project-svn
-    chown -R $user:$user $archivedir/$project-svn
-  fi
-  svndir=$archivedir/$project-svn/svnrepo
-fi
-if [ "x$svn_subdir" != "xundefined" ] ; then
-  if [ ! -d $archivedir/$project-svn ] ; then
-    mkdir $archivedir/$project-svn
-    chown -R $user:$user $archivedir/$project-svn
-  fi
-  svndir=$archivedir/$project-svn
-  svnsubdir="$svn_subdir/"
-fi
+
 
 do_install () {
+  if [ "x$keep_svndata" != "xtrue" ] ; then
+    if [ ! -d $archivedir/$project-svn ] ; then
+      mkdir $archivedir/$project-svn
+      chown -R $user:$user $archivedir/$project-svn
+    fi
+    svndir=$archivedir/$project-svn/svnrepo
+  fi
+  if [ "x$svn_subdir" != "xundefined" ] ; then
+    if [ ! -d $archivedir/$project-svn ] ; then
+      mkdir $archivedir/$project-svn
+      chown -R $user:$user $archivedir/$project-svn
+    fi
+    svndir=$archivedir/$project-svn
+    svnsubdir="$svn_subdir/"
+  fi
+
   if [ -d $svndir/.svn ] ; then
     cd $svndir
     svn up $verbosity $svn_auth --non-interactive
@@ -181,7 +191,10 @@ do_install () {
   if [ "x$svndir" == "x$archivedir/$project-svn" ] ; then
     rsync -a --exclude=".svn" $svndir/$svnsubdir $deploy_root/
   fi
+}
 
+do_export () {
+  svn export $verbosity $svn_auth --force --non-interactive $real_source/$svn_subdir $deploy_root
 }
 
 do_rollback () {
@@ -190,6 +203,13 @@ do_rollback () {
 
 # Action!
 case "$action" in
-    install) export -f do_install ; su $user -c do_install ;;
+    install) 
+      if [ "x$svn_export" == "xtrue" ] ; then
+        export -f do_export ; su $user -c do_export
+      else
+        export -f do_install ; su $user -c do_install
+      fi
+      ;;
     rollback) do_rollback ;;
 esac
+

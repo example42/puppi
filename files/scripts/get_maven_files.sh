@@ -58,19 +58,19 @@ fi
 
 case $ftype in
     warfile)
-        curl -s -f $authparam $url/$version/$warfile -O
+        curl -s -f $authparam "$url/$version/$warfile" -O
         check_retcode
         cp -a $warfile $predeploydir/$artifact.war
         save_runtime_config "deploy_warpath=$deploy_root/$artifact.war"
     ;;
     jarfile)
-        curl -s -f $authparam $url/$version/$jarfile -O
+        curl -s -f $authparam "$url/$version/$jarfile" -O
         check_retcode
         cp -a $jarfile $predeploydir/$artifact.jar
         save_runtime_config "deploy_jarpath=$deploy_root/$artifact.jar"
     ;;
     configfile)
-        curl -s -f $authparam $url/$version/$configfile -O
+        curl -s -f $authparam "$url/$version/$configfile" -O
         check_retcode
         mkdir $workdir/$project/deploy_configfile
         cd $workdir/$project/deploy_configfile
@@ -79,7 +79,7 @@ case $ftype in
         save_runtime_config "predeploydir_configfile=$workdir/$project/deploy_configfile"
     ;;
     srcfile)
-        curl -s -f $authparam $url/$version/$srcfile -O
+        curl -s -f $authparam "$url/$version/$srcfile" -O
         check_retcode
         mkdir $workdir/$project/deploy_srcfile
         cd $workdir/$project/deploy_srcfile
@@ -88,7 +88,7 @@ case $ftype in
         save_runtime_config "predeploydir_srcfile=$workdir/$project/deploy_srcfile"
     ;;
     zipfile)
-        curl -s -f $authparam $url/$version/$zipfile -O
+        curl -s -f $authparam "$url/$version/$zipfile" -O
         check_retcode
         mkdir $workdir/$project/deploy_zipfile
         cd $workdir/$project/deploy_zipfile

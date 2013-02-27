@@ -136,6 +136,7 @@ define puppi::project::tar (
   $run_checks               = true,
   $always_deploy            = true,
   $auto_deploy              = false,
+  $verify_ssl               = true,
   $enable                   = true ) {
 
   require puppi
@@ -167,6 +168,12 @@ define puppi::project::tar (
   $bool_run_checks = any2bool($run_checks)
   $bool_auto_deploy = any2bool($auto_deploy)
 
+  if ($verify_ssl) {
+    $ssl_arg = ''
+  }else{
+    $ssl_arg = '-k'
+  }
+
 
 ### CREATE PROJECT
     puppi::project { $name:
@@ -179,7 +186,7 @@ define puppi::project::tar (
     puppi::initialize { "${name}-Deploy_Files":
       priority  => '40' ,
       command   => 'get_file.sh' ,
-      arguments => "-s ${init_source} -d ${deploy_root}" ,
+      arguments => "${ssl_arg} -s '${init_source}' -d ${deploy_root}" ,
       user      => $user ,
       project   => $name ,
       enable    => $enable ,
@@ -203,7 +210,7 @@ define puppi::project::tar (
     puppi::deploy { "${name}-Retrieve_TarBall":
       priority  => '20' ,
       command   => 'get_file.sh' ,
-      arguments => "-s ${source} -t tarball -a ${real_always_deploy}" ,
+      arguments => "${ssl_arg} -s '${source}' -t tarball -a ${real_always_deploy}" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,

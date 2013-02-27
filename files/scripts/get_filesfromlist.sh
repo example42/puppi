@@ -42,11 +42,11 @@ downloadfiles () {
         
         case $type in 
             ssh|scp) 
-                scp $baseurl:$filepath $filepath
+                scp "$baseurl:$filepath" $filepath
                 check_retcode
             ;;
             http|https|file)
-                curl -s -f $baseurl/$filepath -o $filepath
+                curl -s -f "$baseurl/$filepath" -o $filepath
                 check_retcode
             ;;
             svn)
