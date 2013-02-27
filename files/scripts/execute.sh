@@ -5,5 +5,8 @@
 # Sources common header for Puppi scripts
 . $(dirname $0)/header || exit 10
 
-# Just do it
-$*
+#parse variables
+command=$(eval "echo "$*"")
+
+#execute command
+eval "${command}"
