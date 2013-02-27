@@ -37,6 +37,12 @@
 # [*war_suffix*]
 #   (Optional) - The suffix (Maven qualifier) that might be appended to the war
 #
+# [*zip_root*]
+#   (Optional) - The destination directory where the zip is unpacked
+#
+# [*zip_user*]
+#   (Optional) - The user to be used for deploy operations of the zip 
+#
 # [*zip_suffix*]
 #   (Optional) - The suffix (Maven qualifier) that might be appended to the zip
 #
@@ -176,6 +182,8 @@ define puppi::project::maven (
   $deploy_root              = '',
   $user                     = 'root',
   $war_suffix               = 'suffixnotset',
+  $zip_root                 = '',
+  $zip_user                 = '',
   $zip_suffix               = 'suffixnotset',
   $jar_root                 = '',
   $jar_user                 = '',
@@ -236,6 +244,11 @@ define puppi::project::maven (
   $jar_real_user = $jar_user ? {
     ''      => $user,
     default => $jar_user,
+  }
+
+  $zip_real_user = $zip_user ? {
+    ''      => $user,
+    default => $zip_user,
   }
 
   $real_always_deploy = any2bool($always_deploy) ? {
@@ -362,6 +375,17 @@ define puppi::project::maven (
     }
   }
 
+  if ($zip_root != '') {
+    puppi::deploy { "${name}-Get_Maven_Files_ZIP":
+      priority  => '25' ,
+      command   => 'get_maven_files.sh' ,
+      arguments =>  $http_password ? { '' => "${source} zipfile" , default => "-u ${http_user} -p ${http_password} ${source} zipfile" } ,
+      user      => 'root' ,
+      project   => $name ,
+      enable    => $enable ,
+    }
+  }
+
   if ($firewall_src_ip != '') {
     puppi::deploy { "${name}-Load_Balancer_Block":
       priority  => '30' ,
@@ -412,6 +436,17 @@ define puppi::project::maven (
       priority  => '30' ,
       command   => 'archive.sh' ,
       arguments => "-b ${document_root} -t docroot -d predeploydir_configfile -o '${backup_rsync_options}' -n ${backup_retention}" ,
+      user      => 'root' ,
+      project   => $name ,
+      enable    => $enable ,
+    }
+  }
+
+  if ($zip_root != '') {
+    puppi::deploy { "${name}-Backup_Existing_ZipDir":
+      priority  => '30' ,
+      command   => 'archive.sh' ,
+      arguments => "-b ${zip_root} -t ziproot -d predeploydir_zipfile -o '${backup_rsync_options}' -n ${backup_retention}" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -507,6 +542,17 @@ define puppi::project::maven (
     }
   }
 
+  if ($zip_root != '') {
+    puppi::deploy { "${name}-Deploy_Zip":
+      priority  => '40' ,
+      command   => 'deploy.sh' ,
+      arguments => "${zip_root} predeploydir_zipfile" ,
+      user      => $zip_real_user ,
+      project   => $name ,
+      enable    => $enable ,
+    }
+  }
+
   if ($postdeploy_customcommand != '') {
     puppi::deploy { "${name}-Run_Custom_PostDeploy_Script":
       priority  => $postdeploy_priority ,
@@ -540,7 +586,7 @@ define puppi::project::maven (
     }
   }
 
-  if ($bool_check_deploy == true) {
+  if ($bool_check_deploy == true) and ($deploy_root != '') {
     puppi::deploy { "${name}-Check_deploy":
       priority  => '45' ,
       command   => 'checkwardir.sh' ,
