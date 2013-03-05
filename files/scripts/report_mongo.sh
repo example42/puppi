@@ -25,7 +25,7 @@ fi
 
 fqdn=$(facter fqdn)
 
-environment=$(facter environment -p)
+environment=$(facter env -p)
 
 # something like mongodb://someuser:hispassword@somehost/somedb
 mongourl=$1
