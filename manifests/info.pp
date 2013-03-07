@@ -25,6 +25,14 @@ define puppi::info (
   require puppi
   require puppi::params
 
+  $array_run = is_array($run) ? {
+    false     => $run ? {
+      ''      => [],
+      default => split($run, ','),
+    },
+    default   => $run,
+  }
+
   file { "${puppi::params::infodir}/${name}":
     ensure  => present,
     mode    => '0750',
