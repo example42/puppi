@@ -1,4 +1,4 @@
-= Puppi: Puppet Knowledge to the CLI
+# Puppi: Puppet Knowledge to the CLI
 
 Puppi One and Puppi module written by Alessandro Franceschi / al @ lab42.it
 
@@ -27,7 +27,7 @@ The module provides:
 * Puppet defines to populate the output of the different actions
 
 
-== HOW TO INSTALL
+## HOW TO INSTALL
 
 Download Puppi from GitHub and place it in your modules directory: 
 
@@ -49,7 +49,7 @@ If you have resources conflicts, do not install automatically the Puppi dependen
         }
 
 
-== HOW TO USE
+## HOW TO USE
 
 Once Puppi is installed you can use it to:
 
@@ -65,7 +65,7 @@ Once Puppi is installed you can use it to:
 * Enable Example42 modules integration
 
 
-== HOW TO USE WITH EXAMPLE42 MODULES
+## HOW TO USE WITH EXAMPLE42 MODULES
 
 The Example42 modules provide (optional) Puppi integration.
 Once enabled for each module you have puppi check, info and log commands.
@@ -85,7 +85,7 @@ For the NextGen modules set the same parameters via Hiera, at Top Scope or as cl
         }
 
 
-== USAGE OF THE PUPPI COMMAND (OLD GEN)
+## USAGE OF THE PUPPI COMMAND (OLD GEN)
 
         puppi <action> <project_name> [ -options ]
 
@@ -136,7 +136,7 @@ Some common puppi commnds when you log for an application deployment:
         puppi info myapp
 
 
-== THE PUPPI MODULE
+## THE PUPPI MODULE
 
 The set of commands needed for each of these actions are entirely managed with specific
 Puppet "basic defines":
@@ -168,7 +168,7 @@ Create an info entry with the commands used to provide info on a topic
 Read details in the relevant READMEs
 
 
-== FILE PATHS (all of them are provided, and can be configured, in the puppi module):
+## FILE PATHS (all of them are provided, and can be configured, in the puppi module):
 
 A link to the actual version of puppi enabled
         /usr/sbin/puppi
@@ -207,7 +207,7 @@ A runtime configuration file, which is used by all all the the scripts invoked b
         /tmp/puppi/$project/config
 
 
-== HOW TO CUSTOMIZE
+## HOW TO CUSTOMIZE
 It should be clear that with puppi you have full flexibility in the definition of a deployment 
 procedure, since the puppi command is basically a wrapper that executes arbitrary scripts with
 a given sequence, in pure KISS logic.
@@ -246,7 +246,7 @@ There are different parts where you can customize the behaviour of puppi:
   exceptions with variables (see the $loadbalancer_ip usage in puppi/manifests/project/maven.pp)
 
 
-== (NO) DEPENDENCIES AND CONFLICTS
+## (NO) DEPENDENCIES AND CONFLICTS
 Puppi is self contained. It doesn't require other modules.
 (And is required by all Example42 modules).
 
