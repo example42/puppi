@@ -12,9 +12,6 @@ env:
 matrix:
   exclude:
     - rvm: 1.9.3
-      env: PUPPET_VERSION="~> 2.7.0"
-      gemfile: .gemfile
-    - rvm: 1.9.3
       env: PUPPET_VERSION="~> 2.6.0"
       gemfile: .gemfile
 
