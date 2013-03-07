@@ -1,7 +1,7 @@
-= PUPPI DEPLOY INSTRUCTIONS
+# PUPPI DEPLOY INSTRUCTIONS
 Documentation and examples related to the puppi actions: deploy, rollback and init
 
-== SYNOPSIS (COMMAND LINE)
+## SYNOPSIS (COMMAND LINE)
 Shell command to launch a deploy:
         puppi deploy <project_name>
         puppi deploy <project_name> [-f] [-i] [-t] [-d yes|full] [-r yes|no|fail] [-p "parameter=value parameter2=value2"]
@@ -13,7 +13,7 @@ Shell command to launch the first deploy:
         puppi init <project_name>
 
 
-== EXAMPLES (cli)
+## EXAMPLES (cli)
 
 Deploy myapp with the standard logic/parameters defined in Puppet:
         puppi deploy myapp
@@ -44,7 +44,7 @@ Automatically rollback to the latest saved state (unattended).
         puppi rollback myapp latest
 
 
-== EXAMPLES (puppet)
+## EXAMPLES (puppet)
 Here follow some sample defines you can use out of the box in your manifests once you include puppi.
 Get a war from $source and deploy it in $deploy_root:
         puppi::project::war { 'myapp':
@@ -171,7 +171,7 @@ These are just examples, possibilities are many, refer to the docs in puppi/mani
 to have a full list of the available options.
 
 
-== BASIC PUPPI DEFINES
+## BASIC PUPPI DEFINES
 The above puppi::projects defines manage more or less complex deployments procedures for different kind of projects. They are just samples of possible procedures and you may create your one ones, if the ones provided there don't fit your needs.
 They will have to contain one or more of these basic puppi defines.
 
@@ -204,7 +204,7 @@ Its content is, simply:
         su - ${user} -c "export project=${project} && /etc/puppi/scripts/${command} ${arguments}"
 
 
-== DEPLOY PROCEDURES DEFINES
+## DEPLOY PROCEDURES DEFINES
 The puppi module provides some examples of deploy workflows they are in the puppi/manifests/project
 directory and contain simple to use defines that contain one puppi::project and several puppi::deploy and
 puppi::rollback defines to design a specific workflow using the builtin commands present in
@@ -233,7 +233,7 @@ Full documentation is available in the relevant .pp files
 - puppi::project::builder - This is a general purpose define that incorporates most the of cases provided by the above procedures
 
 
-== BUILTIN COMMANDS
+## BUILTIN COMMANDS
 The puppi/files/scripts directory in the module contains some general usage "native" bash scripts
 that can be used in custom deployments. They are generally made to work together according to a
 specific logic, which is at the base of the deploy procedures defines in puppi/manifests/project/

@@ -1,10 +1,10 @@
-= PUPPI CHECK INSTRUCTIONS
+# PUPPI CHECK INSTRUCTIONS
 Documentation and examples related to the puppi action check
 
-== SYNOPSIS (cli)
+## SYNOPSIS (cli)
         puppi check [project_name] [-r yes|no|fail]
 
-== EXAMPLES (cli)
+## EXAMPLES (cli)
 Run host-wide checks.
         puppi check
 Run project "myapp" specific tests AND host-wide checks
@@ -19,7 +19,7 @@ Run checks and send reports
 Run checks and show only failed ones
         puppi check -s fail
 
-== EXAMPLES (puppet)
+## EXAMPLES (puppet)
 The basic define related to a check is:
         puppi::check   - Creates a single command to be placed in the check sequence.
 
@@ -48,7 +48,7 @@ You can also use custom scripts for your checks. They should behave similarly to
         }
 
 
-== EXAMPLES (with example42 puppet modules)
+## EXAMPLES (with example42 puppet modules)
 If you use the whole Example42 modules set you get automatically many service related checks out of the box.
 Just set (via an ENC, facts or manifests) these puppet variables:
         $monitor="yes" # To enable automagic monitoring
