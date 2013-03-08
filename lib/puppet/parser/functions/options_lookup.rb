@@ -14,6 +14,9 @@
 #   <%= scope.function_options_lookup(['PasswordAuthentication', '']) %>
 # Fact or param based default value
 #   <%= scope.function_options_lookup(['Listen', ipaddress]) %>
+# Lookup inside a custom hash - in this case client_options
+#   <%= scope.function_options_lookup(['PasswordAuthentication', 'no', 'client_options']) %>
+#
 #
 # Michal Nowak <mailto:michal@casanowak.com>
 # 
@@ -30,20 +33,24 @@ Empty default value
   <%= scope.function_options_lookup(['PasswordAuthentication', '']) %>
 Fact or param based default value
    <%= scope.function_options_lookup(['Listen', ipaddress]) %>
+Lookup inside a custom hash - in this case client_options
+   <%= scope.function_options_lookup(['PasswordAuthentication', 'no', 'client_options']) %>
 
 EOS
   ) do |args|
 
-    raise ArgumentError, ("options_lookup(): wrong number of arguments (#{args.length}; must be 2)") if args.length != 2
+    raise ArgumentError, ("options_lookup(): wrong number of arguments (#{args.length}; must be 2 or 3)") if (args.length != 2 and args.length != 3)
 
     value = ''
     option_name = args[0]
     default_val = args[1]
+    hash_name = args[2]
     module_name = parent_module_name
-    
-    value = lookupvar("#{module_name}::options")["#{option_name}"] if (lookupvar("#{module_name}::options").size > 0)
+
+    hash_name = "options" if (hash_name == :undefined || hash_name == '' || hash_name == nil)
+    value = lookupvar("#{module_name}::#{hash_name}")["#{option_name}"] if (lookupvar("#{module_name}::#{hash_name}").size > 0)
     value = "#{default_val}" if (value == :undefined || value == '' || value == nil)
-    
+
     return value
   end
 end
