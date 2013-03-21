@@ -15,7 +15,8 @@
 # puppi::run { "myapp": }
 #
 define puppi::run (
-  $project = '' ) {
+  $project = '',
+  $timeout = 900) {
 
   require puppi
 
@@ -23,6 +24,7 @@ define puppi::run (
     command => "puppi deploy ${name}; [ $? -le \"1\" ] && touch ${puppi::params::archivedir}/puppirun_${name}",
     path    => '/bin:/sbin:/usr/sbin:/usr/bin',
     creates => "${puppi::params::archivedir}/puppirun_${name}",
+    timeout => $timeout,
   }
 
 }
