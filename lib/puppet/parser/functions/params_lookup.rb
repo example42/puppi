@@ -20,8 +20,8 @@
 module Puppet::Parser::Functions
   newfunction(:params_lookup, :type => :rvalue, :doc => <<-EOS
 This fuction looks for the given variable name in a set of different sources:
-- Hiera, if available (if second argument is 'global')
 - Hiera, if available ('modulename_varname')
+- Hiera, if available (if second argument is 'global')
 - ::varname (if second argument is 'global')
 - ::modulename_varname
 - ::modulename::params::varname
@@ -38,8 +38,10 @@ If no value is found in the defined sources, it returns an empty string ('')
 
     # Hiera Lookup
     if Puppet::Parser::Functions.function('hiera')
-      value = function_hiera(["#{var_name}", '']) if arguments[1] == 'global'
       value = function_hiera(["#{module_name}_#{var_name}", ''])
+      return value if (not value.nil?) && (value != :undefined) && (value != '')
+
+      value = function_hiera(["#{var_name}", '']) if arguments[1] == 'global'
       return value if (not value.nil?) && (value != :undefined) && (value != '')
     end
 
