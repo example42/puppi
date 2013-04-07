@@ -2,11 +2,12 @@
 # params_lookup.rb
 #
 # This function lookups for a variable value in various locations
-# following this order
-# - Hiera backend, if present
-# - ::varname (if second argument is 'global')
-# - ::modulename_varname
-# - ::modulename::params::varname
+# following this order (first match is returned)
+# - Hiera backend (if present) for modulename_varname
+# - Hiera backend (if present) for varname (if second argument is 'global')
+# - Top Scope Variable ::modulename_varname
+# - Top Scope Variable ::varname (if second argument is 'global')
+# - Module default: ::modulename::params::varname
 #
 # It's based on a suggestion of Dan Bode on how to better manage
 # Example42 NextGen modules params lookups.
@@ -22,8 +23,8 @@ module Puppet::Parser::Functions
 This fuction looks for the given variable name in a set of different sources:
 - Hiera, if available ('modulename_varname')
 - Hiera, if available (if second argument is 'global')
-- ::varname (if second argument is 'global')
 - ::modulename_varname
+- ::varname (if second argument is 'global')
 - ::modulename::params::varname
 If no value is found in the defined sources, it returns an empty string ('')
     EOS
