@@ -39,6 +39,8 @@ If no value is found in the defined sources, it returns an empty string ('')
     # Hiera Lookup
     if Puppet::Parser::Functions.function('hiera')
       value = function_hiera(["#{var_name}", '']) if arguments[1] == 'global'
+      return value if (not value.nil?) && (value != :undefined) && (value != '')
+
       value = function_hiera(["#{module_name}_#{var_name}", ''])
       return value if (not value.nil?) && (value != :undefined) && (value != '')
     end
