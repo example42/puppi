@@ -30,9 +30,9 @@ else
 fi
 
 if [ $debug ] ; then
-    ant -Dinput.template=develop $* > /opt/hybris/hybris/bin/platform/ant.out
+    ant -Dinput.template=develop $* > $0/hybris/bin/platform/ant.out
 else
-    ant -Dinput.template=production -DJAVAMEM=3G $* > /opt/hybris/hybris/bin/platform/ant.out
+    ant -Dinput.template=production -DJAVAMEM=3G $* > $0/hybris/bin/platform/ant.out
 fi
 
 handle_result
