@@ -23,16 +23,16 @@ cd $1/hybris/bin/platform
 # somehow dirty ...
 shift
 
-if [ -d /opt/hybris/config ]; then
+if [ -d $0/hybris/config ]; then
 	template=""
 else
 	template=-Dinput.template=develop 
 fi
 
 if [ $debug ] ; then
-    ant -Dinput.template=develop $* 
+    ant -Dinput.template=develop $* > /opt/hybris/hybris/bin/platform/ant.out
 else
-    ant $* > /dev/null
+    ant -Dinput.template=production -DJAVAMEM=3G $* > /opt/hybris/hybris/bin/platform/ant.out
 fi
 
 handle_result
