@@ -17,22 +17,23 @@ showhelp () {
 
 # Unfortunately, showhelp will never be called
 
-cd $1/hybris/bin/platform
+hybrispath=$1/hybris
+cd $hybrispath/bin/platform
 . ./setantenv.sh
 
 # somehow dirty ...
 shift
 
-if [ -d $0/hybris/config ]; then
+if [ -d $hybrispath/config ]; then
 	template=""
 else
 	template=-Dinput.template=develop 
 fi
 
 if [ $debug ] ; then
-    ant -Dinput.template=develop $* > $0/hybris/bin/platform/ant.out
+    ant -Dinput.template=develop $* > $hybrispath/bin/platform/ant.out
 else
-    ant -Dinput.template=production -DJAVAMEM=3G $* > $0/hybris/bin/platform/ant.out
+    ant -Dinput.template=production -DJAVAMEM=3G $* > $hybrispath/bin/platform/ant.out
 fi
 
 handle_result
