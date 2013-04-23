@@ -319,6 +319,10 @@ define puppi::project::y5maven (
     ''      => "${source} zipfile",
     default => "-u ${http_user} -p ${http_password} ${source} zipfile",
   }
+  $extensions_zipfile_arguments = $http_password ? {
+    ''      => "${extensions_source} zipfile",
+    default => "-u ${http_user} -p ${http_password} ${extensions_source} zipfile",
+  }
 
   if ($deploy_root != '') {
     puppi::deploy { "${name}-Get_Maven_Files_ZIP_hybris-platform":
@@ -331,9 +335,27 @@ define puppi::project::y5maven (
     }
   }
 
+  puppi::deploy { "${name}-Get_Maven_Metadata_hybris-extensions_File":
+    priority  => '23' ,
+    command   => 'get_file.sh' ,
+    arguments => $extensions_metadata_arguments,
+    user      => 'root' ,
+    project   => $name ,
+    enable    => $enable ,
+  }
+
+  puppi::deploy { "${name}-Extract_Maven_Metadata_hybris-extensions":
+    priority  => '24' ,
+    command   => 'get_metadata.sh' ,
+    arguments => "-m ${document_suffix} -mc ${config_suffix} -mj ${jar_suffix} -mw ${war_suffix} -mz ${zip_suffix} -at ${artifact_type}" ,
+    user      => 'root' ,
+    project   => $name ,
+    enable    => $enable ,
+  }
+
   if ($deploy_root != '' and $extensions_source != '') {
     puppi::deploy { "${name}-Get_Maven_Files_ZIP_hybris-extensions":
-      priority  => '23' ,
+      priority  => '25' ,
       command   => 'get_maven_files.sh' ,
       arguments => $extensions_zipfile_arguments,
       user      => 'root' ,
