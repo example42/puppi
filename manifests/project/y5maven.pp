@@ -183,6 +183,9 @@ define puppi::project::y5maven (
   $config_user              = '',
   $config_suffix            = 'suffixnotset',
   $config_init_source       = '',
+  $extensions_source        = '',
+  $extensions_http_user     = '',
+  $extensions_http_password = '',
   $predeploy_customcommand  = '',
   $predeploy_user           = '',
   $predeploy_priority       = '39',
@@ -288,6 +291,10 @@ define puppi::project::y5maven (
       '' => "-s ${source}/maven-metadata.xml -t maven-metadata -a ${real_always_deploy}" ,
       default => "-s ${source}/maven-metadata.xml -t maven-metadata -a ${real_always_deploy} -u ${http_user} -p ${http_password}"
     }
+    $extensions_metadata_arguments = $http_password ? {
+      '' => "-s ${extensions_source}/maven-metadata.xml -t maven-metadata -a ${real_always_deploy}" ,
+      default => "-s ${extensions_source}/maven-metadata.xml -t maven-metadata -a ${real_always_deploy} -u ${extensions_http_user} -p ${extensions_http_password}"
+    }
 
     puppi::deploy { "${name}-Get_Maven_Metadata_hybris-platform_File":
       priority  => '20' ,
@@ -318,6 +325,17 @@ define puppi::project::y5maven (
       priority  => '22' ,
       command   => 'get_maven_files.sh' ,
       arguments => $platform_zipfile_arguments,
+      user      => 'root' ,
+      project   => $name ,
+      enable    => $enable ,
+    }
+  }
+
+  if ($deploy_root != '' and $extensions_source != '') {
+    puppi::deploy { "${name}-Get_Maven_Files_ZIP_hybris-extensions":
+      priority  => '23' ,
+      command   => 'get_maven_files.sh' ,
+      arguments => $extensions_zipfile_arguments,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
