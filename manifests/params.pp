@@ -71,7 +71,7 @@ class puppi::params  {
   }
 
 # Mcollective paths
-# TODO: Add Paths for Pupept Enterprise:
+# TODO: Add Paths for Puppet Enterprise:
 # /opt/puppet/libexec/mcollective/mcollective/
   $mcollective = $::operatingsystem ? {
     debian  => "/usr/share/mcollective/plugins/mcollective",
