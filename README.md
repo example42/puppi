@@ -37,7 +37,8 @@ To use the Puppi "Original, old and widely tested" version, just declare or incl
 
        class { 'puppi': }
 
-To test the Next-Gen version: 
+To test the Next-Gen version you can perform the following command. Please note that this module is
+not stable yet:
         class { 'puppi':
           version => '2',
         }
