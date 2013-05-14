@@ -28,6 +28,9 @@
 # [*group*]
 #   The group owner of the directory / file created. Default: root
 #
+# [*timeout*]
+#   The timeout in seconds for each command executed
+#
 # [*work_dir*]
 #   A temporary work dir where file is downloaded. Default: /var/tmp
 #
@@ -59,6 +62,7 @@ define puppi::netinstall (
   $extracted_dir       = '',
   $owner               = 'root',
   $group               = 'root',
+  $timeout             = '3600',
   $work_dir            = '/var/tmp',
   $path                = '/bin:/sbin:/usr/bin:/usr/sbin',
   $extract_command     = '',
@@ -105,6 +109,7 @@ define puppi::netinstall (
       refreshonly => true,
       path        => $path,
       environment => $exec_env,
+      timeout     => $timeout,
     }
   }
 
@@ -112,7 +117,7 @@ define puppi::netinstall (
     cwd         => $work_dir,
     command     => "wget ${url}",
     creates     => "${work_dir}/${source_filename}",
-    timeout     => 3600,
+    timeout     => $timeout,
     path        => $path,
     environment => $exec_env,
   }
@@ -121,6 +126,7 @@ define puppi::netinstall (
     command     => "mkdir -p ${destination_dir} && cd ${destination_dir} && ${real_extract_command} ${work_dir}/${source_filename} ${extract_command_second_arg}",
     unless      => "ls ${destination_dir}/${real_extracted_dir}",
     creates     => "${destination_dir}/${real_extracted_dir}",
+    timeout     => $timeout,
     require     => Exec["Retrieve ${url}"],
     path        => $path,
     environment => $exec_env,
@@ -130,6 +136,7 @@ define puppi::netinstall (
   exec { "Chown ${source_filename}":
     command     => "chown -R ${owner}:${group} ${destination_dir}/${real_extracted_dir}",
     refreshonly => true,
+    timeout     => $timeout,
     require     => Exec["Extract ${source_filename}"],
     path        => $path,
     environment => $exec_env,
@@ -141,7 +148,7 @@ define puppi::netinstall (
       cwd         => "${destination_dir}/${real_extracted_dir}",
       subscribe   => Exec["Extract ${source_filename}"],
       refreshonly => true,
-      timeout     => 3600,
+      timeout     => $timeout,
       require     => Exec["Retrieve ${url}"],
       path        => $path,
       environment => $exec_env,
