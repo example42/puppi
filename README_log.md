@@ -1,10 +1,10 @@
-= PUPPI LOG README
+# PUPPI LOG README
 Documentation and examples related to the puppi action log
 
-== SYNOPSIS (cli)
+## SYNOPSIS (cli)
         puppi log [topic] [-i]
 
-== EXAMPLES (cli)
+## EXAMPLES (cli)
 
 Tails (tail -10f) all the known logs.
         puppi log
@@ -18,7 +18,7 @@ Choose interactively which logs to show
 Grep the output with the string defined
         puppi log -g <string>
 
-== EXAMPLES (puppet)
+## EXAMPLES (puppet)
 The basic define related to a log is:
         puppi::log
 it creates a file in /etc/puppi/logs/ with one or more logs paths.

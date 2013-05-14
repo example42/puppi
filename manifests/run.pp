@@ -16,7 +16,7 @@
 #
 define puppi::run (
   $project = '',
-  $timeout = 900) {
+  $timeout = 300) {
 
   require puppi
 
