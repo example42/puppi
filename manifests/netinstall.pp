@@ -18,6 +18,7 @@
 #   Example: /var/www/html
 #
 # [*retrieve_args*]
+#   A string of arguments to pass to wget.
 #
 # [*extracted_dir*]
 #   The name of a directory or file created after the extraction
