@@ -42,15 +42,15 @@ fi
 deploy () {
     case "$debug" in
         yes)
-            rsync -rlptDvO $deploy_sourcedir/ $deploy_destdir/
+            rsync -rlptDv $deploy_sourcedir/ $deploy_destdir/
             check_retcode
         ;;
         full)
-            rsync -rlptDvO $deploy_sourcedir/ $deploy_destdir/
+            rsync -rlptDv $deploy_sourcedir/ $deploy_destdir/
             check_retcode
         ;;
         *)
-            rsync -rlptDO $deploy_sourcedir/ $deploy_destdir/
+            rsync -rlptD $deploy_sourcedir/ $deploy_destdir/
             check_retcode
         ;;
     esac
