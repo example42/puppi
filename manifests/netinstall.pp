@@ -17,6 +17,9 @@
 #   downloaded. Required.
 #   Example: /var/www/html
 #
+# [*retrieve_args*]
+#   A string of arguments to pass to wget.
+#
 # [*extracted_dir*]
 #   The name of a directory or file created after the extraction
 #   Needed only if its name is different from the downloaded file name
@@ -58,6 +61,7 @@
 #
 define puppi::netinstall (
   $url,
+  $retrieve_args       = '',
   $destination_dir,
   $extracted_dir       = '',
   $owner               = 'root',
@@ -115,7 +119,7 @@ define puppi::netinstall (
 
   exec { "Retrieve ${url}":
     cwd         => $work_dir,
-    command     => "wget ${url}",
+    command     => "wget ${retrieve_args} ${url}",
     creates     => "${work_dir}/${source_filename}",
     timeout     => $timeout,
     path        => $path,
