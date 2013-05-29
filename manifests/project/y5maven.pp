@@ -188,7 +188,7 @@ define puppi::project::y5maven (
   $extensions_http_password = '',
   $predeploy_customcommand  = '',
   $predeploy_user           = '',
-  $predeploy_priority       = '39',
+  $predeploy_priority       = '38',
   $postdeploy_customcommand = '',
   $postdeploy_user          = '',
   $postdeploy_priority      = '41',
@@ -388,7 +388,7 @@ define puppi::project::y5maven (
 
   if ($init_script != '') {
     puppi::deploy { "${name}-Service_stop":
-      priority  => '38' ,
+      priority  => '37' ,
       command   => 'service.sh' ,
       arguments => "stop ${init_script}" ,
       user      => 'root',
@@ -411,7 +411,7 @@ define puppi::project::y5maven (
   # Deploys
   if ($deploy_root != '') {
     puppi::deploy { "${name}-Deploy_Maven_ZIP":
-      priority  => '40' ,
+      priority  => '39' ,
       command   => 'deploy.sh' ,
       arguments => "${deploy_root} predeploydir_zipfile ",
       user      => $user ,
@@ -422,7 +422,7 @@ define puppi::project::y5maven (
 
   if ($config_root != '') {
     puppi::deploy { "${name}-Deploy_ConfigDir":
-      priority  => '40' ,
+      priority  => '39' ,
       command   => 'deploy.sh' ,
       arguments => "${config_root} predeploydir_configfile" ,
       user      => $config_real_user ,
@@ -432,7 +432,7 @@ define puppi::project::y5maven (
   }
 
   puppi::deploy { "${name}-yant":
-    priority  => '42' ,
+    priority  => '40' ,
     command   => 'yant.sh' ,
     arguments => "${deploy_root} clean all" ,
     user      => $user ,
