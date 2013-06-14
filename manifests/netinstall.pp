@@ -106,17 +106,6 @@ define puppi::netinstall (
     default => $extracted_dir,
   }
 
-  if $preextract_command {
-    exec { "PreExtract ${source_filename}":
-      command     => $preextract_command,
-      before      => Exec["Extract ${source_filename}"],
-      refreshonly => true,
-      path        => $path,
-      environment => $exec_env,
-      timeout     => $timeout,
-    }
-  }
-
   exec { "Retrieve ${url}":
     cwd         => $work_dir,
     command     => "wget ${retrieve_args} ${url}",
@@ -124,6 +113,18 @@ define puppi::netinstall (
     timeout     => $timeout,
     path        => $path,
     environment => $exec_env,
+  }
+
+  if $preextract_command {
+    exec { "PreExtract ${source_filename}":
+      command     => $preextract_command,
+      subscribe   => Exec["Retrieve ${url}"],
+      before      => Exec["Extract ${source_filename}"],
+      refreshonly => true,
+      path        => $path,
+      environment => $exec_env,
+      timeout     => $timeout,
+    }
   }
 
   exec { "Extract ${source_filename}":
