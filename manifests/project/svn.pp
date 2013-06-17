@@ -328,7 +328,7 @@ define puppi::project::svn (
         enable    => $enable ,
       }
     }
-  
+
     if ($disable_services != '') {
       puppi::rollback { "${name}-Disable_extra_services":
         priority  => '37' ,
@@ -339,7 +339,7 @@ define puppi::project::svn (
         enable    => $enable ,
       }
     }
-  
+
     if ($predeploy_customcommand != '') {
       puppi::rollback { "${name}-Run_Custom_PreDeploy_Script":
         priority  => $predeploy_priority ,
@@ -350,7 +350,7 @@ define puppi::project::svn (
         enable    => $enable ,
       }
     }
-  
+
     if ($bool_keep_svndata == true) {
       puppi::rollback { "${name}-Recover_Files_To_Deploy":
         priority  => '40' ,
@@ -361,7 +361,7 @@ define puppi::project::svn (
         enable    => $enable ,
       }
     }
-  
+
     if ($bool_keep_svndata != true) {
       puppi::rollback { "${name}-Rollback_Files":
         priority  => '40' ,
@@ -372,7 +372,7 @@ define puppi::project::svn (
         enable    => $enable ,
       }
     }
-  
+
     if ($postdeploy_customcommand != '') {
       puppi::rollback { "${name}-Run_Custom_PostDeploy_Script":
         priority  => $postdeploy_priority ,
@@ -383,7 +383,7 @@ define puppi::project::svn (
         enable    => $enable ,
       }
     }
-  
+
     if ($disable_services != '') {
       puppi::rollback { "${name}-Enable_extra_services":
         priority  => '44' ,
@@ -394,7 +394,7 @@ define puppi::project::svn (
         enable    => $enable ,
       }
     }
-  
+
     if ($firewall_src_ip != '') {
       puppi::rollback { "${name}-Load_Balancer_Unblock":
         priority  => '46' ,
@@ -405,7 +405,7 @@ define puppi::project::svn (
         enable    => $enable ,
       }
     }
-  
+
     if ($bool_run_checks == true) {
       puppi::rollback { "${name}-Run_POST-Checks":
         priority  => '80' ,
@@ -416,10 +416,10 @@ define puppi::project::svn (
         enable    => $enable ,
       }
     }
-  }  
-  
+  }
+
 ### REPORTING
-  
+
   if ($report_email != '') {
     puppi::report { "${name}-Mail_Notification":
       priority  => '20' ,
@@ -430,10 +430,9 @@ define puppi::project::svn (
       enable    => $enable ,
     }
   }
- 
+
 ### AUTO DEPLOY DURING PUPPET RUN
   if ($bool_auto_deploy == true) {
     puppi::run { $name: }
   }
-  
 }

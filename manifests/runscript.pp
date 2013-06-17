@@ -5,9 +5,9 @@
 # The script content is provided either with $source or $content arguments.
 # It's placed in:
 # $destination_path , if provided, or in /usr/local/sbin/${name}
-# 
+#
 # Cron execution times are defined by the $cron argument (Default empty).
-# Automatic execution of the script via Puppet is managed by the $autorun 
+# Automatic execution of the script via Puppet is managed by the $autorun
 # parameter (default: true).
 # Conditional execution of the script at subsequent puppet runs is
 # defined by the $refreshonly, $creates, $unless $onlyif parameters

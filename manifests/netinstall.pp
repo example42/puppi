@@ -61,8 +61,8 @@
 #
 define puppi::netinstall (
   $url,
-  $retrieve_args       = '',
   $destination_dir,
+  $retrieve_args       = '',
   $extracted_dir       = '',
   $owner               = 'root',
   $group               = 'root',
