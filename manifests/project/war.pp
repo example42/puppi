@@ -24,6 +24,12 @@
 # [*user*]
 #   (Optional) - The user to be used for deploy operations.
 #
+# [*http_user*]
+#   (Optional) - The user to be used for download the war file(s).
+#
+# [*http_pass*]
+#   (Optional) - The password to be used for download the war file(s).
+#
 # [*predeploy_customcommand*]
 #   (Optional) -  Full path with arguments of an eventual custom command to
 #   execute before the deploy. The command is executed as $predeploy_user.
@@ -119,6 +125,8 @@ define puppi::project::war (
   $deploy_root,
   $init_source              = '',
   $user                     = 'root',
+  $http_user                = undef,
+  $http_pass                = undef,
   $predeploy_customcommand  = '',
   $predeploy_user           = '',
   $predeploy_priority       = '39',
@@ -211,7 +219,7 @@ define puppi::project::war (
     puppi::deploy { "${name}-Retrieve_WAR":
       priority  => '20' ,
       command   => 'get_file.sh' ,
-      arguments => "-s '${source}' -a '${real_always_deploy}'" ,
+      arguments => "-s '${source}' -a '${real_always_deploy}' -u '${http_user}' -p '${http_pass}'" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
