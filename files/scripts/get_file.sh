@@ -18,6 +18,7 @@ showhelp () {
     echo "-s <source_file> - The URL of the file to get"
     echo "-t <file_type> - The type of file that is retrieved: list|tarball|maven-metadata|dir"
     echo "-d <local_dir> - An alternative destination directory (default is automatically chosen)"
+    echo "-f <local_file> - An alternative destination file name (default is automatically chosen)"
     echo "-a <yes|no> - If 'no' return a special error code (99) if the download checksum is the same of the one previously downloaded"
     echo "-u <http_user> - in case of type http, specify a http_user for curl"
     echo "-p <http_password> - in case of type http, specifiy http_user for curl"
@@ -77,6 +78,9 @@ while [ $# -gt 0 ]; do
       # Enforces and overrides and alternative downloaddir
       downloaddir=$2
       shift 2 ;;
+    -f)
+       destfilename=$2
+       shift 2 ;;
     -a)
       alwaysdeploy=$2
       shift 2 ;;
@@ -115,11 +119,19 @@ case $type in
         save_runtime_config "downloadedfile=$downloaddir/$downloadfilename"
     ;;
     http|https)
-        if [ -z "$http_password" ] ; then
-          curl $ssl_arg -s -f -L "$url" -O
+        if [ ! -z "$destfilename" ] ; then
+          destfilename_arg="-o $destfilename"
         else
-          curl $ssl_arg -s -f -L --anyauth --user $http_user:$http_password "$url" -O
-	fi
+          destfilename_arg="-O"
+        fi
+
+        if [ ! -z "$http_password" ] ; then
+          httpauth_arg="--anyauth --user $http_user:$http_password"
+        else
+          httpauth_arg=""
+        fi
+
+        curl $ssl_arg -s -f -L $httpauth_arg "$url" $destfilename_arg
         check_retcode
         save_runtime_config "downloadedfile=$downloaddir/$downloadfilename"
     ;;

@@ -16,6 +16,11 @@
 # [*deploy_root*]
 #   The destination directory where the retrieved file(s) are deployed.
 #
+# [*war_file*]
+#   (Optional) - The destination war file name where the retrieved file 
+#   is deployed. In the case of a single war file that already has a version
+#   specifies the name and needs to be renamed.
+#
 # [*init_source*]
 #   (Optional) - The full URL to be used to retrieve, for the first time,
 #   the project files. They are copied directly to the $deploy_root
@@ -117,6 +122,7 @@
 define puppi::project::war (
   $source,
   $deploy_root,
+  $war_file                 = undef,
   $init_source              = '',
   $user                     = 'root',
   $predeploy_customcommand  = '',
@@ -173,8 +179,9 @@ define puppi::project::war (
   $bool_check_deploy = any2bool($check_deploy)
   $bool_auto_deploy = any2bool($auto_deploy)
 
-  $war_file = url_parse($source,'filename')
-
+  if ($war_file == undef) {
+    $war_file = url_parse($source,'filename')
+  }
 
 ### CREATE PROJECT
     puppi::project { $name:
@@ -211,7 +218,7 @@ define puppi::project::war (
     puppi::deploy { "${name}-Retrieve_WAR":
       priority  => '20' ,
       command   => 'get_file.sh' ,
-      arguments => "-s '${source}' -a '${real_always_deploy}'" ,
+      arguments => "-s '${source}' -a '${real_always_deploy}' -f '${war_file}'" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -232,7 +239,7 @@ define puppi::project::war (
     puppi::deploy { "${name}-Backup_existing_WAR":
       priority  => '30' ,
       command   => 'archive.sh' ,
-      arguments => "-b '${deploy_root}' -t war -s move -m diff -o '${backup_rsync_options}' -n '${backup_retention}'" ,
+      arguments => "-b '${deploy_root}' -t war -s copy -m diff -o '${backup_rsync_options}' -n '${backup_retention}'" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
