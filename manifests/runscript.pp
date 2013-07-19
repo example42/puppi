@@ -148,7 +148,7 @@ define puppi::runscript (
       mode    => '0644',
       owner   => 'root',
       group   => 'root',
-      content => "${cron} ${cron_user} ${real_command} ${arguments}\n",
+      content => "${cron} ${cron_user} ${real_command} ${parameters}\n",
     }
   }
 }
