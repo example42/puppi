@@ -63,6 +63,7 @@ define puppi::netinstall (
   $url,
   $destination_dir,
   $extracted_dir       = '',
+  $retrieve_command    = 'wget',
   $retrieve_args       = '',
   $owner               = 'root',
   $group               = 'root',
@@ -120,7 +121,7 @@ define puppi::netinstall (
 
   exec { "Retrieve ${url} in ${work_dir}":
     cwd         => $work_dir,
-    command     => "wget ${retrieve_args} ${url}",
+    command     => "${retrieve_command} ${retrieve_args} ${url}",
     creates     => "${work_dir}/${source_filename}",
     timeout     => $timeout,
     path        => $path,
