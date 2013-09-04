@@ -103,9 +103,9 @@ define puppi::netinstall (
   }
 
   if $preextract_command {
-    exec { "PreExtract ${source_filename}":
+    exec { "PreExtract ${source_filename} in ${destination_dir}":
       command     => $preextract_command,
-      before      => Exec["Extract ${source_filename}"],
+      before      => Exec["Extract ${source_filename} from ${work_dir}"],
       refreshonly => true,
       path        => $path,
       environment => $exec_env,
@@ -113,7 +113,7 @@ define puppi::netinstall (
     }
   }
 
-  exec { "Retrieve ${url}":
+  exec { "Retrieve ${url} in ${work_dir}":
     cwd         => $work_dir,
     command     => "wget ${url}",
     creates     => "${work_dir}/${source_filename}",
@@ -122,34 +122,34 @@ define puppi::netinstall (
     environment => $exec_env,
   }
 
-  exec { "Extract ${source_filename}":
+  exec { "Extract ${source_filename} from ${work_dir}":
     command     => "mkdir -p ${destination_dir} && cd ${destination_dir} && ${real_extract_command} ${work_dir}/${source_filename} ${extract_command_second_arg}",
     unless      => "ls ${destination_dir}/${real_extracted_dir}",
     creates     => "${destination_dir}/${real_extracted_dir}",
     timeout     => $timeout,
-    require     => Exec["Retrieve ${url}"],
+    require     => Exec["Retrieve ${url} in ${work_dir}"],
     path        => $path,
     environment => $exec_env,
-    notify      => Exec["Chown ${source_filename}"],
+    notify      => Exec["Chown ${source_filename} in ${destination_dir}"],
   }
 
-  exec { "Chown ${source_filename}":
+  exec { "Chown ${source_filename} in ${destination_dir}":
     command     => "chown -R ${owner}:${group} ${destination_dir}/${real_extracted_dir}",
     refreshonly => true,
     timeout     => $timeout,
-    require     => Exec["Extract ${source_filename}"],
+    require     => Exec["Extract ${source_filename} from ${work_dir}"],
     path        => $path,
     environment => $exec_env,
   }
 
   if $postextract_command {
-    exec { "PostExtract ${source_filename}":
+    exec { "PostExtract ${source_filename} in ${destination_dir}":
       command     => $postextract_command,
       cwd         => "${destination_dir}/${real_extracted_dir}",
-      subscribe   => Exec["Extract ${source_filename}"],
+      subscribe   => Exec["Extract ${source_filename} from ${work_dir}"],
       refreshonly => true,
       timeout     => $timeout,
-      require     => Exec["Retrieve ${url}"],
+      require     => Exec["Retrieve ${url} in ${work_dir}"],
       path        => $path,
       environment => $exec_env,
     }
