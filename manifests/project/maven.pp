@@ -41,7 +41,7 @@
 #   (Optional) - The destination directory where the zip is unpacked
 #
 # [*zip_user*]
-#   (Optional) - The user to be used for deploy operations of the zip 
+#   (Optional) - The user to be used for deploy operations of the zip
 #
 # [*zip_suffix*]
 #   (Optional) - The suffix (Maven qualifier) that might be appended to the zip
@@ -376,10 +376,15 @@ define puppi::project::maven (
   }
 
   if ($zip_root != '') {
+    $real_arguments = $http_password ? {
+      ''      => "${source} zipfile",
+      default => "-u ${http_user} -p ${http_password} ${source} zipfile"
+    }
+
     puppi::deploy { "${name}-Get_Maven_Files_ZIP":
       priority  => '25' ,
       command   => 'get_maven_files.sh' ,
-      arguments =>  $http_password ? { '' => "${source} zipfile" , default => "-u ${http_user} -p ${http_password} ${source} zipfile" } ,
+      arguments =>  $real_arguments,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
