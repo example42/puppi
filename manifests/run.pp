@@ -25,6 +25,7 @@ define puppi::run (
     path    => '/bin:/sbin:/usr/sbin:/usr/bin',
     creates => "${puppi::params::archivedir}/puppirun_${name}",
     timeout => $timeout,
+    # require => File[ tag == 'puppi_deploy' ],
   }
 
 }
