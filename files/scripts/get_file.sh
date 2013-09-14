@@ -143,7 +143,7 @@ case $type in
     ;;
     rsync)
         rsync -a "$url" .
-        # rsync -rlptD $url . # Why not preserving users/groups?
+        # rsync -rlptD $url . # Why not preserving users/groups?
         check_retcode
         save_runtime_config "downloadedfile=$downloaddir/$downloadfilename"
     ;;

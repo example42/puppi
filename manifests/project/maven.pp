@@ -267,7 +267,7 @@ define puppi::project::maven (
     }
 
 
-### INIT SEQUENCE
+### INIT SEQUENCE
   if ($document_init_source != '') {
     puppi::initialize { "${name}-Deploy_Files":
       priority  => '40' ,
