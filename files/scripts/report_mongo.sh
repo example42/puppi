@@ -1,12 +1,38 @@
 #!/bin/bash
-set +x
+
 # report_mongodb.sh - Made for Puppi
-# This script sends a summary to a mongodb defined in $1
 # e.g. somemongohost/dbname
 
 # Sources common header for Puppi scripts
 . $(dirname $0)/header || exit 10
 
+
+# Show help
+showhelp () {
+    echo "This script reports deployments to a mongo DB."
+    echo "It has the following options:"
+    echo "-e <env_key> - Facter key to identify server environment (default: env)."
+    echo 
+    echo "Examples:"
+    echo "deploy_files.sh mongodb://someuser:hispassword@somehost/somedb"
+    echo "deploy_files.sh -e env mongodb://someuser:hispassword@somehost/somedb"
+}
+
+
+env_key="env"
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -e)
+      env_key=$2
+      echo "env_key"
+      shift 2 ;;
+    *)
+      mongourl=$1
+      shift 1
+      ;;
+  esac
+done
 
 if [ "$EXITCRIT" = "1" ] ; then
     proposed_exit=2
@@ -25,13 +51,14 @@ fi
 
 fqdn=$(facter fqdn)
 
-environment=$(facter env -p)
+environment=$(facter ${env_key} -p)
 
 # something like mongodb://someuser:hispassword@somehost/somedb
-mongourl=$1
+
 
 if [[ ! $mongourl =~ "mongodb://" ]]; then
   echo "WARNING: mongourl invalid! Please use a valid monurl!"
+  showhelp
   exit $proposed_exit
 fi
 
