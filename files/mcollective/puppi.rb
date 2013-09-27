@@ -13,7 +13,7 @@ module MCollective
 #                   validate :project, :shellsafe
                     project = request[:project] if request[:project]
                     reply.data = %x[puppi check #{project}].chomp
-                    if ($?.exitstatus.int > 0)
+                    if ($?.exitstatus > 0)
                       reply.fail "FAILED: #{reply.data}"
                     end
             end
@@ -22,7 +22,7 @@ module MCollective
 #                   validate :project, :shellsafe
                     project = request[:project] if request[:project]
                     reply.data = %x[puppi info #{project}].chomp
-                    if ($?.exitstatus.int > 0)
+                    if ($?.exitstatus > 0)
                       reply.fail "FAILED: #{reply.data}"
                     end
             end
@@ -31,7 +31,7 @@ module MCollective
 #                   validate :project, :shellsafe
                     project = request[:project] if request[:project]
                     reply.data = %x[puppi log #{project} -c 10].chomp
-                    if ($?.exitstatus.int > 0)
+                    if ($?.exitstatus > 0)
                       reply.fail "FAILED: #{reply.data}"
                     end
             end
@@ -44,8 +44,8 @@ module MCollective
                       return
                     end
                     puppioptions = request[:puppioptions]
-                    reply.data += %x[puppi deploy #{project} -o "#{puppioptions}"].chomp
-                    if ($?.exitstatus.int > 0)
+                    reply.data = %x[puppi deploy #{project} -o "#{puppioptions}"].chomp
+                    if ($?.exitstatus > 0)
                       reply.fail "FAILED: #{reply.data}"
                     end
             end
@@ -54,7 +54,7 @@ module MCollective
                     validate :project, :shellsafe
                     project = request[:project] if request[:project]
                     reply.data = %x[puppi rollback #{project} latest].chomp
-                    if ($?.exitstatus.int > 0)
+                    if ($?.exitstatus > 0)
                       reply.fail "FAILED: #{reply.data}"
                     end
             end
@@ -63,7 +63,7 @@ module MCollective
                     validate :project, :shellsafe
                     project = request[:project] if request[:project]
                     reply.data = %x[puppi init #{project}].chomp
-                    if ($?.exitstatus.int > 0)
+                    if ($?.exitstatus > 0)
                       reply.fail "FAILED: #{reply.data}"
                     end
             end
