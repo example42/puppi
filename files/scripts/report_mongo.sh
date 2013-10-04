@@ -12,6 +12,7 @@ showhelp () {
     echo "This script reports deployments to a mongo DB."
     echo "It has the following options:"
     echo "-e <env_key> - Facter key to identify server environment (default: env)."
+    echo "If no facter key can be found, the fallback is ''environment''."
     echo 
     echo "Examples:"
     echo "deploy_files.sh mongodb://someuser:hispassword@somehost/somedb"
@@ -20,6 +21,7 @@ showhelp () {
 
 
 env_key="env"
+fallback_key="environment"
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -52,6 +54,12 @@ fi
 fqdn=$(facter fqdn)
 
 environment=$(facter ${env_key} -p)
+
+if [ -z "${environment} ]
+then
+    environment=$(facter ${fallback_key} -p)
+fi
+
 
 # something like mongodb://someuser:hispassword@somehost/somedb
 
