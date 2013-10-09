@@ -149,7 +149,7 @@ define puppi::project::dir (
     }
 
 
-### INIT SEQUENCE
+### INIT SEQUENCE
   if ($init_source != '') {
     puppi::initialize { "${name}-Deploy_Files":
       priority  => '40' ,
@@ -260,7 +260,7 @@ define puppi::project::dir (
       enable    => $enable ,
     }
   }
-  # End deploy
+  # End deploy
 
   if ($postdeploy_customcommand != '') {
     puppi::deploy { "${name}-Run_Custom_PostDeploy_Script":

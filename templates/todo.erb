@@ -7,25 +7,25 @@
 
 echo_title "$HOSTNAME - <%= name %>"
 
-<% if description != "" -%>
+<% if @description != "" -%>
 cat <<EOF
-<%= description %>
+<%= @description %>
 EOF
 <% end -%>
 
-<% if notes != "" -%>
+<% if @notes != "" -%>
 cat <<EOF
-<%= notes %>
+<%= @notes %>
 EOF
 <% end -%>
 
-<% if run != "" -%>
+<% if @run != "" -%>
 <% array_run.each do |cmd| %>show_command "<%= cmd -%>"
 <% end -%>
 <% end -%>
 
-<% if check_command != "" -%>
-<%= check_command %>
+<% if @check_command != "" -%>
+<%= @check_command %>
 if [ "x$?" = "x0" ] ; then
     echo_success
     result="OK"

@@ -2,11 +2,11 @@
 #
 # This class installs the mc puppi command for mcollective clients
 # (Note that in mcollective terminology a client is an host from
-# where you can manage mcollective servers)
+# where you can manage mcollective servers)
 #
 # The class installs also the puppideploy and puppicheck commands
 # that are simple wrappers about mco puppi that correctly trap
-# remote errors and can be used in automatic procedures or
+# remote errors and can be used in automatic procedures or
 # to give limited access (typically via sudo) to mc puppi commands
 #
 # They can be integrated, for example, in Jenkins as remote ssh

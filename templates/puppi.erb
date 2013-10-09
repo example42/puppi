@@ -244,7 +244,7 @@ send_reports () {
             code=$(cat "$projectsdir/$project/report/$command")
             echo -n $title
             output=$($runcommand "$projectsdir/$project/report/$command" 2>&1)
-            # handle_result # This breaks the overall exit code when deploy fails
+            # handle_result # This breaks the overall exit code when deploy fails
         done
     fi
 }
@@ -326,7 +326,7 @@ showhelp () {
    echo "info [topic] [-i] [-g <pattern>] - Show informations about the system"
    echo "todo - Show todo's checklist of the system"
    echo "init <project> [-i] [-f] [-t] - First time project initialization and setup"
-   echo "deploy <project> [-i] [-f] [-t] [-o ...] - Deploy the specified project"
+   echo "deploy <project> [-i] [-f] [-t] [-o ...] - Deploy the specified project"
    echo "rollback <project> [state] [-i] [-f] [-t] - Rollback the specified project. "
    echo " "
    echo "Available options:"
@@ -477,7 +477,7 @@ while [ $# -gt 0 ]; do
       shift 2;;
     -g)
       greppattern="$(shell_filter_strict $2)"
-      # greppattern="$(shell_filter $2)" # This allows partial regexp usage
+      # greppattern="$(shell_filter $2)" # This allows partial regexp usage
       # greppattern="$2" # This allows full regexp usage but is highly insecure if you sudo puppi
       shift 2;;
     *)

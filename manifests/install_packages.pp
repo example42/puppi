@@ -76,6 +76,7 @@ define puppi::install_packages (
       command     => "${scripts_dir}/${name}",
       refreshonly => $refreshonly,
       subscribe   => File["install_packages_${name}"],
+      timeout     => $timeout,
     }
   }
 

@@ -12,7 +12,7 @@ class puppi::extras {
 
   puppi::check { 'NTP_Sync':
     command  => "check_ntp -H ${puppi::params::ntp}" ,
-    priority => '20' ,
+    priority => '99' ,
     hostwide => 'yes' ,
   }
 
