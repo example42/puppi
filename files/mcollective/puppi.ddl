@@ -36,7 +36,7 @@ metadata    :name        => "SimpleRPC Agent For PUPPI Commands",
     end
 end
 
-[ "deploy" , "rollback" , "init" ].each do |myact|
+[ "deploy" , "rollback" , "init" , "config" ].each do |myact|
     action myact, :description => "Run puppi myact" do
         display :always
 
