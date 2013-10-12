@@ -21,6 +21,14 @@ Lookup a hostname and return its ip addresses
     type = 'AAAA' unless type
     
     require 'ipaddr'
+    
+    if (ip = IPAddr.new(hostname) rescue nil)
+      if (ip.ipv6? and type == 'AAAA') or (ip.ipv4? and type != 'AAAA')
+        return hostname
+      else
+        return []
+      end
+    end
 
     typeConst = Resolv::DNS::Resource::IN.const_get "#{type.upcase}"
     out = []
