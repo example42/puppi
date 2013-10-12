@@ -64,6 +64,16 @@ define puppi::project (
       recurse => true,
       purge   => true,
       require => File["${puppi::params::projectsdir}/${name}"];
+      
+    "${puppi::params::projectsdir}/${name}/configure":
+      ensure  => $ensure,
+      mode    => '0755',
+      owner   => $puppi::params::configfile_owner,
+      group   => $puppi::params::configfile_group,
+      force   => true,
+      recurse => true,
+      purge   => true,
+      require => File["${puppi::params::projectsdir}/${name}"];
 
     "${puppi::params::projectsdir}/${name}/report":
       ensure  => $ensure,
