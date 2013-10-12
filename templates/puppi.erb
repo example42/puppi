@@ -202,6 +202,21 @@ initialize () {
     [ "$result" = "OK" ] && exit 0
 }
 
+configure () {
+    for command in $(ls -1 $projectsdir/$project/configure) ; do
+        title="$HOSTNAME Init: $command"
+        code=$(cat "$projectsdir/$project/configure/$command")
+        ask_interactive
+        output=$($runcommand "$projectsdir/$project/configure/$command" 2>&1)
+        handle_result
+        [ "$EXITCRIT" = "1" ] && [ "$force" != "yes" ] && break
+    done
+
+    send_reports
+    show_report
+    [ "$result" = "OK" ] && exit 0
+}
+
 save_summary () {
     tagend=$(date +%Y%m%d-%H%M%S)
 
@@ -326,6 +341,7 @@ showhelp () {
    echo "info [topic] [-i] [-g <pattern>] - Show informations about the system"
    echo "todo - Show todo's checklist of the system"
    echo "init <project> [-i] [-f] [-t] - First time project initialization and setup"
+   echo "config <project> [-i] [-f] [-t] - Project configuration deployment."
    echo "deploy <project> [-i] [-f] [-t] [-o ...] - Deploy the specified project"
    echo "rollback <project> [state] [-i] [-f] [-t] - Rollback the specified project. "
    echo " "
@@ -357,7 +373,7 @@ fi
 
 while [ $# -gt 0 ]; do
   case "$1" in
-    deploy|init)
+    deploy|init|config)
       report="yes"
       export action=$1
       if [ -n "$2" ] ; then
@@ -497,4 +513,5 @@ case $action in
     rollback) create_runtime_conf ; rollback ;;
     deploy) create_runtime_conf ; deploy ;;
     init) create_runtime_conf ; initialize ;;
+    config) create_runtime_conf ; configure ;;
 esac
