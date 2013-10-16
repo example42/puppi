@@ -68,10 +68,10 @@ module MCollective
                     end
             end
             
-            def config_action
+            def configure_action
                   validate :project, :shellsafe
                   project = request[:project] if request[:project]
-                  reply.data = %x[puppi config #{project}].chomp
+                  reply.data = %x[puppi configure #{project}].chomp
                   if ($?.exitstatus > 0)
                     reply.fail "FAILED: #{reply.data}"
                   end
