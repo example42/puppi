@@ -23,6 +23,11 @@
 #   Name of the class there default helpers are defined
 #   (Used on in Puppi 2)
 #
+# [*logs_retention_days*]
+#   Number of days for retenton of puppi logs. Default 30
+#   This option creates a script in /etc/cron.daily that purges
+#   all the old logs. Set to false or to 0 to remove the purge script.
+#
 # [*extra_class*]
 #   Name of the class where extra puppi resources are added
 #   Here, by default are placed general system commands for
@@ -33,6 +38,7 @@ class puppi (
   $install_dependencies = params_lookup( 'install_dependencies' ),
   $template             = params_lookup( 'template' ),
   $helpers_class        = params_lookup( 'helpers_class' ),
+  $logs_retention_days  = params_lookup( 'logs_retention_days' ),
   $extra_class          = params_lookup( 'extra_class' )
   ) inherits puppi::params {
 

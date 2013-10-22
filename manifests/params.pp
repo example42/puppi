@@ -9,7 +9,9 @@ class puppi::params  {
   $install_dependencies = true
   $template             = 'puppi/puppi.conf.erb'
   $helpers_class        = 'puppi::helpers'
+  $logs_retention_days  = '30'
   $extra_class          = 'puppi::extras'
+
 
 ## INTERNALVARS
   $basedir     = '/etc/puppi'
