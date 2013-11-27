@@ -70,7 +70,10 @@ while [ $# -gt 0 ]; do
           downloaddir=$storedir
           save_runtime_config "source_type=mysql"
           ;;
-
+          gz)
+          downloaddir=$storedir
+          save_runtime_config "source_type=gz"
+          ;;
       esac
       shift 2 ;;
     -d)

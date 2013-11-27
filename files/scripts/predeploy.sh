@@ -68,6 +68,18 @@ predeploy () {
           ;;
         esac
         ;;
+      gz)
+        case "$debug" in
+          yes|full)
+            gzip -d $downloadedfile
+            check_retcode
+          ;;
+          *)
+            gzip -d -q $downloadedfile
+            check_retcode
+          ;;
+        esac
+        ;;
       war)
         cp $downloadedfile .
         check_retcode

@@ -173,6 +173,7 @@ define puppi::project::builder (
     'dir'            => 'dir',
     'tarball'        => 'tarball',
     'zip'            => 'zip',
+    'gz'             => 'gz',
     'maven-metadata' => 'maven-metadata',
     'maven'          => 'maven-metadata',
     'war'            => 'war',
