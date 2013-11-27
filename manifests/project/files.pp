@@ -165,7 +165,7 @@ define puppi::project::files (
     }
 
 
-### INIT SEQUENCE
+### INIT SEQUENCE
   if ($init_source != '') {
     puppi::initialize { "${name}-Deploy_Files":
       priority  => '40' ,

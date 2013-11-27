@@ -15,10 +15,6 @@ describe 'puppi::ze' do
     it 'should create a puppi::ze step file' do
       should contain_file('puppize_sample').with_ensure('present')
     end
-    it 'should populate correctly the puppi::ze data file' do
-      content = catalogue.resource('file', 'puppize_sample').send(:parameters)[:content]
-      content.should match(/var1: get/)
-    end
   end
 
 end

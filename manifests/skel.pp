@@ -163,4 +163,22 @@ class puppi::skel {
     ignore  => '.svn',
   }
 
+  # Logs cleanup script
+  if $::kernel == 'Linux' {
+    if $puppi::logs_retention_days
+    and $puppi::logs_retention_days != '0' {
+      $purge_cron_ensure = 'present'
+    } else {
+      $purge_cron_ensure = 'absent'
+    }
+
+    file { 'puppi_cron_logs_purge':
+      ensure  => $purge_cron_ensure,
+      path    => '/etc/cron.daily/puppi_clean',
+      mode    => '0755',
+      owner   => 'root',
+      group   => 'root',
+      content => template('puppi/puppi_clean.erb'),
+    }
+  } 
 }

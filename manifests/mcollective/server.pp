@@ -2,7 +2,7 @@
 #
 # This class installs the puppi agent on mcollective servers
 # (Note that in mcollective terminology a server is an host
-# managed by a mcollective client)
+# managed by a mcollective client)
 #
 # == Usage:
 # include puppi::mcollective::server
