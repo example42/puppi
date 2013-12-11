@@ -19,6 +19,7 @@ class puppi::mcollective::server {
     owner   => 'root',
     group   => 'root',
     source  => 'puppet:///modules/puppi/mcollective/puppi.ddl',
+    require => Class['mcollective'],
   }
 
   file { "${puppi::params::mcollective}/agent/puppi.rb":
@@ -27,6 +28,7 @@ class puppi::mcollective::server {
     owner   => 'root',
     group   => 'root',
     source  => 'puppet:///modules/puppi/mcollective/puppi.rb',
+    require => Class['mcollective'],
   }
 
 }

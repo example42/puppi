@@ -29,7 +29,8 @@ class puppi::mcollective::client {
     owner   => 'root',
     group   => 'root',
     source  => 'puppet:///modules/puppi/mcollective/mc-puppi',
-  }
+    require => Class['mcollective'],
+    }
 
 # mco application TODO
 #  file { "${puppi::params::mcollective}/application/puppi.rb":
