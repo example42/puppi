@@ -12,8 +12,7 @@ describe 'puppi::run' do
 
   describe 'Test puppi run exe creation' do
     it 'should create a puppi::run exec' do
-      content = catalogue.resource('exec', 'Run_Puppi_myapp').send(:parameters)[:command]
-      content.should match /puppi deploy myapp/
+      should contain_exec('Run_Puppi_myapp').with_command(/puppi deploy myapp/)
     end
   end
 

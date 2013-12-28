@@ -17,8 +17,7 @@ describe 'puppi::todo' do
       should contain_file('/etc/puppi/todo/mytodo').with_ensure('present')
     end
     it 'should populate correctly the puppi::todo step file' do
-      content = catalogue.resource('file', '/etc/puppi/todo/mytodo').send(:parameters)[:content]
-      content.should match(/check_test/)
+      should contain_file('/etc/puppi/todo/mytodo').with_content(/check_test/)
     end
   end
 
