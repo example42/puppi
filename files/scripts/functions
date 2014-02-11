@@ -2,7 +2,7 @@
 # General Puppi functions
 
 BOOTUP=color
-RES_COL=60
+RES_COL=75
 MOVE_TO_COL="echo -en \\033[${RES_COL}G"
 SETCOLOR_SUCCESS="echo -en \\033[0;32m"
 SETCOLOR_FAILURE="echo -en \\033[0;31m"
