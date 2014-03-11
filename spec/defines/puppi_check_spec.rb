@@ -19,8 +19,7 @@ describe 'puppi::check' do
       should contain_file('Puppi_check_myapp_50_get').with_ensure('present')
     end
     it 'should populate correctly the puppi::check step file' do
-      content = catalogue.resource('file', 'Puppi_check_myapp_50_get').send(:parameters)[:content]
-      content.should match "/usr/lib/nagios/plugins/echo\n"
+      should contain_file('Puppi_check_myapp_50_get').with_content(/\/usr\/lib\/nagios\/plugins\/echo/)
     end
   end
 

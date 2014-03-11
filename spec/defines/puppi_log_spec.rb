@@ -15,8 +15,7 @@ describe 'puppi::log' do
       should contain_file('/etc/puppi/logs/mylog').with_ensure('present')
     end
     it 'should populate correctly the puppi::log step file' do
-      content = catalogue.resource('file', '/etc/puppi/logs/mylog').send(:parameters)[:content]
-      content.should match(/mylog.log/)
+      should contain_file('/etc/puppi/logs/mylog').with_content(/mylog.log/)
     end
   end
 

@@ -18,8 +18,7 @@ describe 'puppi::rollback' do
       should contain_file('/etc/puppi/projects/myapp/rollback/50-get').with_ensure('present')
     end
     it 'should populate correctly the puppi::rollback step file' do
-      content = catalogue.resource('file', '/etc/puppi/projects/myapp/rollback/50-get').send(:parameters)[:content]
-      content.should match "su - root -c \"export project=myapp && /etc/puppi/scripts/echo \"\n"
+      should contain_file('/etc/puppi/projects/myapp/rollback/50-get').with_content("su - root -c \"export project=myapp && /etc/puppi/scripts/echo \"\n")
     end
   end
 

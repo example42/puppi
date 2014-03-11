@@ -17,8 +17,7 @@ describe 'puppi::info' do
       should contain_file('/etc/puppi/info/sample').with_ensure('present')
     end
     it 'should populate correctly the puppi::info step file' do
-      content = catalogue.resource('file', '/etc/puppi/info/sample').send(:parameters)[:content]
-      content.should match(/myownscript/)
+      should contain_file('/etc/puppi/info/sample').with_content(/myownscript/)
     end
   end
 

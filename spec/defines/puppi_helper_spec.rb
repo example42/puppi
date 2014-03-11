@@ -13,8 +13,7 @@ describe 'puppi::helper' do
       should contain_file('puppi_helper_spec').with_ensure('present')
     end
     it 'should populate correctly the helper file' do
-      content = catalogue.resource('file', 'puppi_helper_spec').send(:parameters)[:content]
-      content.should match('info:')
+      should contain_file('puppi_helper_spec').with_content(/info/)
     end
   end
 

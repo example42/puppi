@@ -18,9 +18,7 @@ describe 'puppi::report' do
       should contain_file('/etc/puppi/projects/myapp/report/50-get').with_ensure('present')
     end
     it 'should populate correctly the puppi::report step file' do
-      content = catalogue.resource('file', '/etc/puppi/projects/myapp/report/50-get').send(:parameters)[:content]
-      content.should match "su - root -c \"export project=myapp && /etc/puppi/scripts/echo \"\n"
-      # content.should match(/myapp,get/)
+      should contain_file('/etc/puppi/projects/myapp/report/50-get').with_content("su - root -c \"export project=myapp && /etc/puppi/scripts/echo \"\n")
     end
   end
 
