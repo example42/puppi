@@ -1,5 +1,5 @@
 name 'example42-puppi'
-version '2.1.8'
+version '2.1.9'
 
 author 'lab42'
 license 'Apache'
