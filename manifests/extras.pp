@@ -133,7 +133,7 @@ class puppi::extras {
     Debian,Ubuntu: {
       puppi::log { 'system':
         description => 'General System Messages',
-        log         => ['/var/log/messages','/var/log/syslog'],
+        log         => ['/var/log/syslog'],
       }
       puppi::log { 'auth':
         description => 'Users and authentication',

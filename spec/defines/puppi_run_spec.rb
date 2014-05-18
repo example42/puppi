@@ -11,9 +11,7 @@ describe 'puppi::run' do
   }
 
   describe 'Test puppi run exe creation' do
-    it 'should create a puppi::run exec' do
-      should contain_exec('Run_Puppi_myapp').with_command(/puppi deploy myapp/)
-    end
+    it { should contain_exec('Run_Puppi_myapp').with_command(/puppi deploy myapp/) }
   end
 
 end

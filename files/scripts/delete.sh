@@ -19,7 +19,7 @@ fi
 
 # Move file
 move () {
-    mkdir $workdir/$project/deleted
+    mkdir -p $workdir/$project/deleted
     mv $tobedeleted $workdir/$project/deleted
 }
 
