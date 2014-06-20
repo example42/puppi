@@ -25,6 +25,8 @@ The module provides:
 * Puppet defines that make it easy to prepare a puppi set of commands for a project deployment
 
 * Puppet defines to populate the output of the different actions
+ 
+This module requires functions provided by [Puppet Labs Standard Library module](https://github.com/puppetlabs/puppetlabs-stdlib.git).
 
 
 ## HOW TO INSTALL
