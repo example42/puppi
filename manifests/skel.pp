@@ -180,5 +180,5 @@ class puppi::skel {
       group   => 'root',
       content => template('puppi/puppi_clean.erb'),
     }
-  } 
+  }
 }
