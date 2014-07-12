@@ -127,7 +127,7 @@ define puppi::project::hg (
   $tag                      = 'undefined',
   $branch                   = 'default',
   $commit                   = 'undefined',
-  $keep_hgdata              = true, 
+  $keep_hgdata              = true,
   $verbose                  = true,
   $user                     = 'root',
   $predeploy_customcommand  = '',
