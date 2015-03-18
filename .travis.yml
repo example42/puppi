@@ -4,6 +4,7 @@ rvm:
   - 1.9.3
 script:
   - "bundle exec rake validate lint spec SPEC_OPTS='--format documentation'"
+sudo: false
 env:
   - PUPPET_VERSION="~> 2.6.0"
   - PUPPET_VERSION="~> 2.7.0"
