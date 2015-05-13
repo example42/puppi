@@ -38,13 +38,11 @@ If no value is found in the defined sources, it returns an empty string ('')
     module_name = parent_module_name
 
     # Hiera Lookup
-    if Puppet::Functions.function('hiera')
-      value = function_hiera(["#{module_name}_#{var_name}", ''])
-      return value if (not value.nil?) && (value != :undefined) && (value != '')
+    value = function_hiera(["#{module_name}_#{var_name}", ''])
+    return value if (not value.nil?) && (value != :undefined) && (value != '')
 
-      value = function_hiera(["#{var_name}", '']) if arguments[1] == 'global'
-      return value if (not value.nil?) && (value != :undefined) && (value != '')
-    end
+    value = function_hiera(["#{var_name}", '']) if arguments[1] == 'global'
+    return value if (not value.nil?) && (value != :undefined) && (value != '')
 
     # Top Scope Variable Lookup (::modulename_varname)
     catch (:undefined_variable) do
