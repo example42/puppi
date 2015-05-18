@@ -26,7 +26,7 @@ This fuction looks for the given variable name in a set of different sources:
 - ::modulename_varname
 - ::varname (if second argument is 'global')
 - ::modulename::params::varname
-If no value is found in the defined sources, it returns 'undef'.
+If no value is found in the defined sources, it returns an empty string ('')
     EOS
   ) do |arguments|
 
@@ -84,7 +84,6 @@ If no value is found in the defined sources, it returns 'undef'.
       return value if (not value.nil?) && (value != :undefined) && (value != '')
     end
 
-
-    return
+    return ''
   end
 end
