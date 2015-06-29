@@ -31,24 +31,32 @@ The module provides:
 
 Download Puppi from GitHub and place it in your modules directory:
 
-       git clone https://github.com/example42/puppi.git /etc/puppet/modules/puppi
+```bash
+git clone https://github.com/example42/puppi.git /etc/puppet/modules/puppi
+```
 
 To use the Puppi "Original, old and widely tested" version, just declare or include the puppi class
 
-       class { 'puppi': }
+```ruby
+class { 'puppi': }
+```
 
 To test the Next-Gen version you can perform the following command. Please note that this module is
 not stable yet:
-        class { 'puppi':
-          version => '2',
-        }
+
+```ruby
+class { 'puppi':
+  version => '2',
+}
+```
 
 If you have resources conflicts, do not install automatically the Puppi dependencies (commands and packages)
 
-        class { 'puppi':
-          install_dependencies => false,
-        }
-
+```ruby
+class { 'puppi':
+  install_dependencies => false,
+}
+```
 
 ## HOW TO USE
 
@@ -56,10 +64,12 @@ Once Puppi is installed you can use it to:
 
 * Easily define in Puppet manifests Web Applications deploy procedures. For example:
 
-        puppi::project::war { "myapp":
-            source           => "http://repo.example42.com/deploy/prod/myapp.war",
-            deploy_root      => "/opt/tomcat/myapp/webapps",
-        }
+  ```ruby
+  puppi::project::war { "myapp":
+    source           => "http://repo.example42.com/deploy/prod/myapp.war",
+    deploy_root      => "/opt/tomcat/myapp/webapps",
+  }
+  ```
 
 * Integrate with your modules for puppi check, info and log
 
@@ -71,26 +81,31 @@ Once Puppi is installed you can use it to:
 The Example42 modules provide (optional) Puppi integration.
 Once enabled for each module you have puppi check, info and log commands.
 
-To eanble Puppi in OldGen Modules, set in the scope these variables:
+To enable Puppi in OldGen Modules, set in the scope these variables:
 
-        $puppi = yes   # Enables puppi integration.
-        $monitor = yes # Enables automatic monitoring
-        $monitor_tool = "puppi" # Sets puppi as monitoring tool
+```
+$puppi = yes            # Enables puppi integration
+$monitor = yes          # Enables automatic monitoring
+$monitor_tool = "puppi" # Sets puppi as monitoring tool
+```
 
 For the NextGen modules set the same parameters via Hiera, at Top Scope or as class arguments:
 
-        class { 'openssh':
-          puppi        => yes,
-          monitor      => yes,
-          monitor_tool => 'puppi',
-        }
-
+```ruby
+class { 'openssh':
+  puppi        => yes,
+  monitor      => yes,
+  monitor_tool => 'puppi',
+}
+```
 
 ## USAGE OF THE PUPPI COMMAND (OLD GEN)
 
-        puppi <action> <project_name> [ -options ]
+```bash
+puppi <action> <project_name> [ -options ]
+```
 
-The puppi command has these possibile actions:
+The puppi command has these possible actions:
 
 First time initialization of the defined project (if available)
         puppi init <project>
@@ -130,12 +145,13 @@ You can also provide some options:
 
 Some common puppi commnds when you log for an application deployment:
 
-        puppi check
-        puppi log &    # (More readable if done on another window)
-        puppi deploy myapp
-        puppi check
-        puppi info myapp
-
+```bash
+puppi check
+puppi log &    # (More readable if done on another window)
+puppi deploy myapp
+puppi check
+puppi info myapp
+```
 
 ## THE PUPPI MODULE
 
