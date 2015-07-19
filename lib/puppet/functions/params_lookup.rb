@@ -17,32 +17,32 @@
 Puppet::Functions.create_function(:params_lookup) do
   dispatch :single do
 #    scope_param
-    param          'String', :var_name
+    param          'String', :varname
     optional_param 'String', :lookup_type
 #    arg_count 1, 3
   end
 
-  def single(var_name, lookup_type='')
-  # def single(scope, var_name, lookup_type='')
+  def single(varname, lookup_type='')
 
     value = ''
-    # module_name = closure_scope.parent_module_name
-    # module_name = scope.lookupvar('parent_module_name')
-    module_name = 'test_params'
+    # TOFIX: Get $module_name
+    # modulename = closure_scope["module_name"]
+    modulename = 'exim'
 
     # Hiera Lookup
-    value = call_function('hiera', "#{module_name}_#{var_name}" , '')
+    # OK
+    value = call_function('hiera', "#{modulename}_#{varname}" , '')
     return value if (value != '')
 
-    value = call_function('hiera', "#{var_name}", '') # if :lookup_type == 'global'
-    return value if value
-    # return value if (not value.nil?) && (value != :undefined) && (value != '')
+    # OK
+    value = call_function('hiera', "#{varname}", '') if lookup_type == 'global'
+    return value if (not value.nil?) && (value != :undefined) && (value != '')
 
     # Top Scope Variable Lookup (::modulename_varname)
+    # OK - TOFIX Warning message
     catch (:undefined_variable) do
       begin
-        #value = scope.lookupvar("::#{module_name}_#{var_name}")
-        value = closure_scope["::#{module_name}_#{var_name}"]
+        value = closure_scope["::#{modulename}_#{varname}"]
       rescue Puppet::ParseError => e
         raise unless e.to_s =~ /^Undefined variable /
       end
@@ -50,10 +50,11 @@ Puppet::Functions.create_function(:params_lookup) do
     return value if (not value.nil?) && (value != :undefined) && (value != '')
 
     # Look up ::varname (only if second argument is 'global')
-    if :lookup_type == 'global'
+    # OK
+    if lookup_type == 'global'
       catch (:undefined_variable) do
         begin
-          value = closure_scope.lookupvar("::#{var_name}")
+          value = closure_scope["::#{varname}"]
         rescue Puppet::ParseError => e
           raise unless e.to_s =~ /^Undefined variable /
         end
@@ -62,21 +63,26 @@ Puppet::Functions.create_function(:params_lookup) do
     end
 
     # needed for the next two lookups
-    classname = module_name
-    # classname = scope.self.resource.name.downcase TODO
+    # TODO: Set the correct classname when params_lookup used in subclasses
+    classname = modulename
+    # classname = scope.self.resource.name.downcase 
 
     loaded_classes = closure_scope.catalog.classes
 
     # self::params class lookup for default value
+    # TOTEST
     if loaded_classes.include?("#{classname}::params")
-      value = closure_scope.lookupvar("::#{classname}::params::#{var_name}")
-      return value if (not value.nil?) && (value != :undefined) && (value != '')
+      value = closure_scope["::#{classname}::params::#{varname}"]
+      return value if (not value.nil?)
+      # return value if (not value.nil?) && (value != :undefined) && (value != '')
     end
 
     # Params class lookup for default value
-    if loaded_classes.include?("#{module_name}::params")
-      value = closure_scope.lookupvar("::#{module_name}::params::#{var_name}")
-      return value if (not value.nil?) && (value != :undefined) && (value != '')
+    # OK
+    if loaded_classes.include?("#{modulename}::params")
+      value = closure_scope["::#{modulename}::params::#{varname}"]
+      return value if (not value.nil?)
+      # return value if (not value.nil?) && (value != :undefined) && (value != '')
     end
 
     return ''
