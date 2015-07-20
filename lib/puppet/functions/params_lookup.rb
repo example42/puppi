@@ -13,21 +13,20 @@
 #
 # Alessandro Franceschi al@lab42.it
 #
-#Puppet::Functions.create_function(:params_lookup, Puppet::Functions::InternalFunction) do
-Puppet::Functions.create_function(:params_lookup) do
+Puppet::Functions.create_function(:params_lookup, Puppet::Functions::InternalFunction) do
+#Puppet::Functions.create_function(:params_lookup) do
   dispatch :single do
-#    scope_param
+    scope_param()
     param          'String', :varname
     optional_param 'String', :lookup_type
 #    arg_count 1, 3
   end
 
-  def single(varname, lookup_type='')
+  def single(scope, varname, lookup_type='')
 
     value = ''
-    # TOFIX: Get $module_name
-    # modulename = closure_scope["module_name"]
-    modulename = 'exim'
+    # OK Get $module_name
+    modulename = scope["module_name"]
 
     # Hiera Lookup
     # OK
@@ -44,7 +43,7 @@ Puppet::Functions.create_function(:params_lookup) do
       begin
         value = closure_scope["::#{modulename}_#{varname}"]
       rescue Puppet::ParseError => e
-        raise unless e.to_s =~ /^Undefined variable /
+        raise unless e.to_s =~ /.Could not look./
       end
     end
     return value if (not value.nil?) && (value != :undefined) && (value != '')
@@ -56,13 +55,12 @@ Puppet::Functions.create_function(:params_lookup) do
         begin
           value = closure_scope["::#{varname}"]
         rescue Puppet::ParseError => e
-          raise unless e.to_s =~ /^Undefined variable /
+          raise unless e.to_s =~ /.Could not look./
         end
       end
       return value if (not value.nil?) && (value != :undefined) && (value != '')
     end
 
-    # needed for the next two lookups
     # TODO: Set the correct classname when params_lookup used in subclasses
     classname = modulename
     # classname = scope.self.resource.name.downcase 
