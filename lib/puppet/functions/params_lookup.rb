@@ -14,7 +14,6 @@
 # Alessandro Franceschi al@lab42.it
 #
 Puppet::Functions.create_function(:params_lookup, Puppet::Functions::InternalFunction) do
-#Puppet::Functions.create_function(:params_lookup) do
   dispatch :single do
     scope_param()
     param          'String', :varname
@@ -23,37 +22,32 @@ Puppet::Functions.create_function(:params_lookup, Puppet::Functions::InternalFun
   end
 
   def single(scope, varname, lookup_type='')
-
     value = ''
-    # OK Get $module_name
     modulename = scope["module_name"]
 
-    # Hiera Lookup
-    # OK
+    # OK - Hiera Lookup modulename_varname
     value = call_function('hiera', "#{modulename}_#{varname}" , '')
     return value if (value != '')
 
-    # OK
+    # OK - Hiera Lookup varname (global)
     value = call_function('hiera', "#{varname}", '') if lookup_type == 'global'
     return value if (not value.nil?) && (value != :undefined) && (value != '')
 
-    # Top Scope Variable Lookup (::modulename_varname)
-    # OK - TOFIX Warning message
+    # OK - Top Scope Variable Lookup (::modulename_varname)
     catch (:undefined_variable) do
       begin
-        value = closure_scope["::#{modulename}_#{varname}"]
+        value = scope["::#{modulename}_#{varname}"]
       rescue Puppet::ParseError => e
         raise unless e.to_s =~ /.Could not look./
       end
     end
     return value if (not value.nil?) && (value != :undefined) && (value != '')
 
-    # Look up ::varname (only if second argument is 'global')
-    # OK
+    # OK - Top Scope Variable Lookup ::varname (global)
     if lookup_type == 'global'
       catch (:undefined_variable) do
         begin
-          value = closure_scope["::#{varname}"]
+          value = scope["::#{varname}"]
         rescue Puppet::ParseError => e
           raise unless e.to_s =~ /.Could not look./
         end
@@ -67,16 +61,14 @@ Puppet::Functions.create_function(:params_lookup, Puppet::Functions::InternalFun
 
     loaded_classes = closure_scope.catalog.classes
 
-    # self::params class lookup for default value
-    # TOTEST
+    # TOTEST - legacy params lookup (self::params)
     if loaded_classes.include?("#{classname}::params")
       value = closure_scope["::#{classname}::params::#{varname}"]
       return value if (not value.nil?)
       # return value if (not value.nil?) && (value != :undefined) && (value != '')
     end
 
-    # Params class lookup for default value
-    # OK
+    # OK - default params lookup
     if loaded_classes.include?("#{modulename}::params")
       value = closure_scope["::#{modulename}::params::#{varname}"]
       return value if (not value.nil?)
