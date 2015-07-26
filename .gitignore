@@ -7,3 +7,6 @@ Session.vim
 spec/fixtures
 .*.sw[a-z]
 *.un~
+vendor
+.bundle
+Gemfile.lock
