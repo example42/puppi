@@ -68,7 +68,7 @@ Puppet::Functions.create_function(:params_lookup, Puppet::Functions::InternalFun
       # return value if (not value.nil?) && (value != :undefined) && (value != '')
     end
 
-    # OK - default params lookup
+    # OK - default params lookup
     if loaded_classes.include?("#{modulename}::params")
       value = closure_scope["::#{modulename}::params::#{varname}"]
       return value if (not value.nil?)

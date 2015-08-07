@@ -17,8 +17,8 @@ matrix:
   # recent
   - rvm: 2.1.2
     env: STRICT_VARIABLES="yes"
-  allow_failures:
-  - rvm: 2.1.2
+  # puppet 4 AIO
+  - rvm: 2.1.4
     env: STRICT_VARIABLES="yes"
 
 notifications:
