@@ -122,7 +122,7 @@ fi
 
 do_install () {
   if [ "$branch" ]; then
-    $branch_param="--branch $branch"
+    branch_param="--branch $branch"
   fi
   if [ -d $hgdir/.hg ] ; then
     cd $hgdir
