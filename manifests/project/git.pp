@@ -180,7 +180,16 @@ define puppi::project::git (
 
 ### CREATE PROJECT
     puppi::project { $name:
-      enable => $enable ,
+      enable                   => $enable ,
+      source                   => $source,
+      deploy_root              => $deploy_root,
+      user                     => $user,
+      predeploy_customcommand  => $predeploy_customcommand,
+      postdeploy_customcommand => $postdeploy_customcommand,
+      disable_services         => $disable_services,
+      firewall_src_ip          => $firewall_src_ip,
+      firewall_dst_port        => $firewall_dst_port,
+      report_email             => $report_email,
     }
 
 
