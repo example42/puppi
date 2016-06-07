@@ -244,7 +244,17 @@ define puppi::project::y4maven (
 
 ### CREATE PROJECT
     puppi::project { $name:
-      enable => $enable ,
+      source                   => $source,
+      deploy_root              => $deploy_root,
+      user                     => $user,
+      predeploy_customcommand  => $predeploy_customcommand,
+      postdeploy_customcommand => $postdeploy_customcommand,
+      init_script              => $init_script,
+      disable_services         => $disable_services,
+      report_email             => $report_email,
+      enable                   => $enable,
+      document_root            => $document_root,
+      config_root              => $config_root,
     }
 
 
