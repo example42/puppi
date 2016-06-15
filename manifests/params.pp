@@ -26,19 +26,8 @@ class puppi::params  {
   $libdir      = '/var/lib/puppi'
   $readmedir   = '/var/lib/puppi/readme'
   $logdir      = '/var/log/puppi'
-
-  $archivedir = $::puppi_archivedir ? {
-    ''      => '/var/lib/puppi/archive',
-    undef   => '/var/lib/puppi/archive',
-    default => $::puppi_archivedir,
-  }
-
-  $workdir = $::puppi_workdir ? {
-    ''      => '/tmp/puppi',
-    undef   => '/tmp/puppi',
-    default => $::puppi_workdir,
-  }
-
+  $archivedir  = '/var/lib/puppi/archive'
+  $workdir     = '/tmp/puppi'
   $configfile_mode  = '0644'
   $configfile_owner = 'root'
   $configfile_group = 'root'
@@ -64,14 +53,7 @@ class puppi::params  {
     default           => 'mailx',
   }
 
-  $ntp = $::ntp_server ? {
-    ''    => 'pool.ntp.org' ,
-    default => is_array($::ntp_server) ? {
-      false   => $::ntp_server,
-      true  => $::ntp_server[0],
-      default => $::ntp_server,
-    }
-  }
+  $ntp = 'pool.ntp.org'
 
 # Mcollective paths
 # TODO: Add Paths for Puppet Enterprise:

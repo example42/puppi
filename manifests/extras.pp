@@ -55,8 +55,8 @@ class puppi::extras {
 
   # Info Pages
   $network_run = $::operatingsystem ? {
-    Solaris => [ 'ifconfig -a' , 'netstat -nr' , 'cat /etc/resolv.conf' , 'arp -an' , 'netstat -na' ],
-    default => [ 'ifconfig' , 'route -n' , 'cat /etc/resolv.conf' , 'arp -an' , 'netstat -natup | grep LISTEN' ],
+    'Solaris' => [ 'ifconfig -a' , 'netstat -nr' , 'cat /etc/resolv.conf' , 'arp -an' , 'netstat -na' ],
+    default   => [ 'ifconfig' , 'route -n' , 'cat /etc/resolv.conf' , 'arp -an' , 'netstat -natup | grep LISTEN' ],
   }
 
   puppi::info { 'network':
@@ -65,8 +65,8 @@ class puppi::extras {
   }
 
   $users_run = $::operatingsystem ? {
-    Solaris => [ 'who' , 'last' ],
-    default => [ 'who' , 'last' , 'LANG=C lastlog | grep -v \'Never logged in\'' ],
+    'Solaris' => [ 'who' , 'last' ],
+    default   => [ 'who' , 'last' , 'LANG=C lastlog | grep -v \'Never logged in\'' ],
   }
 
   puppi::info { 'users':
@@ -75,8 +75,8 @@ class puppi::extras {
   }
 
   $perf_run = $::operatingsystem ? {
-    Solaris => [ 'uptime' , 'vmstat 1 5' ],
-    default => [ 'uptime' , 'free' , 'vmstat 1 5' ],
+    'Solaris' => [ 'uptime' , 'vmstat 1 5' ],
+    default   => [ 'uptime' , 'free' , 'vmstat 1 5' ],
   }
 
   puppi::info { 'perf':
@@ -85,8 +85,8 @@ class puppi::extras {
   }
 
   $disks_run = $::operatingsystem ? {
-    Solaris => [ 'df -h' , 'mount' ],
-    default => [ 'df -h' , 'mount' , 'blkid' , 'fdisk -l' ],
+    'Solaris' => [ 'df -h' , 'mount' ],
+    default   => [ 'df -h' , 'mount' , 'blkid' , 'fdisk -l' ],
   }
 
   puppi::info { 'disks':
@@ -95,8 +95,8 @@ class puppi::extras {
   }
 
   $hardware_run = $::operatingsystem ? {
-    Solaris => [ 'find /devices/' ],
-    default => [ 'lspci' , 'cat /proc/cpuinfo' ],
+    'Solaris' => [ 'find /devices/' ],
+    default   => [ 'lspci' , 'cat /proc/cpuinfo' ],
   }
 
   puppi::info { 'hardware':
@@ -128,9 +128,9 @@ class puppi::extras {
   }
 
   ### Default Logs
-  case $::operatingsystem {
+  case $::osfamily {
 
-    Debian,Ubuntu: {
+    'Debian': {
       puppi::log { 'system':
         description => 'General System Messages',
         log         => ['/var/log/syslog'],
@@ -145,7 +145,7 @@ class puppi::extras {
       }
     }
 
-    RedHat,CentOS,Scientific,Amazon,Linux: {
+    'RedHat': {
       puppi::log { 'system':
         description => 'General System Messages',
         log         => ['/var/log/messages'],
@@ -160,7 +160,7 @@ class puppi::extras {
       }
     }
 
-    SLES,OpenSuSE: {
+    'SLES': {
       puppi::log { 'system':
         description => 'General System Messages',
         log         => ['/var/log/messages'],
@@ -175,7 +175,7 @@ class puppi::extras {
       }
     }
 
-    Solaris: {
+    'Solaris': {
       puppi::log { 'system':
         description => 'General System Messages',
         log         => ['/var/adm/messages'],
@@ -186,7 +186,7 @@ class puppi::extras {
       }
     }
 
-    Archlinux: {
+    'Archlinux': {
       puppi::log { 'system':
         description => 'General System Messages',
         log         => ['/var/log/messages.log','/var/log/syslog.log'],

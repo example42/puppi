@@ -1,10 +1,6 @@
 # Puppi: Puppet Knowledge to the CLI
 
-Puppi One and Puppi module written by Alessandro Franceschi / al @ lab42.it
-
-Puppi Gem by Celso Fernandez / Zertico
-
-Source: http://www.example42.com
+Puppi is maintained by Example42 GmbH
 
 Licence: Apache 2
 
@@ -18,7 +14,7 @@ Its structure provides FULL flexibility on the type of "actions" that may be req
 
 The module provides:
 
-* Old-Gen and Next-Gen Puppi implementation.
+* Puppi v1 script
 
 * A set of scripts that can be chained togehter to automate any kind of deployment.
 
@@ -26,29 +22,30 @@ The module provides:
 
 * Puppet defines to populate the output of the different actions.
 
+This module requires functions provided by the [Puppet Labs Stdlib Module](https://github.com/puppetlabs/puppetlabs-stdlib).
+
 
 ## HOW TO INSTALL
 
 Download Puppi from GitHub and place it in your modules directory:
 
-       git clone https://github.com/example42/puppi.git /etc/puppet/modules/puppi
+```bash
+git clone https://github.com/example42/puppi.git /etc/puppet/modules/puppi
+```
 
-To use the Puppi "Original, old and widely tested" version, just declare or include the puppi class
+To use the Puppi just declare or include the puppi class
 
-       class { 'puppi': }
-
-To test the Next-Gen version you can perform the following command. Please note that this module is
-not stable yet:
-        class { 'puppi':
-          version => '2',
-        }
+```ruby
+include puppi
+```
 
 If you have resources conflicts, do not install automatically the Puppi dependencies (commands and packages)
 
-        class { 'puppi':
-          install_dependencies => false,
-        }
-
+```ruby
+class { 'puppi':
+  install_dependencies => false,
+}
+```
 
 ## HOW TO USE
 
@@ -56,10 +53,12 @@ Once Puppi is installed you can use it to:
 
 * Easily define in Puppet manifests Web Applications deploy procedures. For example:
 
-        puppi::project::war { "myapp":
-            source           => "http://repo.example42.com/deploy/prod/myapp.war",
-            deploy_root      => "/opt/tomcat/myapp/webapps",
-        }
+  ```ruby
+  puppi::project::war { "myapp":
+    source           => "http://repo.example42.com/deploy/prod/myapp.war",
+    deploy_root      => "/opt/tomcat/myapp/webapps",
+  }
+  ```
 
 * Integrate with your modules for puppi check, info and log
 
@@ -68,49 +67,51 @@ Once Puppi is installed you can use it to:
 
 ## HOW TO USE WITH EXAMPLE42 MODULES
 
-The Example42 modules provide (optional) Puppi integration.
+The Example42 modules version 1 provide (optional) Puppi integration.
 Once enabled for each module you have puppi check, info and log commands.
 
-To eanble Puppi in OldGen Modules, set in the scope these variables:
+To enable Puppi integration in OldGen (version 1) Example42 Modules, set in the scope these variables:
 
-        $puppi = yes   # Enables puppi integration.
-        $monitor = yes # Enables automatic monitoring
-        $monitor_tool = "puppi" # Sets puppi as monitoring tool
-
-For the NextGen modules set the same parameters via Hiera, at Top Scope or as class arguments:
-
-        class { 'openssh':
-          puppi        => yes,
-          monitor      => yes,
-          monitor_tool => 'puppi',
-        }
-
+```
+$puppi = yes            # Enables puppi integration
+$monitor = yes          # Enables automatic monitoring
+$monitor_tool = "puppi" # Sets puppi as monitoring tool
+```
 
 ## USAGE OF THE PUPPI COMMAND (OLD GEN)
 
-        puppi <action> <project_name> [ -options ]
+```bash
+puppi <action> <project_name> [ -options ]
+```
 
-The puppi command has these possibile actions:
+The puppi command has these possible actions:
 
 First time initialization of the defined project (if available)
+
         puppi init <project>
 
 Deploy the specified project
+
         puppi deploy <project>
 
 Rollback to a previous deploy state
+
         puppi rollback <project>
 
 Run local checks on system and applications
+
         puppi check
 
 Tail system or application logs
+
         puppi log
 
 Show system information (for all or only the specified topic)
+
         puppi info [topic]
 
 Show things to do (or done) manually on the system (not done via Puppet)
+
         puppi todo
 
 In the deploy/rollback/init actions, puppi runs the commands in /etc/puppi/projects/$project/$action, logs their status and then run the commands in /etc/puppi/projects/$project/report to provide reporting, in whatever, pluggable, way.
@@ -130,12 +131,13 @@ You can also provide some options:
 
 Some common puppi commnds when you log for an application deployment:
 
-        puppi check
-        puppi log &    # (More readable if done on another window)
-        puppi deploy myapp
-        puppi check
-        puppi info myapp
-
+```bash
+puppi check
+puppi log &    # (More readable if done on another window)
+puppi deploy myapp
+puppi check
+puppi info myapp
+```
 
 ## THE PUPPI MODULE
 
@@ -143,27 +145,35 @@ The set of commands needed for each of these actions are entirely managed with s
 Puppet "basic defines":
 
 Create the main project structure. One or more different deployment projects can exist on a node.
+
         puppi::project
 
 Create a single command to be placed in the init sequence. It's not required for every project.
+
         puppi::initialize
 
 Create a single command to be placed in the deploy sequence. More than one is generally needed for each project.
+
         puppi::deploy
 
 Create a single command to be placed in the rollback sequence. More than one is generally needed for each project.
+
         puppi::rollback
 
 Create a single check (based on Nagios plugins) for a project or for the whole host (host wide checks are auto generated by Example42 monitor module)
+
         puppi::check
 
 Create a reporting command to be placed in the report sequence.
+
         puppi::report
 
 Create a log filename entry for a project or the whole hosts.
+
         puppi::log
 
 Create an info entry with the commands used to provide info on a topic
+
         puppi::info
 
 Read details in the relevant READMEs
@@ -172,39 +182,51 @@ Read details in the relevant READMEs
 ## FILE PATHS (all of them are provided, and can be configured, in the puppi module):
 
 A link to the actual version of puppi enabled
+
         /usr/sbin/puppi
 
 The original puppi bash command.
+
         /usr/sbin/puppi.one
 
 Puppi (one) main config file. Various puppi wide paths are defined here.
+
         /etc/puppi/puppi.conf
 
 Directory where by default all the host wide checks can be placed. If you use the Example42 monitor module and have "puppi" as $monitor_tool, this directory is automatically filled with Nagios plugins based checks.
+
         /etc/puppi/checks/ ($checksdir)
 
 Directory that containts projects subdirs, with the commands to be run for deploy, rollback and check actions. They are completely built (and purged) by the Puppet module.
+
         /etc/puppi/projects/ ($projectsdir)
 
 The general-use scripts directory, these are used by the above commands and may require one or more arguments.
+
         /etc/puppi/scripts/ ($scriptsdir)
 
 The general-use directory where files are placed which contain the log paths to be used by puppi log
+
         /etc/puppi/logs/ ($logssdir)
 
 The general-use directory where files are placed which contain the log paths to be used by puppi log
+
         /etc/puppi/info/ ($infodir)
 
 Where all data to rollback is placed.
+
         /var/lib/puppi/archive/ ($archivedir)
 
 Where logs and reports of the different commands are placed.
+
         /var/log/puppi/ ($logdir)
 
 Temporary, scratchable, directory where Puppi places temporary files.
+
         /tmp/puppi/ ($workdir)
 
 A runtime configuration file, which is used by all all the the scripts invoked by puppi to read and write dynamic variables at runtime. This is necessary to mantain "state" information that changes on every puppi run (such as the deploy datetime, used for backups).
+
         /tmp/puppi/$project/config
 
 
@@ -253,5 +275,6 @@ Puppi is self contained. It doesn't require other modules.
 
 For correct functionality by default some extra packages are installed.
 If you have conflicts with your existing modules, set the argument:
+
   install_dependencies => false
 
