@@ -22,6 +22,8 @@ The module provides:
 
 * Puppet defines to populate the output of the different actions.
 
+This module requires functions provided by the [Puppet Labs Stdlib Module](https://github.com/puppetlabs/puppetlabs-stdlib).
+
 
 ## HOW TO INSTALL
 

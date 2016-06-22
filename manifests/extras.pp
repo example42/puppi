@@ -128,9 +128,9 @@ class puppi::extras {
   }
 
   ### Default Logs
-  case $::operatingsystem {
+  case $::osfamily {
 
-    /Debian|Ubuntu/: {
+    'Debian': {
       puppi::log { 'system':
         description => 'General System Messages',
         log         => ['/var/log/syslog'],
@@ -145,7 +145,7 @@ class puppi::extras {
       }
     }
 
-    /RedHat|CentOS|Scientific|Amazon|Linux/: {
+    'RedHat': {
       puppi::log { 'system':
         description => 'General System Messages',
         log         => ['/var/log/messages'],
@@ -160,7 +160,7 @@ class puppi::extras {
       }
     }
 
-    /SLES|OpenSuSE/: {
+    'SLES': {
       puppi::log { 'system':
         description => 'General System Messages',
         log         => ['/var/log/messages'],
@@ -175,7 +175,7 @@ class puppi::extras {
       }
     }
 
-    /Solaris/: {
+    'Solaris': {
       puppi::log { 'system':
         description => 'General System Messages',
         log         => ['/var/adm/messages'],
@@ -186,7 +186,7 @@ class puppi::extras {
       }
     }
 
-    /Archlinux/: {
+    'Archlinux': {
       puppi::log { 'system':
         description => 'General System Messages',
         log         => ['/var/log/messages.log','/var/log/syslog.log'],
