@@ -121,7 +121,7 @@ if [ "x$keep_hgdata" != "xtrue" ] ; then
 fi
 
 do_install () {
-  if [ "$branch" ]; then
+  if [ -n "$branch" ]; then
     branch_param="--branch $branch"
   fi
   if [ -d $hgdir/.hg ] ; then
