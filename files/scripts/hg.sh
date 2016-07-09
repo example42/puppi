@@ -121,15 +121,18 @@ if [ "x$keep_hgdata" != "xtrue" ] ; then
 fi
 
 do_install () {
+  if [ -n "$branch" ]; then
+    branch_param="--branch $branch"
+  fi
   if [ -d $hgdir/.hg ] ; then
     cd $hgdir
-    hg pull $verbosity origin $branch
+    hg pull $verbosity $branch_param
     hg update $verbosity $branch
     if [ "x$?" != "x0" ] ; then
       hg update $verbosity $branch
     fi
   else
-    hg clone $verbosity --branch $branch $source $hgdir
+    hg clone $verbosity $branch_param $source $hgdir
     cd $hgdir
   fi
 
