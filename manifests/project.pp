@@ -33,11 +33,11 @@ define puppi::project (
   # Create Project subdirs
   file {
     "${puppi::params::projectsdir}/${name}":
-      ensure  => $ensure,
-      mode    => '0755',
-      owner   => $puppi::params::configfile_owner,
-      group   => $puppi::params::configfile_group,
-      force   => true;
+      ensure => $ensure,
+      mode   => '0755',
+      owner  => $puppi::params::configfile_owner,
+      group  => $puppi::params::configfile_group,
+      force  => true;
 
     "${puppi::params::projectsdir}/${name}/check":
       ensure  => $ensure,
