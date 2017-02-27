@@ -6,5 +6,11 @@
   "description": "This module provides the Puppi libraries required by Example42 modules and, if explicitely included, the puppi command, its working environment, the defines and procedures to deploy applications",
   "source": "https://github.com/example42/puppi",
   "project_page": "https://github.com/example42/puppi",
-  "license": "Apache2"
+  "license": "Apache2",
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 3.2.0 < 5.0.0"
+    }
+  ]
 }
