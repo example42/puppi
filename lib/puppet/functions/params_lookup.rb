@@ -55,9 +55,8 @@ Puppet::Functions.create_function(:params_lookup, Puppet::Functions::InternalFun
       return value if (not value.nil?) && (value != :undefined) && (value != '')
     end
 
-    # TODO: Set the correct classname when params_lookup used in subclasses
-    classname = modulename
-    # classname = scope.self.resource.name.downcase 
+    # Set the classname to first namespace when params_lookup used in subclasses
+    classname = scope.namespaces.first
 
     loaded_classes = closure_scope.catalog.classes
 
