@@ -56,7 +56,16 @@ Puppet::Functions.create_function(:params_lookup, Puppet::Functions::InternalFun
     end
 
     # Set the classname to first namespace when params_lookup used in subclasses
+    classname = scope.resource.name.downcase if scope.resource.type == 'Class'
+
     loaded_classes = closure_scope.catalog.classes
+
+    # TOTEST - legacy params lookup (self::params)
+    if loaded_classes.include?("#{classname}::params")
+      value = closure_scope["::#{classname}::params::#{varname}"]
+      return value if (not value.nil?)
+      # return value if (not value.nil?) && (value != :undefined) && (value != '')
+    end
 
     # OK - default params lookup
     if loaded_classes.include?("#{modulename}::params")
