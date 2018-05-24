@@ -1,16 +1,68 @@
 {
   "name": "example42-puppi",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "summary": "Installs and configures Puppi",
+  "license": "Apache-2.0",
   "author": "Alessandro Franceschi",
   "description": "This module provides the Puppi libraries required by Example42 modules and, if explicitely included, the puppi command, its working environment, the defines and procedures to deploy applications",
   "source": "https://github.com/example42/puppi",
   "project_page": "https://github.com/example42/puppi",
-  "license": "Apache2",
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
       "version_requirement": ">= 3.2.0 < 5.0.0"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "SLES",
+      "operatingsystemrelease": [
+        "11 SP1",
+        "12"
+      ]
+    },
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "14.04",
+        "16.04",
+        "18.04"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 3.0.0 < 6.0.0"
     }
   ]
 }
