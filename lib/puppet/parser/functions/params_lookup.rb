@@ -3,8 +3,10 @@
 #
 # This function lookups for a variable value in various locations
 # following this order (first match is returned)
+# - Hiera backend (if present) for modulename::varname
 # - Hiera backend (if present) for modulename_varname
 # - Hiera backend (if present) for varname (if second argument is 'global')
+# - Top Scope Variable ::modulename::varname
 # - Top Scope Variable ::modulename_varname
 # - Top Scope Variable ::varname (if second argument is 'global')
 # - Module default: ::modulename::params::varname
@@ -21,8 +23,10 @@
 module Puppet::Parser::Functions
   newfunction(:params_lookup, :type => :rvalue, :doc => <<-EOS
 This fuction looks for the given variable name in a set of different sources:
+- Hiera, if available ('modulename::varname')
 - Hiera, if available ('modulename_varname')
 - Hiera, if available (if second argument is 'global')
+- ::modulename::varname
 - ::modulename_varname
 - ::varname (if second argument is 'global')
 - ::modulename::params::varname
@@ -39,6 +43,9 @@ If no value is found in the defined sources, it returns an empty string ('')
 
     # Hiera Lookup
     if Puppet::Parser::Functions.function('hiera')
+      value = function_hiera(["#{module_name}::#{var_name}", ''])
+      return value if (not value.nil?) && (value != :undefined) && (value != '')
+
       value = function_hiera(["#{module_name}_#{var_name}", ''])
       return value if (not value.nil?) && (value != :undefined) && (value != '')
 
@@ -46,6 +53,10 @@ If no value is found in the defined sources, it returns an empty string ('')
       return value if (not value.nil?) && (value != :undefined) && (value != '')
     end
 
+    # Top Scope Variable Lookup (::modulename::varname)
+    value = lookupvar("::#{module_name}::#{var_name}")
+    return value if (not value.nil?) && (value != :undefined) && (value != '')
+    
     # Top Scope Variable Lookup (::modulename_varname)
     catch (:undefined_variable) do
       begin
