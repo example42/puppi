@@ -26,11 +26,11 @@ Puppet::Functions.create_function(:params_lookup, Puppet::Functions::InternalFun
     modulename = scope["module_name"]
 
     # OK - Hiera Lookup modulename_varname
-    value = call_function('hiera', "#{modulename}_#{varname}" , '')
+    value = call_function('lookup', "#{modulename}_#{varname}", String, 'first', '')
     return value if (value != '')
 
     # OK - Hiera Lookup varname (global)
-    value = call_function('hiera', "#{varname}", '') if lookup_type == 'global'
+    value = call_function('lookup', "#{varname}", String, 'first', '') if lookup_type == 'global'
     return value if (not value.nil?) && (value != :undefined) && (value != '')
 
     # OK - Top Scope Variable Lookup (::modulename_varname)

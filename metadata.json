@@ -1,6 +1,6 @@
 {
   "name": "example42-puppi",
-  "version": "2.2.6",
+  "version": "2.2.7",
   "summary": "Installs and configures Puppi",
   "license": "Apache-2.0",
   "author": "Alessandro Franceschi",
@@ -10,7 +10,7 @@
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 3.2.0 < 6.0.0"
+      "version_requirement": ">= 3.2.0 < 7.0.0"
     }
   ],
   "operatingsystem_support": [
