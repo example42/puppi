@@ -7,3 +7,5 @@ is_pe: false
 macaddress: "AA:AA:AA:AA:AA:AA"
 operatingsystem: "RedHat"
 architecture: "x86_64"
+kernel: "Linux"
+osfamily: "RedHat"
