@@ -16,6 +16,11 @@
 # [*deploy_root*]
 #   The destination directory where the retrieved file(s) are deployed.
 #
+# [*war_file*]
+#   (Optional) - The destination war file name where the retrieved file 
+#   is deployed. In the case of a single war file that already has a version
+#   specifies the name and needs to be renamed.
+#
 # [*init_source*]
 #   (Optional) - The full URL to be used to retrieve, for the first time,
 #   the project files. They are copied directly to the $deploy_root
@@ -23,6 +28,12 @@
 #
 # [*user*]
 #   (Optional) - The user to be used for deploy operations.
+#
+# [*http_user*]
+#   (Optional) - The user to be used for download the war file(s).
+#
+# [*http_pass*]
+#   (Optional) - The password to be used for download the war file(s).
 #
 # [*predeploy_customcommand*]
 #   (Optional) -  Full path with arguments of an eventual custom command to
@@ -117,8 +128,11 @@
 define puppi::project::war (
   $source,
   $deploy_root,
+  $war_file                 = undef,
   $init_source              = '',
   $user                     = 'root',
+  $http_user                = undef,
+  $http_pass                = undef,
   $predeploy_customcommand  = '',
   $predeploy_user           = '',
   $predeploy_priority       = '39',
@@ -173,8 +187,9 @@ define puppi::project::war (
   $bool_check_deploy = any2bool($check_deploy)
   $bool_auto_deploy = any2bool($auto_deploy)
 
-  $war_file = url_parse($source,'filename')
-
+  if ($war_file == undef) {
+    $war_file = url_parse($source,'filename')
+  }
 
 ### CREATE PROJECT
     puppi::project { $name:
@@ -197,7 +212,7 @@ define puppi::project::war (
     puppi::initialize { "${name}-Deploy_Files":
       priority  => '40' ,
       command   => 'get_file.sh' ,
-      arguments => "-s ${init_source} -d ${deploy_root}" ,
+      arguments => "-s '${init_source}' -d '${deploy_root}'" ,
       user      => $user ,
       project   => $name ,
       enable    => $enable ,
@@ -221,7 +236,7 @@ define puppi::project::war (
     puppi::deploy { "${name}-Retrieve_WAR":
       priority  => '20' ,
       command   => 'get_file.sh' ,
-      arguments => "-s ${source} -a ${real_always_deploy}" ,
+      arguments => "-s '${source}' -a '${real_always_deploy}' -f '${war_file}' -u '${http_user}' -p '${http_pass}'" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -242,7 +257,7 @@ define puppi::project::war (
     puppi::deploy { "${name}-Backup_existing_WAR":
       priority  => '30' ,
       command   => 'archive.sh' ,
-      arguments => "-b ${deploy_root} -t war -s move -m diff -o '${backup_rsync_options}' -n ${backup_retention}" ,
+      arguments => "-b '${deploy_root}' -t war -s copy -m diff -o '${backup_rsync_options}' -n '${backup_retention}'" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -253,7 +268,7 @@ define puppi::project::war (
     puppi::deploy { "${name}-Check_undeploy":
       priority  => '32' ,
       command   => 'checkwardir.sh' ,
-      arguments => "-a ${deploy_root}/${war_file}" ,
+      arguments => "-a '${deploy_root}/${war_file}'" ,
       user      => $user ,
       project   => $name ,
       enable    => $enable ,
@@ -297,7 +312,7 @@ define puppi::project::war (
     puppi::deploy { "${name}-Deploy_WAR":
       priority  => '40' ,
       command   => 'deploy_files.sh' ,
-      arguments => "-d ${deploy_root} -c ${bool_clean_deploy}",
+      arguments => "-d '${deploy_root}' -c '${bool_clean_deploy}'",
       user      => $user ,
       project   => $name ,
       enable    => $enable ,
@@ -340,7 +355,7 @@ define puppi::project::war (
     puppi::deploy { "${name}-Check_deploy":
       priority  => '45' ,
       command   => 'checkwardir.sh' ,
-      arguments => "-p ${deploy_root}/${war_file}" ,
+      arguments => "-p '${deploy_root}/${war_file}'" ,
       user      => $user ,
       project   => $name ,
       enable    => $enable ,
@@ -388,7 +403,7 @@ define puppi::project::war (
       puppi::rollback { "${name}-Remove_existing_WAR":
         priority  => '30' ,
         command   => 'delete.sh' ,
-        arguments => "${deploy_root}/${war_file}" ,
+        arguments => "'${deploy_root}/${war_file}'" ,
         user      => 'root' ,
         project   => $name ,
         enable    => $enable ,
@@ -398,7 +413,7 @@ define puppi::project::war (
       puppi::rollback { "${name}-Check_undeploy":
         priority  => '36' ,
         command   => 'checkwardir.sh' ,
-        arguments => "-a ${deploy_root}/${war_file}" ,
+        arguments => "-a '${deploy_root}/${war_file}'" ,
         user      => $user ,
         project   => $name ,
         enable    => $enable ,
@@ -441,7 +456,7 @@ define puppi::project::war (
       puppi::rollback { "${name}-Recover_Files_To_Deploy":
         priority  => '40' ,
         command   => 'archive.sh' ,
-        arguments => "-r ${deploy_root} -t war -o '${backup_rsync_options}'" ,
+        arguments => "-r '${deploy_root}' -t war -o '${backup_rsync_options}'" ,
         user      => $user ,
         project   => $name ,
         enable    => $enable ,
@@ -484,7 +499,7 @@ define puppi::project::war (
       puppi::rollback { "${name}-Check_deploy":
         priority  => '45' ,
         command   => 'checkwardir.sh' ,
-        arguments => "-p ${deploy_root}/${war_file}" ,
+        arguments => "-p '${deploy_root}/${war_file}'" ,
         user      => $user ,
         project   => $name ,
         enable    => $enable ,
