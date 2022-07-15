@@ -8,7 +8,7 @@ Puppi is a unique tool that serves both as a Puppet module and a CLI command too
 It's data is entirely driven by Puppet code.
 Example use cases for Puppi may include:
 - creating a standardize method to automate the deployment of web applications
-- or to provide a set of standard commands to query and check system resources based on "user definded actions".
+- or to provide a set of standard commands to query and check system resources based on "user defined actions".
 
 Its structure provides FULL flexibility on the type of "actions" that may be required for virtually any kind of application deployment and/or system information gathering.
 
@@ -16,7 +16,7 @@ The module provides:
 
 * Puppi v1 script
 
-* A set of scripts that can be chained togehter to automate any kind of deployment.
+* A set of scripts that can be chained together to automate any kind of deployment.
 
 * Puppet defines that make it easy to prepare a puppi set of commands for a project deployment.
 
@@ -129,7 +129,7 @@ You can also provide some options:
 * -o "parameter=value parameter2=value2" : Set manual options to override defaults. The options must be in parameter=value syntax, separated by spaces and inside double quotes.
 
 
-Some common puppi commnds when you log for an application deployment:
+Some common puppi commands when you log for an application deployment:
 
 ```bash
 puppi check
@@ -197,7 +197,7 @@ Directory where by default all the host wide checks can be placed. If you use th
 
         /etc/puppi/checks/ ($checksdir)
 
-Directory that containts projects subdirs, with the commands to be run for deploy, rollback and check actions. They are completely built (and purged) by the Puppet module.
+Directory that contains projects subdirs, with the commands to be run for deploy, rollback and check actions. They are completely built (and purged) by the Puppet module.
 
         /etc/puppi/projects/ ($projectsdir)
 
@@ -225,7 +225,7 @@ Temporary, scratchable, directory where Puppi places temporary files.
 
         /tmp/puppi/ ($workdir)
 
-A runtime configuration file, which is used by all all the the scripts invoked by puppi to read and write dynamic variables at runtime. This is necessary to mantain "state" information that changes on every puppi run (such as the deploy datetime, used for backups).
+A runtime configuration file, which is used by all the the scripts invoked by puppi to read and write dynamic variables at runtime. This is necessary to maintain "state" information that changes on every puppi run (such as the deploy datetime, used for backups).
 
         /tmp/puppi/$project/config
 

@@ -26,7 +26,7 @@ it creates a file in /etc/puppi/logs/ with one or more logs paths.
 A simple, operating system aware, example might be:
         puppi::log { 'auth':
           description => 'Users and authentication' ,
-          log => $::operatingsystem ? { 
+          log => $::operatingsystem ? {
             redhat => '/var/log/secure',
             darwin => '/var/log/secure.log',
             ubuntu => ['/var/log/user.log','/var/log/auth.log'],
@@ -40,5 +40,5 @@ but also something that uses variables Puppet already knows
 
 EXAMPLES (with example42 puppet modules)
 If you use the old Example42 modules set you get automatically many service related logs out of the box to be used with Puppi One.
-NextGen modules are supposed to provide puppi log intergration on Puppi Two (TO DO)
+NextGen modules are supposed to provide puppi log integration on Puppi Two (TO DO)
 

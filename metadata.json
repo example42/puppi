@@ -65,7 +65,7 @@
       "version_requirement": ">= 3.0.0 < 6.0.0"
     }
   ],
-  "description": "This module provides the Puppi libraries required by Example42 modules and, if explicitely included, the puppi command, its working environment, the defines and procedures to deploy applications",
+  "description": "This module provides the Puppi libraries required by Example42 modules and, if explicitly included, the puppi command, its working environment, the defines and procedures to deploy applications",
   "pdk-version": "1.8.0",
   "template-url": "file:///opt/puppetlabs/pdk/share/cache/pdk-templates.git",
   "template-ref": "1.8.0-0-g0d9da00"

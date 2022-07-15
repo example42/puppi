@@ -9,7 +9,7 @@ Shell command to launch a deploy:
 
 Shell command to launch a rollback:
 
-        puppi rollback <project_name> 
+        puppi rollback <project_name>
 
 Shell command to launch the first deploy:
 
@@ -99,7 +99,7 @@ in $deploy_root:
           enable           => 'true',
         }
 
-Deploy from a Nexus repository (retrieve maven-metadata.xml from dir specified in $source), get the war 
+Deploy from a Nexus repository (retrieve maven-metadata.xml from dir specified in $source), get the war
 (version is achieved from the "release" tag in the xml) and deploy it in $deploy_root and then restart tomcat.
 
         puppi::project::maven { 'supersite':
@@ -129,7 +129,7 @@ Get the maven-metadata.xml from a Nexus repository and deploy:
 
 The same deploy Nexus repository with some more options:
 - A Source dir to be used to deploy static files when issuing "puppi init supersite"
-- A block from a loadbalancer IP (managing different sites addresess)
+- A block from a loadbalancer IP (managing different sites addresses)
 - Some more elaborate rsync exclusion rules
 - A backup retention of 3 archives (instead of the default 5)
 
@@ -213,7 +213,7 @@ Create a single command to be placed in the rollback sequence. More than one is 
          puppi::rollback
 
 These defines have generally a standard structure and similar arguments.
-Every one is reversable (enable => false) but you can wipe out the whole /etc/puppi directory
+Every one is reversible (enable => false) but you can wipe out the whole /etc/puppi directory
 to have it rebuilt from scratch. Here is an example for a single deploy command:
 
         puppi::deploy { 'Retrieve files':       # The $name of the define is used in the file name
@@ -240,24 +240,24 @@ puppi::rollback defines to design a specific workflow using the builtin commands
 puppi/files/scripts.
 Note that if you need to design your own deploy procedure you have different options:
 - Verify if you can reuse the existing ones, using optional arguments as pre/postdeploy_commands
-- Use the existing ones as a base to make you own custom defines, reusing parts of their logic 
+- Use the existing ones as a base to make you own custom defines, reusing parts of their logic
   and the builtin commands (puppi/files/scripts/*) they use
 - Write your own commands (in whatever language) and integrate them in your own procedure.
 
 Here follow the main and most reusable deploy workflows defines available in puppi/manifests/project/.
-The have generally a set of common arguments that make you manage if to stop and restart specific 
+The have generally a set of common arguments that make you manage if to stop and restart specific
 services, if you want to isolate your server from a loadbalancer during the deploy procedure, what to backup,
-how many backup copies to mantain, if to send a report mail to specific addresses and if you need
+how many backup copies to maintain, if to send a report mail to specific addresses and if you need
 to run custom commands during the standard procedure.
-For all of the you have to specify a source from where to get the source files (http/ftp/rsync/file..) 
+For all of the you have to specify a source from where to get the source files (http/ftp/rsync/file..)
 a directory where to place them and the user that has to own the deploy files.
 Full documentation is available in the relevant .pp files
 
 - puppi::project::tar - Use this to retrieve and deploy a simple tar file
 - puppi::project::war - Use this to retrieve and deploy a war
 - puppi::project::files - Use this to deploy one or more files based on a provided list
-- puppi::project::dir - Use this to syncronize a remote directory to a local deploy one
-- puppi::project::mysql - Use this to retrive and apply a .sql file for mysql schema updates 
+- puppi::project::dir - Use this to synchronize a remote directory to a local deploy one
+- puppi::project::mysql - Use this to retrieve and apply a .sql file for mysql schema updates
 - puppi::project::maven - Use this to deploy war and tar files generated via Maven released on Nexus or similar. A good source of Open Source Java artifacts is http://www.artifact-repository.org/
 - puppi::project::builder - This is a general purpose define that incorporates most the of cases provided by the above procedures
 
