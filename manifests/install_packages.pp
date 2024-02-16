@@ -41,7 +41,7 @@
 #
 # - Minimal setup
 # puppi::install_packages { 'build_tools':
-#   source           => 'build-essential vim git-core curl bison',
+#   packages => 'build-essential vim git-core curl bison',
 # }
 #
 define puppi::install_packages (
