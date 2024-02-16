@@ -54,7 +54,7 @@ class puppi::extras {
 
 
   # Info Pages
-  $network_run = $::operatingsystem ? {
+  $network_run = $::os['name'] ? {
     'Solaris' => [ 'ifconfig -a' , 'netstat -nr' , 'cat /etc/resolv.conf' , 'arp -an' , 'netstat -na' ],
     default   => [ 'ifconfig' , 'route -n' , 'cat /etc/resolv.conf' , 'arp -an' , 'netstat -natup | grep LISTEN' ],
   }
@@ -64,7 +64,7 @@ class puppi::extras {
     run         => $network_run,
   }
 
-  $users_run = $::operatingsystem ? {
+  $users_run = $::os['name'] ? {
     'Solaris' => [ 'who' , 'last' ],
     default   => [ 'who' , 'last' , 'LANG=C lastlog | grep -v \'Never logged in\'' ],
   }
@@ -74,7 +74,7 @@ class puppi::extras {
     run         => $users_run,
   }
 
-  $perf_run = $::operatingsystem ? {
+  $perf_run = $::os['name'] ? {
     'Solaris' => [ 'uptime' , 'vmstat 1 5' ],
     default   => [ 'uptime' , 'free' , 'vmstat 1 5' ],
   }
@@ -84,7 +84,7 @@ class puppi::extras {
     run         => $perf_run,
   }
 
-  $disks_run = $::operatingsystem ? {
+  $disks_run = $::os['name'] ? {
     'Solaris' => [ 'df -h' , 'mount' ],
     default   => [ 'df -h' , 'mount' , 'blkid' , 'fdisk -l' ],
   }
@@ -94,7 +94,7 @@ class puppi::extras {
     run         => $disks_run,
   }
 
-  $hardware_run = $::operatingsystem ? {
+  $hardware_run = $::os['name'] ? {
     'Solaris' => [ 'find /devices/' ],
     default   => [ 'lspci' , 'cat /proc/cpuinfo' ],
   }
@@ -104,7 +104,7 @@ class puppi::extras {
     run         => $hardware_run,
   }
 
-  $packages_run = $::operatingsystem ? {
+  $packages_run = $::os['name'] ? {
     /(?i:RedHat|CentOS|Scientific|Amazon|Linux)/ => [ 'yum repolist' , 'rpm -qa' ] ,
     /(?i:Debian|Ubuntu|Mint)/                    => [ 'apt-config dump' , 'apt-cache stats' , 'apt-key list' , 'dpkg -l' ],
     /(Solaris)/                                  => [ 'pkginfo' ],
@@ -128,7 +128,7 @@ class puppi::extras {
   }
 
   ### Default Logs
-  case $::osfamily {
+  case $::os['family'] {
 
     'Debian': {
       puppi::log { 'system':
