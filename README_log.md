@@ -26,7 +26,7 @@ it creates a file in /etc/puppi/logs/ with one or more logs paths.
 A simple, operating system aware, example might be:
         puppi::log { 'auth':
           description => 'Users and authentication' ,
-          log => $::operatingsystem ? {
+          log => $::os['name'] ? { 
             redhat => '/var/log/secure',
             darwin => '/var/log/secure.log',
             ubuntu => ['/var/log/user.log','/var/log/auth.log'],

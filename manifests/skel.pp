@@ -164,7 +164,7 @@ class puppi::skel {
   }
 
   # Logs cleanup script
-  if $::kernel == 'Linux' {
+  if $facts['kernel'] == 'Linux' {
     if $puppi::logs_retention_days
     and $puppi::logs_retention_days != '0' {
       $purge_cron_ensure = 'present'
