@@ -151,7 +151,7 @@ define puppi::project::git (
   Variant[String,Integer] $backup_retention    = '5',
   Boolean $run_checks               = true,
   Boolean $auto_deploy              = false,
-  Boolean $enable                   = true,
+  Variant[Boolean,String] $enable   = true,
 ) {
   require puppi
   require puppi::params

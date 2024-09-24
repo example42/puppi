@@ -19,7 +19,7 @@ define puppi::configure (
   String $arguments = '',
   Variant[String,Integer] $priority  = '50',
   String $user      = 'root',
-  Boolean $enable   = true,
+  Variant[Boolean,String] $enable   = true,
 ) {
   require puppi
   require puppi::params

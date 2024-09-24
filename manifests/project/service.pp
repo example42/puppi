@@ -91,7 +91,7 @@ define puppi::project::service (
   String $report_email             = '',
   Boolean $run_checks               = true,
   Boolean $auto_deploy              = false,
-  Boolean $enable                   = true,
+  Variant[Boolean,String] $enable   = true,
 ) {
   require puppi
   require puppi::params

@@ -103,7 +103,7 @@ define puppi::project::yum (
   Boolean $checks_required          = false,
   Boolean $always_deploy            = true,
   Boolean $auto_deploy              = false,
-  Boolean $enable                   = true,
+  Variant[Boolean,String] $enable   = true,
 ) {
   require puppi
   require puppi::params

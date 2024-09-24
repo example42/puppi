@@ -201,7 +201,7 @@ define puppi::project::y4maven (
   Boolean $always_deploy            = true,
   Boolean $check_deploy             = true,
   Boolean $auto_deploy              = false,
-  Boolean $enable                   = true,
+  Variant[Boolean,String] $enable   = true,
 ) {
   require puppi
   require puppi::params

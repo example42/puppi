@@ -123,7 +123,7 @@ define puppi::project::dir (
   Boolean $run_checks               = true,
   Boolean $skip_predeploy           = false,
   Boolean $auto_deploy              = false,
-  Boolean $enable                   = true,
+  Variant[Boolean,String] $enable   = true,
 ) {
   require puppi
   require puppi::params

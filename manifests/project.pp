@@ -19,7 +19,7 @@ define puppi::project (
   Optional[String] $source_baseurl = undef,
   String $document_root            = '',
   Optional[String] $config_root    = undef,
-  Boolean $enable                  = true,
+  Variant[Boolean,String] $enable  = true,
 ) {
   require puppi::params
 

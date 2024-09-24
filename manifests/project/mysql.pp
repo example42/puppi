@@ -124,7 +124,7 @@ define puppi::project::mysql (
   Boolean $run_checks               = true,
   Boolean $always_deploy            = true,
   Boolean $auto_deploy              = false,
-  Boolean $enable                   = true,
+  Variant[Boolean,String] $enable   = true,
 ) {
   require puppi
   require puppi::params

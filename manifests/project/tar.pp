@@ -137,7 +137,7 @@ define puppi::project::tar (
   Boolean $always_deploy           = true,
   Boolean $auto_deploy             = false,
   Boolean $verify_ssl              = true,
-  Boolean $enable                  = true,
+  Variant[Boolean,String] $enable  = true,
 ) {
   require puppi
   require puppi::params

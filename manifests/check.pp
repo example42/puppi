@@ -18,7 +18,7 @@ define puppi::check (
   String $hostwide = 'no',
   Variant[String,Integer] $priority  = '50',
   String $project  = 'default',
-  Boolean $enable  = true,
+  Variant[Boolean,String] $enable   = true,
 ) {
   require puppi
   require puppi::params
