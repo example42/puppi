@@ -85,26 +85,26 @@
 #   Puppet runs. Default: 'false'
 #
 define puppi::project::yum (
-  $rpm,
-  $rpm_version              = 'latest',
-  $install_root             = '/',
-  $predeploy_customcommand  = '',
-  $predeploy_user           = '',
-  $predeploy_priority       = '39',
-  $postdeploy_customcommand = '',
-  $postdeploy_user          = '',
-  $postdeploy_priority      = '41',
-  $disable_services         = '',
-  $firewall_src_ip          = '',
-  $firewall_dst_port        = '0',
-  $firewall_delay           = '1',
-  $report_email             = '',
-  $run_checks               = true,
-  $checks_required          = false,
-  $always_deploy            = true,
-  $auto_deploy              = false,
-  $enable                   = true ) {
-
+  String $rpm,
+  String $rpm_version              = 'latest',
+  String $install_root             = '/',
+  String $predeploy_customcommand  = '',
+  String $predeploy_user           = '',
+  Variant[String,Integer] $predeploy_priority  = '39',
+  String $postdeploy_customcommand = '',
+  String $postdeploy_user          = '',
+  Variant[String,Integer] $postdeploy_priority = '41',
+  String $disable_services         = '',
+  String $firewall_src_ip          = '',
+  Variant[String,Integer] $firewall_dst_port   = '0',
+  Variant[String,Integer] $firewall_delay      = '1',
+  String $report_email             = '',
+  Boolean $run_checks               = true,
+  Boolean $checks_required          = false,
+  Boolean $always_deploy            = true,
+  Boolean $auto_deploy              = false,
+  Boolean $enable                   = true,
+) {
   require puppi
   require puppi::params
 
@@ -133,15 +133,15 @@ define puppi::project::yum (
   $bool_auto_deploy = any2bool($auto_deploy)
 
 ### CREATE PROJECT
-    puppi::project { $name:
-      predeploy_customcommand  => $predeploy_customcommand,
-      postdeploy_customcommand => $postdeploy_customcommand,
-      disable_services         => $disable_services,
-      firewall_src_ip          => $firewall_src_ip,
-      firewall_dst_port        => $firewall_dst_port,
-      report_email             => $report_email,
-      enable                   => $enable,
-    }
+  puppi::project { $name:
+    predeploy_customcommand  => $predeploy_customcommand,
+    postdeploy_customcommand => $postdeploy_customcommand,
+    disable_services         => $disable_services,
+    firewall_src_ip          => $firewall_src_ip,
+    firewall_dst_port        => $firewall_dst_port,
+    report_email             => $report_email,
+    enable                   => $enable,
+  }
 
 ### DEPLOY SEQUENCE
   if ($bool_run_checks == true) {
@@ -188,15 +188,15 @@ define puppi::project::yum (
     }
   }
 
-    # Here is done the deploy on $deploy_root
-    puppi::deploy { "${name}-Deploy":
-      priority  => '40' ,
-      command   => 'yum.sh' ,
-      arguments => "-a deploy -n ${rpm} -r ${install_root} -v ${rpm_version}" ,
-      user      => root ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  # Here is done the deploy on $deploy_root
+  puppi::deploy { "${name}-Deploy":
+    priority  => '40' ,
+    command   => 'yum.sh' ,
+    arguments => "-a deploy -n ${rpm} -r ${install_root} -v ${rpm_version}" ,
+    user      => root ,
+    project   => $name ,
+    enable    => $enable ,
+  }
 
   if ($postdeploy_customcommand != '') {
     puppi::deploy { "${name}-Run_Custom_PostDeploy_Script":
@@ -242,7 +242,6 @@ define puppi::project::yum (
     }
   }
 
-
 ### ROLLBACK PROCEDURE
 
   if ($firewall_src_ip != '') {
@@ -278,14 +277,14 @@ define puppi::project::yum (
     }
   }
 
-    puppi::rollback { "${name}-Rollback":
-      priority  => '40' ,
-      command   => 'yum.sh' ,
-      arguments => "-a rollback -n ${rpm} -r ${install_root} -v ${rpm_version}" ,
-      user      => 'root' ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  puppi::rollback { "${name}-Rollback":
+    priority  => '40' ,
+    command   => 'yum.sh' ,
+    arguments => "-a rollback -n ${rpm} -r ${install_root} -v ${rpm_version}" ,
+    user      => 'root' ,
+    project   => $name ,
+    enable    => $enable ,
+  }
 
   if ($postdeploy_customcommand != '') {
     puppi::rollback { "${name}-Run_Custom_PostDeploy_Script":
@@ -331,7 +330,6 @@ define puppi::project::yum (
     }
   }
 
-
 ### REPORTING
 
   if ($report_email != '') {
@@ -349,5 +347,4 @@ define puppi::project::yum (
   if ($bool_auto_deploy == true) {
     puppi::run { $name: }
   }
-
 }

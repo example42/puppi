@@ -28,11 +28,11 @@
 # }
 #
 define puppi::todo (
-  $description   = '',
-  $notes         = '',
-  $check_command = '',
-  $run           = '' ) {
-
+  String $description   = '',
+  String $notes         = '',
+  String $check_command = '',
+  String $run           = '',
+) {
   require puppi
   require puppi::params
 
@@ -45,7 +45,7 @@ define puppi::todo (
   }
 
   file { "${puppi::params::tododir}/${name}":
-    ensure  => present,
+    ensure  => file,
     mode    => '0750',
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,
@@ -53,5 +53,4 @@ define puppi::todo (
     content => template('puppi/todo.erb'),
     tag     => 'puppi_todo',
   }
-
 }

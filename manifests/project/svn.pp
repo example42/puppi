@@ -140,37 +140,37 @@
 #   Puppet runs. Default: 'false'
 #
 define puppi::project::svn (
-  $source,
-  $deploy_root,
-  $install_svn              = true,
-  $svn_user                 = 'undefined',
-  $svn_password             = 'undefined',
-  $svn_subdir               = 'undefined',
-  $svn_export               = false,
-  $tag                      = 'undefined',
-  $branch                   = 'master',
-  $commit                   = 'undefined',
-  $keep_svndata             = true,
-  $verbose                  = true,
-  $user                     = 'root',
-  $predeploy_customcommand  = '',
-  $predeploy_user           = '',
-  $predeploy_priority       = '39',
-  $postdeploy_customcommand = '',
-  $postdeploy_user          = '',
-  $postdeploy_priority      = '41',
-  $disable_services         = '',
-  $firewall_src_ip          = '',
-  $firewall_dst_port        = '0',
-  $firewall_delay           = '1',
-  $report_email             = '',
-  $backup_enable            = true,
-  $backup_rsync_options     = '--exclude .snapshot',
-  $backup_retention         = '5',
-  $run_checks               = true,
-  $auto_deploy              = false,
-  $enable                   = true ) {
-
+  String $source,
+  String $deploy_root,
+  Boolean $install_svn             = true,
+  String $svn_user                 = 'undefined',
+  String $svn_password             = 'undefined',
+  String $svn_subdir               = 'undefined',
+  Boolean $svn_export              = false,
+  String $tag                      = 'undefined',
+  String $branch                   = 'master',
+  String $commit                   = 'undefined',
+  Boolean $keep_svndata            = true,
+  Boolean $verbose                 = true,
+  String $user                     = 'root',
+  String $predeploy_customcommand  = '',
+  String $predeploy_user           = '',
+  Variant[String,Integer] $predeploy_priority  = '39',
+  String $postdeploy_customcommand = '',
+  String $postdeploy_user          = '',
+  Variant[String,Integer] $postdeploy_priority = '41',
+  String $disable_services         = '',
+  String $firewall_src_ip          = '',
+  Variant[String,Integer] $firewall_dst_port   = '0',
+  Variant[String,Integer] $firewall_delay      = '1',
+  String $report_email             = '',
+  Boolean $backup_enable           = true,
+  String $backup_rsync_options     = '--exclude .snapshot',
+  Variant[String,Integer] $backup_retention    = '5',
+  Boolean $run_checks              = true,
+  Boolean $auto_deploy             = false,
+  Boolean $enable                  = true,
+) {
   require puppi
   require puppi::params
 
@@ -199,19 +199,18 @@ define puppi::project::svn (
   }
 
 ### CREATE PROJECT
-    puppi::project { $name:
-      source                   => $source,
-      deploy_root              => $deploy_root,
-      user                     => $user,
-      predeploy_customcommand  => $predeploy_customcommand,
-      postdeploy_customcommand => $postdeploy_customcommand,
-      disable_services         => $disable_services,
-      firewall_src_ip          => $firewall_src_ip,
-      firewall_dst_port        => $firewall_dst_port,
-      report_email             => $report_email,
-      enable                   => $enable,
-    }
-
+  puppi::project { $name:
+    source                   => $source,
+    deploy_root              => $deploy_root,
+    user                     => $user,
+    predeploy_customcommand  => $predeploy_customcommand,
+    postdeploy_customcommand => $postdeploy_customcommand,
+    disable_services         => $disable_services,
+    firewall_src_ip          => $firewall_src_ip,
+    firewall_dst_port        => $firewall_dst_port,
+    report_email             => $report_email,
+    enable                   => $enable,
+  }
 
 ### DEPLOY SEQUENCE
   if ($bool_run_checks == true) {
@@ -269,15 +268,15 @@ define puppi::project::svn (
     }
   }
 
-    # Here is done the deploy on $deploy_root
-    puppi::deploy { "${name}-Deploy_Files":
-      priority  => '40' ,
-      command   => 'svn.sh' ,
-      arguments => "-a deploy -s ${source} -d ${deploy_root} -u ${user} -gs ${svn_subdir} -su ${svn_user} -sp ${svn_password} -t ${tag} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_svndata} -e ${bool_svn_export}" ,
-      user      => 'root' ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  # Here is done the deploy on $deploy_root
+  puppi::deploy { "${name}-Deploy_Files":
+    priority  => '40' ,
+    command   => 'svn.sh' ,
+    arguments => "-a deploy -s ${source} -d ${deploy_root} -u ${user} -gs ${svn_subdir} -su ${svn_user} -sp ${svn_password} -t ${tag} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_svndata} -e ${bool_svn_export}" ,
+    user      => 'root' ,
+    project   => $name ,
+    enable    => $enable ,
+  }
 
   if ($postdeploy_customcommand != '') {
     puppi::deploy { "${name}-Run_Custom_PostDeploy_Script":
@@ -323,11 +322,10 @@ define puppi::project::svn (
     }
   }
 
-
 ### ROLLBACK PROCEDURE
 
   if ($bool_backup_enable == true) {
-  if ($firewall_src_ip != '') {
+    if ($firewall_src_ip != '') {
       puppi::rollback { "${name}-Load_Balancer_Block":
         priority  => '25' ,
         command   => 'firewall.sh' ,

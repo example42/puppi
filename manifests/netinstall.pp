@@ -60,23 +60,22 @@
 #   An optional custom command to run after having extracted the file.
 #
 define puppi::netinstall (
-  $url,
-  $destination_dir,
-  $extracted_dir       = '',
-  $retrieve_command    = 'wget',
-  $retrieve_args       = '',
-  $owner               = 'root',
-  $group               = 'root',
+  String $url,
+  String $destination_dir,
+  String $extracted_dir       = '',
+  String $retrieve_command    = 'wget',
+  String $retrieve_args       = '',
+  String $owner               = 'root',
+  String $group               = 'root',
   $timeout             = '3600',
-  $work_dir            = '/var/tmp',
-  $path                = '/bin:/sbin:/usr/bin:/usr/sbin',
-  $extract_command     = '',
-  $preextract_command  = '',
-  $postextract_command = '',
-  $postextract_cwd     = '',
-  $exec_env            = []
-  ) {
-
+  String $work_dir            = '/var/tmp',
+  String $path                = '/bin:/sbin:/usr/bin:/usr/sbin',
+  String $extract_command     = '',
+  String $preextract_command  = '',
+  String $postextract_command = '',
+  String $postextract_cwd     = '',
+  Array $exec_env             = [],
+) {
   $source_filename = url_parse($url,'filename')
   $source_filetype = url_parse($url,'filetype')
   $source_dirname = url_parse($url,'filedir')
@@ -166,4 +165,3 @@ define puppi::netinstall (
     }
   }
 }
-

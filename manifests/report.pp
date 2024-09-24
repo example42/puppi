@@ -12,13 +12,13 @@
 # }
 #
 define puppi::report (
-  $project,
-  $command,
-  $arguments = '',
-  $priority  = '50',
-  $user      = 'root',
-  $enable    = true ) {
-
+  String $project,
+  String $command,
+  String $arguments = '',
+  Variant[String,Integer] $priority  = '50',
+  String $user      = 'root',
+  Boolean $enable    = true,
+) {
   require puppi::params
 
   # Autoinclude the puppi class
@@ -34,5 +34,4 @@ define puppi::report (
     content => "su - ${user} -c \"export project=${project} && ${puppi::params::scriptsdir}/${command} ${arguments}\"\n",
     tag     => 'puppi_report',
   }
-
 }

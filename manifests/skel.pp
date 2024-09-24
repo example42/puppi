@@ -4,7 +4,6 @@
 # Creates the base Puppi dirs
 #
 class puppi::skel {
-
   require puppi::params
 
   file { 'puppi_basedir':
@@ -143,7 +142,7 @@ class puppi::skel {
 
   # MailPuppiCheck script
   file { '/usr/bin/mailpuppicheck':
-    ensure => 'present',
+    ensure => 'file',
     mode   => '0750',
     owner  => $puppi::params::configfile_owner,
     group  => $puppi::params::configfile_group,
@@ -152,7 +151,7 @@ class puppi::skel {
 
   # Puppi common scripts
   file { 'puppi.scripts':
-    ensure  => present,
+    ensure  => file,
     path    => "${puppi::params::scriptsdir}/",
     mode    => '0755',
     owner   => $puppi::params::configfile_owner,

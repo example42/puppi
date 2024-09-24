@@ -127,31 +127,31 @@
 #   Puppet runs. Default: 'false'
 #
 define puppi::project::builder (
-  $source,
-  $source_type,
-  $deploy_root,
-  $init_source              = '',
-  $user                     = 'root',
-  $magicfix                 = '',
-  $predeploy_customcommand  = '',
-  $predeploy_user           = '',
-  $predeploy_priority       = '39',
-  $postdeploy_customcommand = '',
-  $postdeploy_user          = '',
-  $postdeploy_priority      = '41',
-  $disable_services         = '',
-  $firewall_src_ip          = '',
-  $firewall_dst_port        = '0',
-  $firewall_delay           = '1',
-  $report_email             = '',
-  $backup                   = 'full',
-  $backup_rsync_options     = '--exclude .snapshot',
-  $backup_retention         = '5',
-  $run_checks               = true,
-  $always_deploy            = true,
-  $auto_deploy              = false,
-  $enable                   = true ) {
-
+  String $source,
+  String $source_type,
+  String $deploy_root,
+  String $init_source              = '',
+  String $user                     = 'root',
+  String $magicfix                 = '',
+  String $predeploy_customcommand  = '',
+  String $predeploy_user           = '',
+  Variant[String,Integer] $predeploy_priority  = '39',
+  String $postdeploy_customcommand = '',
+  String $postdeploy_user          = '',
+  Variant[String,Integer] $postdeploy_priority = '41',
+  Variant[String,Boolean] $disable_services    = '',
+  String $firewall_src_ip          = '',
+  Variant[String,Integer] $firewall_dst_port   = '0',
+  Variant[String,Integer] $firewall_delay      = '1',
+  String $report_email             = '',
+  String $backup                   = 'full',
+  String $backup_rsync_options     = '--exclude .snapshot',
+  Variant[String,Integer] $backup_retention    = '5',
+  Boolean $run_checks               = true,
+  Boolean $always_deploy            = true,
+  Boolean $auto_deploy              = false,
+  Boolean $enable                   = true,
+) {
   require puppi
   require puppi::params
 
@@ -204,7 +204,6 @@ define puppi::project::builder (
     enable                   => $enable,
   }
 
-
 ### INIT SEQUENCE
   if ($init_source != '') {
     puppi::initialize { "${name}-Deploy_Files":
@@ -216,7 +215,6 @@ define puppi::project::builder (
       enable    => $enable ,
     }
   }
-
 
 ### DEPLOY SEQUENCE
   if ($bool_run_checks == true) {
@@ -257,7 +255,6 @@ define puppi::project::builder (
   }
 
   if ($real_source_type == 'zip') {
-
     puppi::deploy { "${name}-PreDeploy_Zip":
       priority  => '25' ,
       command   => 'predeploy.sh' ,
@@ -364,15 +361,15 @@ define puppi::project::builder (
     }
   }
 
-    # Here is done the deploy on $deploy_root
-    puppi::deploy { "${name}-Deploy":
-      priority  => '40' ,
-      command   => 'deploy.sh' ,
-      arguments => $deploy_root ,
-      user      => $user ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  # Here is done the deploy on $deploy_root
+  puppi::deploy { "${name}-Deploy":
+    priority  => '40' ,
+    command   => 'deploy.sh' ,
+    arguments => $deploy_root ,
+    user      => $user ,
+    project   => $name ,
+    enable    => $enable ,
+  }
 
   if ($postdeploy_customcommand != '') {
     puppi::deploy { "${name}-Run_Custom_PostDeploy_Script":
@@ -428,7 +425,6 @@ define puppi::project::builder (
       enable    => $enable ,
     }
   }
-
 
 ### ROLLBACK PROCEDURE
 
@@ -550,7 +546,6 @@ define puppi::project::builder (
     }
   }
 
-
 ### REPORTING
 
   if ($report_email != '') {
@@ -568,5 +563,4 @@ define puppi::project::builder (
   if ($bool_auto_deploy == true) {
     puppi::run { $name: }
   }
-
 }

@@ -15,11 +15,11 @@
 # }
 #
 define puppi::ze (
-  $variables,
-  $helper = 'standard',
-  $filter = '.*content.*|.*password.*',
-  $ensure = 'present' ) {
-
+  Hash $variables,
+  String $helper = 'standard',
+  String $filter = '.*content.*|.*password.*',
+  String $ensure = 'present',
+) {
   require puppi
   require puppi::params
 
@@ -31,5 +31,4 @@ define puppi::ze (
     group   => $puppi::params::configfile_group,
     content => inline_template("---\n<%= Hash[@variables].reject{ |k,v| k.to_s =~ /(${filter})/ }.keys.sort.map{|k| Array({k => @variables[k]}.to_yaml)[1..-1].join}.join(\"\n\") %>\n"),
   }
-
 }

@@ -26,28 +26,28 @@
 #  }
 #
 define puppi::info::module (
-  $packagename    = '',
-  $servicename    = '',
-  $processname    = '',
-  $configfile     = '',
-  $configdir      = '',
-  $initconfigfile = '',
-  $pidfile        = '',
-  $datadir        = '',
-  $logfile        = '',
-  $logdir         = '',
-  $protocol       = '',
-  $port           = '',
-  $description    = '',
-  $run            = '',
-  $verbose        = 'no',
-  $templatefile   = 'puppi/info/module.erb' ) {
-
+  String $packagename    = '',
+  String $servicename    = '',
+  String $processname    = '',
+  String $configfile     = '',
+  String $configdir      = '',
+  String $initconfigfile = '',
+  String $pidfile        = '',
+  String $datadir        = '',
+  String $logfile        = '',
+  String $logdir         = '',
+  String $protocol       = '',
+  Variant[String,Integer] $port = '',
+  String $description    = '',
+  String $run            = '',
+  String $verbose        = 'no',
+  String $templatefile   = 'puppi/info/module.erb',
+) {
   require puppi
   require puppi::params
 
   file { "${puppi::params::infodir}/${name}":
-    ensure  => present,
+    ensure  => file,
     mode    => '0750',
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,
@@ -55,5 +55,4 @@ define puppi::info::module (
     content => template($templatefile),
     tag     => 'puppi_info',
   }
-
 }

@@ -18,10 +18,10 @@
 # :include:../README.info
 #
 define puppi::info (
-  $description  = '',
-  $templatefile = 'puppi/info.erb',
-  $run          = '' ) {
-
+  String $description  = '',
+  String $templatefile = 'puppi/info.erb',
+  String $run          = '',
+) {
   require puppi
   require puppi::params
 
@@ -34,7 +34,7 @@ define puppi::info (
   }
 
   file { "${puppi::params::infodir}/${name}":
-    ensure  => present,
+    ensure  => file,
     mode    => '0750',
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,
@@ -42,5 +42,4 @@ define puppi::info (
     content => template($templatefile),
     tag     => 'puppi_info',
   }
-
 }

@@ -13,13 +13,13 @@
 # :include:../README.check
 #
 define puppi::check (
-  $command,
-  $base_dir = '',
-  $hostwide = 'no',
-  $priority = '50',
-  $project  = 'default',
-  $enable   = true ) {
-
+  String $command,
+  String $base_dir = '',
+  String $hostwide = 'no',
+  Variant[String,Integer] $priority  = '50',
+  String $project  = 'default',
+  Boolean $enable  = true,
+) {
   require puppi
   require puppi::params
 
@@ -46,5 +46,4 @@ define puppi::check (
     content => "${real_base_dir}/${command}\n",
     tag     => 'puppi_check',
   }
-
 }

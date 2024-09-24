@@ -12,13 +12,13 @@
 # }
 #
 define puppi::rollback (
-  $project,
-  $command,
-  $arguments = '',
-  $priority  = '50',
-  $user      = 'root',
-  $enable    = true ) {
-
+  String $project,
+  String $command,
+  String $arguments = '',
+  Variant[String,Integer] $priority  = '50',
+  String $user      = 'root',
+  Boolean $enable   = true,
+) {
   require puppi
   require puppi::params
 
@@ -32,5 +32,4 @@ define puppi::rollback (
     content => "su - ${user} -c \"export project=${project} && ${puppi::params::scriptsdir}/${command} ${arguments}\"\n",
     tag     => 'puppi_rollback',
   }
-
 }

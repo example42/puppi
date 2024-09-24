@@ -15,9 +15,9 @@
 # puppi::run { "myapp": }
 #
 define puppi::run (
-  $project = '',
-  $timeout = 300) {
-
+  String $project = '',
+  Integer $timeout = 300,
+) {
   require puppi
 
   exec { "Run_Puppi_${name}":
@@ -27,5 +27,4 @@ define puppi::run (
     timeout => $timeout,
     # require => File[ tag == 'puppi_deploy' ],
   }
-
 }
