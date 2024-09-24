@@ -3,9 +3,19 @@
 require 'spec_helper'
 
 describe 'puppi::ze' do
-  let(:title) { 'namevar' }
-  let(:params) do
-    {}
+  let(:title) { 'sample' }
+  let(:node) { 'rspec.example42.com' }
+  let(:params) {
+    { 'helper'     => 'mytest',
+      'variables'  => { 'var1' => 'get', 'var2' => 'got' },
+      'name'       => 'sample',
+    }
+  }
+
+  describe 'Test puppi ze data file creation' do
+    it 'should create a puppi::ze step file' do
+      should contain_file('puppize_sample').with_ensure('present')
+    end
   end
 
   on_supported_os.each do |os, os_facts|

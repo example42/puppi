@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe 'puppi::configure' do
   let(:title) { 'namevar' }
+  let(:node) { 'rspec.example42.com' }
   let(:params) do
     {}
   end
