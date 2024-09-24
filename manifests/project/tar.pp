@@ -170,7 +170,7 @@ define puppi::project::tar (
 
   if ($verify_ssl) {
     $ssl_arg = ''
-  }else {
+  } else {
     $ssl_arg = '-k'
   }
 

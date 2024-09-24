@@ -272,7 +272,7 @@ define puppi::project::svn (
   puppi::deploy { "${name}-Deploy_Files":
     priority  => '40' ,
     command   => 'svn.sh' ,
-    arguments => "-a deploy -s ${source} -d ${deploy_root} -u ${user} -gs ${svn_subdir} -su ${svn_user} -sp ${svn_password} -t ${tag} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_svndata} -e ${bool_svn_export}" ,
+    arguments => "-a deploy -s ${source} -d ${deploy_root} -u ${user} -gs ${svn_subdir} -su ${svn_user} -sp ${svn_password} -t ${tag} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_svndata} -e ${bool_svn_export}" , # lint:ignore:140chars
     user      => 'root' ,
     project   => $name ,
     enable    => $enable ,
@@ -373,7 +373,7 @@ define puppi::project::svn (
       puppi::rollback { "${name}-Rollback_Files":
         priority  => '40' ,
         command   => 'svn.sh' ,
-        arguments => "-a rollback -s ${source} -d ${deploy_root} -gs ${svn_subdir} -t ${tag} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_svndata}" ,
+        arguments => "-a rollback -s ${source} -d ${deploy_root} -gs ${svn_subdir} -t ${tag} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_svndata}" , # lint:ignore:140chars
         user      => $user ,
         project   => $name ,
         enable    => $enable ,

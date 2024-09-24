@@ -107,7 +107,7 @@ define puppi::runscript (
   Optional[String] $creates = undef,
   Optional[String] $onlyif  = undef,
   Optional[String] $unless  = undef,
-  String $asedir            = '/usr/local/sbin',
+  String $basedir           = '/usr/local/sbin',
   String $cron              = '',
   String $cron_user         = 'root',
   String $owner             = 'root',

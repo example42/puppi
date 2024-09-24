@@ -102,6 +102,8 @@
 define puppi::project::mysql (
   String $source,
   String $mysql_database,
+  String $deploy_root              = '',
+  String $user                     = 'root',
   String $mysql_user               = 'root',
   String $mysql_host               = 'localhost',
   String $mysql_password           = '',

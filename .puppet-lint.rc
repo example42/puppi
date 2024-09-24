@@ -1,2 +1,3 @@
 --relative
---ignore-lint-parameter_documentation
+--no-parameter_documentation
+--no-params_empty_string

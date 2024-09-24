@@ -252,7 +252,7 @@ define puppi::project::git (
   puppi::deploy { "${name}-Deploy_Files":
     priority  => '40' ,
     command   => 'git.sh' ,
-    arguments => "-a deploy -s ${source} -d ${deploy_root} -u ${user} -gs ${git_subdir} -t ${tag} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_gitdata}" ,
+    arguments => "-a deploy -s ${source} -d ${deploy_root} -u ${user} -gs ${git_subdir} -t ${tag} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_gitdata}" , # lint:ignore:140chars
     user      => 'root' ,
     project   => $name ,
     enable    => $enable ,
@@ -352,7 +352,7 @@ define puppi::project::git (
     puppi::rollback { "${name}-Rollback_Files":
       priority  => '40' ,
       command   => 'git.sh' ,
-      arguments => "-a rollback -s ${source} -d ${deploy_root} -gs ${git_subdir} -t ${tag} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_gitdata}" ,
+      arguments => "-a rollback -s ${source} -d ${deploy_root} -gs ${git_subdir} -t ${tag} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_gitdata}" , # lint:ignore:140chars
       user      => $user ,
       project   => $name ,
       enable    => $enable ,

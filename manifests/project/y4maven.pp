@@ -293,8 +293,8 @@ define puppi::project::y4maven (
 
   # First: hybrisServer-Platform
   $platform_metadata_arguments = $http_password ? {
-    '' => "-s ${source}/hybrisServer-Platform/maven-metadata.xml -t maven-metadata -a ${real_always_deploy}" ,
-    default => "-s ${source}/hybrisServer-Platform/maven-metadata.xml -t maven-metadata -a ${real_always_deploy} -u ${http_user} -p ${http_password}"
+    ''      => "-s ${source}/hybrisServer-Platform/maven-metadata.xml -t maven-metadata -a ${real_always_deploy}" ,
+    default => "-s ${source}/hybrisServer-Platform/maven-metadata.xml -t maven-metadata -a ${real_always_deploy} -u ${http_user} -p ${http_password}", # lint:ignore:140chars
   }
 
   puppi::deploy { "${name}-Get_Maven_Metadata_hybrisServer-Platform_File":
@@ -335,7 +335,7 @@ define puppi::project::y4maven (
   # Second: hybrisServer-AllExtensions
   $extensions_metadata_arguments = $http_password ? {
     ''      => "-s ${source}/hybrisServer-AllExtensions/maven-metadata.xml -t maven-metadata -a ${real_always_deploy}",
-    default => "-s ${source}/hybrisServer-AllExtensions/maven-metadata.xml -t maven-metadata -a ${real_always_deploy} -u ${http_user} -p ${http_password}",
+    default => "-s ${source}/hybrisServer-AllExtensions/maven-metadata.xml -t maven-metadata -a ${real_always_deploy} -u ${http_user} -p ${http_password}", # lint:ignore:140chars
   }
 
   puppi::deploy { "${name}-Get_Maven_Metadata_hybrisServer-AllExtensions_File":

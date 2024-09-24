@@ -67,7 +67,7 @@ define puppi::netinstall (
   String $retrieve_args       = '',
   String $owner               = 'root',
   String $group               = 'root',
-  $timeout             = '3600',
+  Variant[String,Integer] $timeout = '3600',
   String $work_dir            = '/var/tmp',
   String $path                = '/bin:/sbin:/usr/bin:/usr/sbin',
   String $extract_command     = '',
@@ -133,7 +133,7 @@ define puppi::netinstall (
   }
 
   exec { "Extract ${source_filename} from ${work_dir} - ${title}":
-    command     => "mkdir -p ${destination_dir} && cd ${destination_dir} && ${real_extract_command} ${work_dir}/${source_filename} ${extract_command_second_arg}",
+    command     => "mkdir -p ${destination_dir} && cd ${destination_dir} && ${real_extract_command} ${work_dir}/${source_filename} ${extract_command_second_arg}", # lint:ignore:140chars
     unless      => "ls ${destination_dir}/${real_extracted_dir}",
     creates     => "${destination_dir}/${real_extracted_dir}",
     timeout     => $timeout,
