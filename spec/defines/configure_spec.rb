@@ -10,9 +10,12 @@ describe 'puppi::configure' do
       let(:title) { 'namevar' }
       let(:node) { 'rspec.example42.com' }
       let(:pre_condition) { 'include puppi' }
-      let(:params) do
-        {}
-      end
+      let(:params) {
+        { 
+          'command' => 'test',
+          'project' => 'zip',
+        }
+      }
       it { is_expected.to compile }
     end
   end

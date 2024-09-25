@@ -47,7 +47,7 @@
 define puppi::install_packages (
   String $packages,
   String $template         = 'puppi/install_packages.erb',
-  Srring $scripts_dir      = '/root/puppi_install_packages',
+  String $scripts_dir      = '/root/puppi_install_packages',
   Boolean $autorun          = true,
   Boolean $refreshonly      = true,
   Variant[String,Integer] $timeout          = '600',

@@ -9,9 +9,12 @@ describe 'puppi::netinstall' do
       let(:title) { 'namevar' }
       let(:node) { 'rspec.example42.com' }
       let(:pre_condition) { 'include puppi' }
-      let(:params) do
-        {}
-      end
+      let(:params) {
+        { 
+          'url'             => 'test',
+          'destination_url' => '/tmp',
+        }
+      }
       it { is_expected.to compile }
     end
   end

@@ -10,11 +10,9 @@ describe 'puppi::project' do
       let(:node) { 'rspec.example42.com' }
       let(:pre_condition) { 'include puppi' }
       let(:params) {
-        { 'enable'   =>  'true',
+        {
+          'enable'   =>  'true',
           'name'     =>  'get',
-          'command'  =>  'echo',
-          'priority' =>  '50',
-          'project'  =>  'myapp',
         }
       }
     

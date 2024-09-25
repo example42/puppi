@@ -25,7 +25,7 @@ define puppi::info (
   require puppi
   require puppi::params
 
-  if Array($run) {
+  if $run.type == Array {
     $array_run = $run
   } else {
     $array_run = $run ? {

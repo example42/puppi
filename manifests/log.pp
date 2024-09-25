@@ -18,7 +18,7 @@ define puppi::log (
   require puppi
   require puppi::params
 
-  if Array($log) {
+  if $log.type == Array {
     $array_log = $log
   } else {
     $array_log = split($log, ',')
