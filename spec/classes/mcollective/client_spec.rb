@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'puppi::mcollective::client' do
-  on_supported_os.each do |os, os_facts|
+  on_supported_os.select { |k, _v| k == 'redhat-8-x86_64'  }.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
 

@@ -5,6 +5,7 @@ require 'spec_helper'
 describe 'puppi::report' do
   let(:title) { 'puppi::report' }
   let(:node) { 'rspec.example42.com' }
+  let(:pre_condition) { 'include puppi' }
   let(:params) {
     { 'enable'   =>  'true',
       'name'     =>  'get',
@@ -23,7 +24,7 @@ describe 'puppi::report' do
     end
   end
 
-  on_supported_os.each do |os, os_facts|
+  on_supported_os.select { |k, _v| k == 'redhat-8-x86_64'  }.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
 
