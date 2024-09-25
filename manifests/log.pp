@@ -18,11 +18,7 @@ define puppi::log (
   require puppi
   require puppi::params
 
-  if $log.type == Array {
-    $array_log = $log
-  } else {
-    $array_log = split($log, ',')
-  }
+  $array_log = Array($log)
 
   file { "${puppi::params::logsdir}/${name}":
     ensure  => 'file',
