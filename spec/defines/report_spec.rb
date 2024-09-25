@@ -20,7 +20,7 @@ describe 'puppi::report' do
     
       describe 'Test puppi report step file creation' do
         it 'should create a puppi::report step file' do
-          should contain_file('/etc/puppi/projects/myapp/report/50-get').with_ensure('file')
+          should contain_file('/etc/puppi/projects/myapp/report/50-get').with_ensure('present')
         end
         it 'should populate correctly the puppi::report step file' do
           should contain_file('/etc/puppi/projects/myapp/report/50-get').with_content("su - root -c \"export project=myapp && /etc/puppi/scripts/echo \"\n")

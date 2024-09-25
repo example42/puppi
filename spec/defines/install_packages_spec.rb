@@ -9,9 +9,11 @@ describe 'puppi::install_packages' do
       let(:title) { 'namevar' }
       let(:node) { 'rspec.example42.com' }
       let(:pre_condition) { 'include puppi' }
-      let(:params) do
-        {}
-      end
+      let(:params) {
+        {
+          'packages' =>  'top',
+        }
+      }
       it { is_expected.to compile }
     end
   end

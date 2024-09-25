@@ -26,19 +26,19 @@ This module requires functions provided by the [Puppet Labs Stdlib Module](https
 
 Install the module from the Forge:
 
-```bash {"id":"01J8MJ40BQWMDAJC3F710YREN4"}
+```bash
 puppet module install example42/puppi
 ```
 
 To use the Puppi just declare or include the puppi class
 
-```ruby {"id":"01J8MJ40BQWMDAJC3F7286XQQK"}
+```ruby
 include puppi
 ```
 
 If you have resources conflicts, do not install automatically the Puppi dependencies (commands and packages)
 
-```ruby {"id":"01J8MJ40BQWMDAJC3F72Q9E3VZ"}
+```ruby
 class { 'puppi':
   install_dependencies => false,
 }
@@ -50,7 +50,7 @@ Once Puppi is installed you can use it to:
 
 * Easily define in Puppet manifests Web Applications deploy procedures. For example:
 
-```ruby {"id":"01J8MJ40BQWMDAJC3F748G9HWW"}
+```ruby
 puppi::project::war { "myapp":
   source           => "http://repo.example42.com/deploy/prod/myapp.war",
   deploy_root      => "/opt/tomcat/myapp/webapps",
@@ -68,7 +68,7 @@ Once enabled for each module you have puppi check, info and log commands.
 
 To enable Puppi integration in OldGen (version 1) Example42 Modules, set in the scope these variables:
 
-```html {"id":"01J8MJ40BQWMDAJC3F74Q6B0KZ"}
+```html
 $puppi = yes            # Enables puppi integration
 $monitor = yes          # Enables automatic monitoring
 $monitor_tool = "puppi" # Sets puppi as monitoring tool
@@ -76,7 +76,7 @@ $monitor_tool = "puppi" # Sets puppi as monitoring tool
 
 ## USAGE OF THE PUPPI COMMAND (OLD GEN)
 
-```bash {"id":"01J8MJ40BQWMDAJC3F7615PETB"}
+```bash
 puppi <action> <project_name> [ -options ]
 ```
 
@@ -122,7 +122,7 @@ You can also provide some options:
 
 Some common puppi commands when you log for an application deployment:
 
-```bash {"id":"01J8MJ40BQWMDAJC3F790N39R5"}
+```bash
 puppi check
 puppi log &    # (More readable if done on another window)
 puppi deploy myapp
