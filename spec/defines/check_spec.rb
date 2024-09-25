@@ -21,7 +21,7 @@ describe 'puppi::check' do
       it { is_expected.to compile }
       describe 'Test puppi check step file creation' do
         it 'should create a puppi::check step file' do
-          should contain_file('Puppi_check_myapp_50_get').with_ensure('file')
+          should contain_file('Puppi_check_myapp_50_get').with_ensure('present')
         end
         it 'should populate correctly the puppi::check step file' do
           should contain_file('Puppi_check_myapp_50_get').with_content(/\/usr\/lib64\/nagios\/plugins\/echo/)

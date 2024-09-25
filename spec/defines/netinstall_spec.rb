@@ -12,7 +12,7 @@ describe 'puppi::netinstall' do
       let(:params) {
         { 
           'url'             => 'test',
-          'destination_url' => '/tmp',
+          'destination_dir' => '/tmp',
         }
       }
       it { is_expected.to compile }

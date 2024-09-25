@@ -15,7 +15,7 @@ describe 'puppi::helper' do
     
       describe 'Test puppi helper file creation' do
         it 'should create a puppi helper file' do
-          should contain_file('puppi_helper_spec').with_ensure('file')
+          should contain_file('puppi_helper_spec').with_ensure('present')
         end
         it 'should populate correctly the helper file' do
           should contain_file('puppi_helper_spec').with_content(/info/)
