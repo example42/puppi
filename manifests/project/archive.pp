@@ -103,29 +103,29 @@
 #   Puppet runs. Default: 'false'
 #
 define puppi::project::archive (
-  $source,
-  $deploy_root,
-  $user                     = 'root',
-  $predeploy_customcommand  = '',
-  $predeploy_user           = '',
-  $predeploy_priority       = '39',
-  $postdeploy_customcommand = '',
-  $postdeploy_user          = '',
-  $postdeploy_priority      = '41',
-  $disable_services         = '',
-  $firewall_src_ip          = '',
-  $firewall_dst_port        = '0',
-  $firewall_delay           = '1',
-  $report_email             = '',
-  $clean_deploy             = false,
-  $backup_enable            = true,
-  $backup_rsync_options     = '--exclude .snapshot',
-  $backup_retention         = '5',
-  $run_checks               = true,
-  $always_deploy            = true,
-  $auto_deploy              = false,
-  $enable                   = true ) {
-
+  String $source,
+  String $deploy_root,
+  String $user                     = 'root',
+  String $predeploy_customcommand  = '',
+  String $predeploy_user           = '',
+  String $predeploy_priority       = '39',
+  String $postdeploy_customcommand = '',
+  String $postdeploy_user          = '',
+  Variant[String,Integer] $postdeploy_priority = '41',
+  String $disable_services         = '',
+  String $firewall_src_ip          = '',
+  Variant[String,Integer] $firewall_dst_port = '0',
+  Variant[String,Integer] $firewall_delay    = '1',
+  String $report_email             = '',
+  Boolean $clean_deploy             = false,
+  Boolean $backup_enable            = true,
+  String $backup_rsync_options       = '--exclude .snapshot',
+  Variant[String,Integer] $backup_retention  = '5',
+  Boolean $run_checks               = true,
+  Boolean $always_deploy            = true,
+  Boolean $auto_deploy              = false,
+  Variant[Boolean,String] $enable   = true,
+) {
   require puppi
   require puppi::params
 
@@ -145,7 +145,6 @@ define puppi::project::archive (
     true    => 'yes',
   }
 
-
   $bool_run_checks = any2bool($run_checks)
   $bool_clean_deploy = any2bool($clean_deploy)
   $bool_backup_enable = any2bool($backup_enable)
@@ -162,18 +161,18 @@ define puppi::project::archive (
   }
 
 ### CREATE PROJECT
-    puppi::project { $name:
-      source                   => $source,
-      deploy_root              => $deploy_root,
-      user                     => $user,
-      predeploy_customcommand  => $predeploy_customcommand,
-      postdeploy_customcommand => $postdeploy_customcommand,
-      disable_services         => $disable_services,
-      firewall_src_ip          => $firewall_src_ip,
-      firewall_dst_port        => $firewall_dst_port,
-      report_email             => $report_email,
-      enable                   => $enable ,
-    }
+  puppi::project { $name:
+    source                   => $source,
+    deploy_root              => $deploy_root,
+    user                     => $user,
+    predeploy_customcommand  => $predeploy_customcommand,
+    postdeploy_customcommand => $postdeploy_customcommand,
+    disable_services         => $disable_services,
+    firewall_src_ip          => $firewall_src_ip,
+    firewall_dst_port        => $firewall_dst_port,
+    report_email             => $report_email,
+    enable                   => $enable ,
+  }
 
 ### DEPLOY SEQUENCE
   if ($bool_run_checks == true) {
@@ -187,23 +186,23 @@ define puppi::project::archive (
     }
   }
 
-    # Here source file is retrieved
-    puppi::deploy { "${name}-Retrieve_Archive":
-      priority  => '20' ,
-      command   => 'get_file.sh' ,
-      arguments => "-s ${source} -t ${real_source_type} -a ${real_always_deploy}" ,
-      user      => 'root' ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  # Here source file is retrieved
+  puppi::deploy { "${name}-Retrieve_Archive":
+    priority  => '20' ,
+    command   => 'get_file.sh' ,
+    arguments => "-s ${source} -t ${real_source_type} -a ${real_always_deploy}" ,
+    user      => 'root' ,
+    project   => $name ,
+    enable    => $enable ,
+  }
 
-    puppi::deploy { "${name}-PreDeploy_Archive":
-      priority => '25' ,
-      command  => 'predeploy.sh' ,
-      user     => 'root' ,
-      project  => $name ,
-      enable   => $enable ,
-    }
+  puppi::deploy { "${name}-PreDeploy_Archive":
+    priority => '25' ,
+    command  => 'predeploy.sh' ,
+    user     => 'root' ,
+    project  => $name ,
+    enable   => $enable ,
+  }
 
   if ($firewall_src_ip != '') {
     puppi::deploy { "${name}-Load_Balancer_Block":
@@ -249,15 +248,15 @@ define puppi::project::archive (
     }
   }
 
-    # Here is done the deploy on $deploy_root
-    puppi::deploy { "${name}-Deploy":
-      priority  => '40' ,
-      command   => 'deploy_files.sh' ,
-      arguments => "-d ${deploy_root} -c ${bool_clean_deploy}",
-      user      => $user ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  # Here is done the deploy on $deploy_root
+  puppi::deploy { "${name}-Deploy":
+    priority  => '40' ,
+    command   => 'deploy_files.sh' ,
+    arguments => "-d ${deploy_root} -c ${bool_clean_deploy}",
+    user      => $user ,
+    project   => $name ,
+    enable    => $enable ,
+  }
 
   if ($postdeploy_customcommand != '') {
     puppi::deploy { "${name}-Run_Custom_PostDeploy_Script":
@@ -302,7 +301,6 @@ define puppi::project::archive (
       enable    => $enable ,
     }
   }
-
 
 ### ROLLBACK PROCEDURE
 
@@ -411,5 +409,4 @@ define puppi::project::archive (
   if ($bool_auto_deploy == true) {
     puppi::run { $name: }
   }
-
 }

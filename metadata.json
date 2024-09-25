@@ -1,6 +1,6 @@
 {
   "name": "example42-puppi",
-  "version": "2.2.11",
+  "version": "3.0.0",
   "author": "Alessandro Franceschi",
   "summary": "Installs and configures Puppi",
   "license": "Apache-2.0",
@@ -10,7 +10,7 @@
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 3.2.0 < 7.0.0"
+      "version_requirement": ">= 3.2.0 < 10.0.0"
     }
   ],
   "operatingsystem_support": [
@@ -18,21 +18,26 @@
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
         "6",
-        "7"
+        "7",
+        "8",
+        "9"
       ]
     },
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
         "6",
-        "7"
+        "7",
+        "8"
       ]
     },
     {
       "operatingsystem": "OracleLinux",
       "operatingsystemrelease": [
         "6",
-        "7"
+        "7",
+        "8",
+        "9"
       ]
     },
     {
@@ -47,7 +52,10 @@
       "operatingsystemrelease": [
         "7",
         "8",
-        "9"
+        "9",
+        "10",
+        "11",
+        "12"
       ]
     },
     {
@@ -55,18 +63,21 @@
       "operatingsystemrelease": [
         "14.04",
         "16.04",
-        "18.04"
+        "18.04",
+        "20.04",
+        "22.04",
+        "24.04"
       ]
     }
   ],
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 3.0.0 < 6.0.0"
+      "version_requirement": ">= 5.0.0 < 9.0.0"
     }
   ],
   "description": "This module provides the Puppi libraries required by Example42 modules and, if explicitly included, the puppi command, its working environment, the defines and procedures to deploy applications",
-  "pdk-version": "1.8.0",
-  "template-url": "file:///opt/puppetlabs/pdk/share/cache/pdk-templates.git",
-  "template-ref": "1.8.0-0-g0d9da00"
+  "pdk-version": "3.3.0",
+  "template-url": "pdk-default#3.3.0",
+  "template-ref": "tags/3.3.0-0-g5d17ec1"
 }

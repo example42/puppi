@@ -8,7 +8,6 @@
 #   install_dependencies => false
 #
 class puppi::dependencies {
-
   require puppi::params
 
   if ! defined(Package['curl']) {
@@ -34,5 +33,4 @@ class puppi::dependencies {
   if ! defined(Package[$puppi::params::package_mail]) {
     package { $puppi::params::package_mail : ensure => present }
   }
-
 }

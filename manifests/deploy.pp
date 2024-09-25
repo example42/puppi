@@ -14,13 +14,13 @@
 # :include:../README.deploy
 #
 define puppi::deploy (
-  $command,
-  $project,
-  $arguments = '',
-  $priority  = '50',
-  $user      = 'root',
-  $enable    = true ) {
-
+  String $command,
+  String $project,
+  String $arguments = '',
+  Variant[String,Integer] $priority  = '50',
+  String $user      = 'root',
+  Variant[Boolean,String] $enable   = true,
+) {
   require puppi
   require puppi::params
 
@@ -35,6 +35,4 @@ define puppi::deploy (
     content => "su - ${user} -c \"export project=${project} && ${puppi::params::scriptsdir}/${command} ${arguments}\"\n",
     tag     => 'puppi_deploy',
   }
-
 }
-

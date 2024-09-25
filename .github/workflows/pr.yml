@@ -1,0 +1,49 @@
+---
+name: PR tests
+
+on: pull_request
+
+jobs:
+  static:
+    name: 'Syntax validation'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container: puppet/pdk:3.3.0.0
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run static validations
+        run: /usr/local/bin/pdk bundle exec rake validate lint check
+        env:
+          BUNDLE_WITHOUT: development:system_tests:release
+
+  unit:
+    name: 'Unit tests'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+#    container: puppet/puppet-dev-tools:4.x
+    container: puppet/pdk:3.3.0.0
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run unit tests on Puppet 8
+        run: /usr/local/bin/pdk test unit  --puppet-version=8
+        env:
+          BUNDLE_WITHOUT: development:system_tests:release
+        continue-on-error: true
+      - name: Run unit tests on Puppet 7
+        run: /usr/local/bin/pdk test unit --puppet-version=7
+        env:
+          BUNDLE_WITHOUT: development:system_tests:release
+        continue-on-error: true
+
+  unit_legacy:
+    name: 'Unit tests Legacy Puppet'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    container: puppet/puppet-dev-tools:4.x
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run unit tests on Puppet 6
+        run: /usr/local/bin/pdk test unit --puppet-version=6
+        env:
+          BUNDLE_WITHOUT: development:system_tests:release
+        continue-on-error: true

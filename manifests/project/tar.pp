@@ -113,32 +113,32 @@
 #   Puppet runs. Default: 'false'
 #
 define puppi::project::tar (
-  $source,
-  $deploy_root,
-  $init_source              = '',
-  $user                     = 'root',
-  $predeploy_customcommand  = '',
-  $predeploy_user           = '',
-  $predeploy_priority       = '39',
-  $postdeploy_customcommand = '',
-  $postdeploy_user          = '',
-  $postdeploy_priority      = '41',
-  $init_script              = '',
-  $disable_services         = '',
-  $firewall_src_ip          = '',
-  $firewall_dst_port        = '0',
-  $firewall_delay           = '1',
-  $report_email             = '',
-  $clean_deploy             = false,
-  $backup_enable            = true,
-  $backup_rsync_options     = '--exclude .snapshot',
-  $backup_retention         = '5',
-  $run_checks               = true,
-  $always_deploy            = true,
-  $auto_deploy              = false,
-  $verify_ssl               = true,
-  $enable                   = true ) {
-
+  String $source,
+  String $deploy_root,
+  String $init_source              = '',
+  String $user                     = 'root',
+  String $predeploy_customcommand  = '',
+  String $predeploy_user           = '',
+  Variant[String,Integer] $predeploy_priority  = '39',
+  String $postdeploy_customcommand = '',
+  String $postdeploy_user          = '',
+  Variant[String,Integer] $postdeploy_priority = '41',
+  String $init_script              = '',
+  String $disable_services         = '',
+  String $firewall_src_ip          = '',
+  Variant[String,Integer] $firewall_dst_port   = '0',
+  Variant[String,Integer] $firewall_delay      = '1',
+  String $report_email             = '',
+  Boolean $clean_deploy            = false,
+  Boolean $backup_enable           = true,
+  String $backup_rsync_options     = '--exclude .snapshot',
+  Variant[String,Integer] $backup_retention    = '5',
+  Boolean $run_checks              = true,
+  Boolean $always_deploy           = true,
+  Boolean $auto_deploy             = false,
+  Boolean $verify_ssl              = true,
+  Variant[Boolean,String] $enable  = true,
+) {
   require puppi
   require puppi::params
 
@@ -170,26 +170,24 @@ define puppi::project::tar (
 
   if ($verify_ssl) {
     $ssl_arg = ''
-  }else{
+  } else {
     $ssl_arg = '-k'
   }
 
-
 ### CREATE PROJECT
-    puppi::project { $name:
-      source                   => $source,
-      deploy_root              => $deploy_root,
-      user                     => $user,
-      predeploy_customcommand  => $predeploy_customcommand,
-      postdeploy_customcommand => $postdeploy_customcommand,
-      init_script              => $init_script,
-      disable_services         => $disable_services,
-      firewall_src_ip          => $firewall_src_ip,
-      firewall_dst_port        => $firewall_dst_port,
-      report_email             => $report_email,
-      enable                   => $enable,
-    }
-
+  puppi::project { $name:
+    source                   => $source,
+    deploy_root              => $deploy_root,
+    user                     => $user,
+    predeploy_customcommand  => $predeploy_customcommand,
+    postdeploy_customcommand => $postdeploy_customcommand,
+    init_script              => $init_script,
+    disable_services         => $disable_services,
+    firewall_src_ip          => $firewall_src_ip,
+    firewall_dst_port        => $firewall_dst_port,
+    report_email             => $report_email,
+    enable                   => $enable,
+  }
 
 ### INIT SEQUENCE
   if ($init_source != '') {
@@ -203,7 +201,6 @@ define puppi::project::tar (
     }
   }
 
-
 ### DEPLOY SEQUENCE
   if ($bool_run_checks == true) {
     puppi::deploy { "${name}-Run_PRE-Checks":
@@ -216,24 +213,24 @@ define puppi::project::tar (
     }
   }
 
-    # Here source file is retrieved
-    puppi::deploy { "${name}-Retrieve_TarBall":
-      priority  => '20' ,
-      command   => 'get_file.sh' ,
-      arguments => "${ssl_arg} -s '${source}' -t tarball -a ${real_always_deploy}" ,
-      user      => 'root' ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  # Here source file is retrieved
+  puppi::deploy { "${name}-Retrieve_TarBall":
+    priority  => '20' ,
+    command   => 'get_file.sh' ,
+    arguments => "${ssl_arg} -s '${source}' -t tarball -a ${real_always_deploy}" ,
+    user      => 'root' ,
+    project   => $name ,
+    enable    => $enable ,
+  }
 
-    puppi::deploy { "${name}-PreDeploy_TarBall":
-      priority  => '25' ,
-      command   => 'predeploy_tar.sh' ,
-      arguments => 'downloadedfile' ,
-      user      => 'root' ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  puppi::deploy { "${name}-PreDeploy_TarBall":
+    priority  => '25' ,
+    command   => 'predeploy_tar.sh' ,
+    arguments => 'downloadedfile' ,
+    user      => 'root' ,
+    project   => $name ,
+    enable    => $enable ,
+  }
 
   if ($firewall_src_ip != '') {
     puppi::deploy { "${name}-Load_Balancer_Block":
@@ -290,15 +287,15 @@ define puppi::project::tar (
     }
   }
 
-    # Here is done the deploy on $deploy_root
-    puppi::deploy { "${name}-Deploy":
-      priority  => '40' ,
-      command   => 'deploy_files.sh' ,
-      arguments => "-d ${deploy_root} -c ${bool_clean_deploy}",
-      user      => $user ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  # Here is done the deploy on $deploy_root
+  puppi::deploy { "${name}-Deploy":
+    priority  => '40' ,
+    command   => 'deploy_files.sh' ,
+    arguments => "-d ${deploy_root} -c ${bool_clean_deploy}",
+    user      => $user ,
+    project   => $name ,
+    enable    => $enable ,
+  }
 
   if ($postdeploy_customcommand != '') {
     puppi::deploy { "${name}-Run_Custom_PostDeploy_Script":
@@ -355,7 +352,6 @@ define puppi::project::tar (
     }
   }
 
-
 ### ROLLBACK PROCEDURE
 
   if ($bool_backup_enable == true) {
@@ -403,14 +399,14 @@ define puppi::project::tar (
       }
     }
 
-      puppi::rollback { "${name}-Recover_Files_To_Deploy":
-        priority  => '40' ,
-        command   => 'archive.sh' ,
-        arguments => "-r ${deploy_root} -o '${backup_rsync_options}'" ,
-        user      => $user ,
-        project   => $name ,
-        enable    => $enable ,
-      }
+    puppi::rollback { "${name}-Recover_Files_To_Deploy":
+      priority  => '40' ,
+      command   => 'archive.sh' ,
+      arguments => "-r ${deploy_root} -o '${backup_rsync_options}'" ,
+      user      => $user ,
+      project   => $name ,
+      enable    => $enable ,
+    }
 
     if ($postdeploy_customcommand != '') {
       puppi::rollback { "${name}-Run_Custom_PostDeploy_Script":
@@ -485,5 +481,4 @@ define puppi::project::tar (
   if ($bool_auto_deploy == true) {
     puppi::run { $name: }
   }
-
 }

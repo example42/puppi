@@ -1,0 +1,29 @@
+---
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+  BUNDLE_WITHOUT: development:test:system_tests
+
+jobs:
+  deploy:
+    name: 'Deploy to forge'
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'example42'
+    container: puppet/pdk:3.3.0.0
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: "PDK Build"
+        uses: docker://puppet/pdk:3.3.0.0
+        with:
+          args: 'build'
+      - name: "Push to Forge"
+        uses: docker://puppet/pdk:3.3.0.0
+        with:
+          args: 'release publish --forge-token ${{ secrets.PUPPET_FORGE_API_KEY }} --force'
+

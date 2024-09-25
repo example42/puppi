@@ -34,14 +34,13 @@
 #   puppi info, check and log
 #
 class puppi (
-  $version              = params_lookup( 'version' ),
-  $install_dependencies = params_lookup( 'install_dependencies' ),
-  $template             = params_lookup( 'template' ),
-  $helpers_class        = params_lookup( 'helpers_class' ),
-  $logs_retention_days  = params_lookup( 'logs_retention_days' ),
-  $extra_class          = params_lookup( 'extra_class' )
-  ) inherits puppi::params {
-
+  String $version              = params_lookup( 'version' ),
+  Variant[String,Boolean] $install_dependencies = params_lookup( 'install_dependencies' ),
+  String $template             = params_lookup( 'template' ),
+  String $helpers_class        = params_lookup( 'helpers_class' ),
+  String $logs_retention_days  = params_lookup( 'logs_retention_days' ),
+  String $extra_class          = params_lookup( 'extra_class' ),
+) inherits puppi::params {
   $bool_install_dependencies=any2bool($install_dependencies)
 
   # Manage Version
@@ -73,5 +72,4 @@ class puppi (
   if $bool_install_dependencies {
     include puppi::dependencies
   }
-
 }

@@ -1,17 +1,15 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'puppi' do
-
   let(:node) { 'rspec.example42.com' }
-  let(:node) { 'rspec.example42.com' }
-  let(:facts) { { :ipaddress => '10.42.42.42' } }
+  let(:pre_condition) { 'include puppi' }
+  on_supported_os.select { |k, _v| k == 'redhat-8-x86_64'  }.each do |os, os_facts|
+    context "on #{os}" do
+      let(:facts) { os_facts }
 
-  describe 'Test standard installation' do
-    it { should contain_file('puppi').with_ensure('present') }
-    it { should contain_file('puppi.conf').with_ensure('present') }
-    it { should contain_file('puppi.scripts').with_ensure('present') }
-    it { should contain_file('puppi_basedir').with_ensure('directory') }
-    it { should contain_file('puppi_datadir').with_ensure('directory') }
+      it { is_expected.to compile.with_all_deps }
+    end
   end
-
 end

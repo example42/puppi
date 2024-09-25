@@ -121,32 +121,32 @@
 #   Puppet runs. Default: 'false'
 #
 define puppi::project::hg (
-  $source,
-  $deploy_root,
-  $install_hg               = true,
-  $tag                      = 'undefined',
-  $branch                   = 'default',
-  $commit                   = 'undefined',
-  $keep_hgdata              = true,
-  $verbose                  = true,
-  $user                     = 'root',
-  $predeploy_customcommand  = '',
-  $predeploy_user           = '',
-  $predeploy_priority       = '39',
-  $postdeploy_customcommand = '',
-  $postdeploy_user          = '',
-  $postdeploy_priority      = '41',
-  $disable_services         = '',
-  $firewall_src_ip          = '',
-  $firewall_dst_port        = '0',
-  $firewall_delay           = '1',
-  $report_email             = '',
-  $backup_rsync_options     = '--exclude .snapshot',
-  $backup_retention         = '5',
-  $run_checks               = true,
-  $auto_deploy              = false,
-  $enable                   = true ) {
-
+  String $source,
+  String $deploy_root,
+  Boolean $install_hg              = true,
+  String $tag                      = 'undefined',
+  String $branch                   = 'default',
+  String $commit                   = 'undefined',
+  Boolean $keep_hgdata             = true,
+  Boolean$verbose                  = true,
+  String $user                     = 'root',
+  String $predeploy_customcommand  = '',
+  String $predeploy_user           = '',
+  Variant[String,Integer] $predeploy_priority  = '39',
+  String $postdeploy_customcommand = '',
+  String $postdeploy_user          = '',
+  Variant[String,Integer] $postdeploy_priority = '41',
+  String $disable_services         = '',
+  String $firewall_src_ip          = '',
+  Variant[String,Integer] $firewall_dst_port   = '0',
+  Variant[String,Integer] $firewall_delay      = '1',
+  String $report_email             = '',
+  String $backup_rsync_options     = '--exclude .snapshot',
+  Variant[String,Integer] $backup_retention    = '5',
+  Boolean $run_checks              = true,
+  Boolean $auto_deploy             = false,
+  Variant[Boolean,String] $enable  = true,
+) {
   require puppi
   require puppi::params
 
@@ -173,19 +173,18 @@ define puppi::project::hg (
   }
 
 ### CREATE PROJECT
-    puppi::project { $name:
-      source                   => $source,
-      deploy_root              => $deploy_root,
-      user                     => $user,
-      predeploy_customcommand  => $predeploy_customcommand,
-      postdeploy_customcommand => $postdeploy_customcommand,
-      disable_services         => $disable_services,
-      firewall_src_ip          => $firewall_src_ip,
-      firewall_dst_port        => $firewall_dst_port,
-      report_email             => $report_email,
-      enable                   => $enable ,
-    }
-
+  puppi::project { $name:
+    source                   => $source,
+    deploy_root              => $deploy_root,
+    user                     => $user,
+    predeploy_customcommand  => $predeploy_customcommand,
+    postdeploy_customcommand => $postdeploy_customcommand,
+    disable_services         => $disable_services,
+    firewall_src_ip          => $firewall_src_ip,
+    firewall_dst_port        => $firewall_dst_port,
+    report_email             => $report_email,
+    enable                   => $enable ,
+  }
 
 ### DEPLOY SEQUENCE
   if ($bool_run_checks == true) {
@@ -243,15 +242,15 @@ define puppi::project::hg (
     }
   }
 
-    # Here is done the deploy on $deploy_root
-    puppi::deploy { "${name}-Deploy_Files":
-      priority  => '40' ,
-      command   => 'hg.sh' ,
-      arguments => "-a deploy -s ${source} -d ${deploy_root} -u ${user} -t ${tag} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_hgdata}" ,
-      user      => 'root' ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  # Here is done the deploy on $deploy_root
+  puppi::deploy { "${name}-Deploy_Files":
+    priority  => '40' ,
+    command   => 'hg.sh' ,
+    arguments => "-a deploy -s ${source} -d ${deploy_root} -u ${user} -t ${tag} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_hgdata}" , # lint:ignore:140chars
+    user      => 'root' ,
+    project   => $name ,
+    enable    => $enable ,
+  }
 
   if ($postdeploy_customcommand != '') {
     puppi::deploy { "${name}-Run_Custom_PostDeploy_Script":
@@ -296,7 +295,6 @@ define puppi::project::hg (
       enable    => $enable ,
     }
   }
-
 
 ### ROLLBACK PROCEDURE
 
@@ -348,7 +346,7 @@ define puppi::project::hg (
     puppi::rollback { "${name}-Rollback_Files":
       priority  => '40' ,
       command   => 'hg.sh' ,
-      arguments => "-a rollback -s ${source} -d ${deploy_root} -t ${tag} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_hgdata}" ,
+      arguments => "-a rollback -s ${source} -d ${deploy_root} -t ${tag} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_hgdata}" , # lint:ignore:140chars
       user      => $user ,
       project   => $name ,
       enable    => $enable ,
@@ -399,7 +397,6 @@ define puppi::project::hg (
     }
   }
 
-
 ### REPORTING
 
   if ($report_email != '') {
@@ -417,5 +414,4 @@ define puppi::project::hg (
   if ($bool_auto_deploy == true) {
     puppi::run { $name: }
   }
-
 }

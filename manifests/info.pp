@@ -18,23 +18,20 @@
 # :include:../README.info
 #
 define puppi::info (
-  $description  = '',
-  $templatefile = 'puppi/info.erb',
-  $run          = '' ) {
-
+  String $description  = '',
+  String $templatefile = 'puppi/info.erb',
+  Variant[String,Array] $run = '',
+) {
   require puppi
   require puppi::params
 
-  $array_run = is_array($run) ? {
-    false     => $run ? {
-      ''      => [],
-      default => split($run, ','),
-    },
-    default   => $run,
+  if $run.type =~ Array {
+    $array_run = $run
+  } else {
+    $array_run = [$run]
   }
-
   file { "${puppi::params::infodir}/${name}":
-    ensure  => present,
+    ensure  => file,
     mode    => '0750',
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,
@@ -42,5 +39,4 @@ define puppi::info (
     content => template($templatefile),
     tag     => 'puppi_info',
   }
-
 }

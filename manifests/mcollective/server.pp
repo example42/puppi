@@ -10,11 +10,10 @@
 # :include:../README.mcollective
 #
 class puppi::mcollective::server {
-
   require puppi::params
 
   file { "${puppi::params::mcollective}/agent/puppi.ddl":
-    ensure  => 'present',
+    ensure  => 'file',
     mode    => '0644',
     owner   => 'root',
     group   => 'root',
@@ -23,12 +22,11 @@ class puppi::mcollective::server {
   }
 
   file { "${puppi::params::mcollective}/agent/puppi.rb":
-    ensure  => 'present',
+    ensure  => 'file',
     mode    => '0644',
     owner   => 'root',
     group   => 'root',
     source  => 'puppet:///modules/puppi/mcollective/puppi.rb',
     require => Class['mcollective'],
   }
-
 }

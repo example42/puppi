@@ -11,9 +11,9 @@
 # }
 #
 define puppi::helper (
-  $template,
-  $ensure = 'present' ) {
-
+  String $template,
+  String $ensure = 'present',
+) {
   require puppi
   require puppi::params
 
@@ -25,5 +25,4 @@ define puppi::helper (
     group   => $puppi::params::configfile_group,
     content => template($template),
   }
-
 }

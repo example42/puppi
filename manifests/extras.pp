@@ -7,7 +7,6 @@
 #   extra_class=> 'example42::puppi::extras',
 #
 class puppi::extras {
-
   # Default Checks
 
   puppi::check { 'NTP_Sync':
@@ -52,11 +51,10 @@ class puppi::extras {
     hostwide => 'yes' ,
   }
 
-
   # Info Pages
-  $network_run = $::os['name'] ? {
-    'Solaris' => [ 'ifconfig -a' , 'netstat -nr' , 'cat /etc/resolv.conf' , 'arp -an' , 'netstat -na' ],
-    default   => [ 'ifconfig' , 'route -n' , 'cat /etc/resolv.conf' , 'arp -an' , 'netstat -natup | grep LISTEN' ],
+  $network_run = $facts['os']['name'] ? {
+    'Solaris' => ['ifconfig -a' , 'netstat -nr' , 'cat /etc/resolv.conf' , 'arp -an' , 'netstat -na'],
+    default   => ['ifconfig' , 'route -n' , 'cat /etc/resolv.conf' , 'arp -an' , 'netstat -natup | grep LISTEN'],
   }
 
   puppi::info { 'network':
@@ -64,9 +62,9 @@ class puppi::extras {
     run         => $network_run,
   }
 
-  $users_run = $::os['name'] ? {
-    'Solaris' => [ 'who' , 'last' ],
-    default   => [ 'who' , 'last' , 'LANG=C lastlog | grep -v \'Never logged in\'' ],
+  $users_run = $facts['os']['name'] ? {
+    'Solaris' => ['who' , 'last'],
+    default   => ['who' , 'last' , 'LANG=C lastlog | grep -v \'Never logged in\''],
   }
 
   puppi::info { 'users':
@@ -74,9 +72,9 @@ class puppi::extras {
     run         => $users_run,
   }
 
-  $perf_run = $::os['name'] ? {
-    'Solaris' => [ 'uptime' , 'vmstat 1 5' ],
-    default   => [ 'uptime' , 'free' , 'vmstat 1 5' ],
+  $perf_run = $facts['os']['name'] ? {
+    'Solaris' => ['uptime' , 'vmstat 1 5'],
+    default   => ['uptime' , 'free' , 'vmstat 1 5'],
   }
 
   puppi::info { 'perf':
@@ -84,9 +82,9 @@ class puppi::extras {
     run         => $perf_run,
   }
 
-  $disks_run = $::os['name'] ? {
-    'Solaris' => [ 'df -h' , 'mount' ],
-    default   => [ 'df -h' , 'mount' , 'blkid' , 'fdisk -l' ],
+  $disks_run = $facts['os']['name'] ? {
+    'Solaris' => ['df -h' , 'mount'],
+    default   => ['df -h' , 'mount' , 'blkid' , 'fdisk -l'],
   }
 
   puppi::info { 'disks':
@@ -94,9 +92,9 @@ class puppi::extras {
     run         => $disks_run,
   }
 
-  $hardware_run = $::os['name'] ? {
-    'Solaris' => [ 'find /devices/' ],
-    default   => [ 'lspci' , 'cat /proc/cpuinfo' ],
+  $hardware_run = $facts['os']['name'] ? {
+    'Solaris' => ['find /devices/'],
+    default   => ['lspci' , 'cat /proc/cpuinfo'],
   }
 
   puppi::info { 'hardware':
@@ -104,12 +102,12 @@ class puppi::extras {
     run         => $hardware_run,
   }
 
-  $packages_run = $::os['name'] ? {
-    /(?i:RedHat|CentOS|Scientific|Amazon|Linux)/ => [ 'yum repolist' , 'rpm -qa' ] ,
-    /(?i:Debian|Ubuntu|Mint)/                    => [ 'apt-config dump' , 'apt-cache stats' , 'apt-key list' , 'dpkg -l' ],
-    /(Solaris)/                                  => [ 'pkginfo' ],
-    /(Archlinux)/                                => [ 'pacman -Qet' ],
-    default                                      => [ 'echo' ],
+  $packages_run = $facts['os']['name'] ? {
+    /(?i:RedHat|CentOS|Scientific|Amazon|Linux)/ => ['yum repolist' , 'rpm -qa'],
+    /(?i:Debian|Ubuntu|Mint)/                    => ['apt-config dump' , 'apt-cache stats' , 'apt-key list' , 'dpkg -l'],
+    /(Solaris)/                                  => ['pkginfo'],
+    /(Archlinux)/                                => ['pacman -Qet'],
+    default                                      => ['echo'],
   }
 
   puppi::info { 'packages':
@@ -128,8 +126,7 @@ class puppi::extras {
   }
 
   ### Default Logs
-  case $::os['family'] {
-
+  case $facts['os']['family'] {
     'Debian': {
       puppi::log { 'system':
         description => 'General System Messages',
@@ -201,8 +198,6 @@ class puppi::extras {
       }
     }
 
-    default: { }
-
+    default: {}
   }
-
 }

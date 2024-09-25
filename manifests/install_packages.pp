@@ -45,14 +45,14 @@
 # }
 #
 define puppi::install_packages (
-  $packages,
-  $template         = 'puppi/install_packages.erb',
-  $scripts_dir      = '/root/puppi_install_packages',
-  $autorun          = true,
-  $refreshonly      = true,
-  $timeout          = '600',
-  $ensure           = 'present' ) {
-
+  String $packages,
+  String $template         = 'puppi/install_packages.erb',
+  String $scripts_dir      = '/root/puppi_install_packages',
+  Boolean $autorun          = true,
+  Boolean $refreshonly      = true,
+  Variant[String,Integer] $timeout          = '600',
+  String $ensure           = 'present',
+) {
   if ! defined(File[$scripts_dir]) {
     file { $scripts_dir:
       ensure => directory,
@@ -79,5 +79,4 @@ define puppi::install_packages (
       timeout     => $timeout,
     }
   }
-
 }

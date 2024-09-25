@@ -3,12 +3,11 @@
 # Installs Puppi 1.0
 #
 class puppi::one {
-
   require puppi::params
 
   # Main configuration file
   file { 'puppi.conf':
-    ensure  => present,
+    ensure  => file,
     path    => "${puppi::params::basedir}/puppi.conf",
     mode    => '0644',
     owner   => $puppi::params::configfile_owner,
@@ -19,7 +18,7 @@ class puppi::one {
 
   # The Puppi 1.0 command
   file { 'puppi':
-    ensure  => present,
+    ensure  => file,
     path    => '/usr/sbin/puppi.one',
     mode    => '0750',
     owner   => $puppi::params::configfile_owner,
@@ -27,5 +26,4 @@ class puppi::one {
     content => template('puppi/puppi.erb'),
     require => File['puppi_basedir'],
   }
-
 }

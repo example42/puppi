@@ -100,30 +100,32 @@
 #   Puppet runs. Default: 'false'
 #
 define puppi::project::mysql (
-  $source,
-  $mysql_database,
-  $mysql_user               = 'root',
-  $mysql_host               = 'localhost',
-  $mysql_password           = '',
-  $init_source              = '',
-  $predeploy_customcommand  = '',
-  $predeploy_user           = '',
-  $predeploy_priority       = '39',
-  $postdeploy_customcommand = '',
-  $postdeploy_user          = '',
-  $postdeploy_priority      = '41',
-  $disable_services         = '',
-  $firewall_src_ip          = '',
-  $firewall_dst_port        = '0',
-  $firewall_delay           = '1',
-  $report_email             = '',
-  $backup                   = true,
-  $backup_retention         = '5',
-  $run_checks               = true,
-  $always_deploy            = true,
-  $auto_deploy              = false,
-  $enable                   = true ) {
-
+  String $source,
+  String $mysql_database,
+  String $deploy_root              = '',
+  String $user                     = 'root',
+  String $mysql_user               = 'root',
+  String $mysql_host               = 'localhost',
+  String $mysql_password           = '',
+  String $init_source              = '',
+  String $predeploy_customcommand  = '',
+  String $predeploy_user           = '',
+  Variant[String,Integer] $predeploy_priority  = '39',
+  String $postdeploy_customcommand = '',
+  String $postdeploy_user          = '',
+  Variant[String,Integer] $postdeploy_priority = '41',
+  String $disable_services         = '',
+  String $firewall_src_ip          = '',
+  Variant[String,Integer] $firewall_dst_port   = '0',
+  Variant[String,Integer] $firewall_delay      = '1',
+  String $report_email             = '',
+  Boolean $backup                   = true,
+  Variant[String,Integer] $backup_retention    = '5',
+  Boolean $run_checks               = true,
+  Boolean $always_deploy            = true,
+  Boolean $auto_deploy              = false,
+  Variant[Boolean,String] $enable   = true,
+) {
   require puppi
   require puppi::params
 
@@ -156,19 +158,18 @@ define puppi::project::mysql (
   $source_filename = url_parse($source,'filename')
 
 ### CREATE PROJECT
-    puppi::project { $name:
-      source                   => $source,
-      deploy_root              => $deploy_root,
-      user                     => $user,
-      predeploy_customcommand  => $predeploy_customcommand,
-      postdeploy_customcommand => $postdeploy_customcommand,
-      disable_services         => $disable_services,
-      firewall_src_ip          => $firewall_src_ip,
-      firewall_dst_port        => $firewall_dst_port,
-      report_email             => $report_email,
-      enable                   => $enable,
-    }
-
+  puppi::project { $name:
+    source                   => $source,
+    deploy_root              => $deploy_root,
+    user                     => $user,
+    predeploy_customcommand  => $predeploy_customcommand,
+    postdeploy_customcommand => $postdeploy_customcommand,
+    disable_services         => $disable_services,
+    firewall_src_ip          => $firewall_src_ip,
+    firewall_dst_port        => $firewall_dst_port,
+    report_email             => $report_email,
+    enable                   => $enable,
+  }
 
 ### INIT SEQUENCE
   if ($init_source != '') {
@@ -190,7 +191,6 @@ define puppi::project::mysql (
     }
   }
 
-
 ### DEPLOY SEQUENCE
   if ($bool_run_checks == true) {
     puppi::deploy { "${name}-Run_PRE-Checks":
@@ -203,14 +203,14 @@ define puppi::project::mysql (
     }
   }
 
-    puppi::deploy { "${name}-Retrieve_SQLFile":
-      priority  => '20' ,
-      command   => 'get_file.sh' ,
-      arguments => "-s ${source} -t ${real_source_type} -a ${real_always_deploy}" ,
-      user      => 'root' ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  puppi::deploy { "${name}-Retrieve_SQLFile":
+    priority  => '20' ,
+    command   => 'get_file.sh' ,
+    arguments => "-s ${source} -t ${real_source_type} -a ${real_always_deploy}" ,
+    user      => 'root' ,
+    project   => $name ,
+    enable    => $enable ,
+  }
 
   if ($firewall_src_ip != '') {
     puppi::deploy { "${name}-Load_Balancer_Block":
@@ -256,15 +256,15 @@ define puppi::project::mysql (
     }
   }
 
-    # Here is done the db change
-    puppi::deploy { "${name}-Run_SQL":
-      priority  => '40' ,
-      command   => 'database.sh' ,
-      arguments => "-t mysql -a run -u ${mysql_user} -p '${mysql_password}' -d ${mysql_database} -h ${mysql_host}" ,
-      user      => 'root' ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  # Here is done the db change
+  puppi::deploy { "${name}-Run_SQL":
+    priority  => '40' ,
+    command   => 'database.sh' ,
+    arguments => "-t mysql -a run -u ${mysql_user} -p '${mysql_password}' -d ${mysql_database} -h ${mysql_host}" ,
+    user      => 'root' ,
+    project   => $name ,
+    enable    => $enable ,
+  }
 
   if ($postdeploy_customcommand != '') {
     puppi::deploy { "${name}-Run_Custom_PostDeploy_Script":
@@ -309,7 +309,6 @@ define puppi::project::mysql (
       enable    => $enable ,
     }
   }
-
 
 ### ROLLBACK PROCEDURE
 
@@ -412,7 +411,6 @@ define puppi::project::mysql (
     }
   }
 
-
 ### REPORTING
 
   if ($report_email != '') {
@@ -430,5 +428,4 @@ define puppi::project::mysql (
   if ($bool_auto_deploy == true) {
     puppi::run { $name: }
   }
-
 }

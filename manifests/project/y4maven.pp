@@ -164,45 +164,45 @@
 #   Puppet runs. Default: 'false'
 #
 define puppi::project::y4maven (
-  $source,
-  $http_user                = '',
-  $http_password            = '',
-  $artifact_type            = 'release',
-  $deploy_root              = '',
-  $user                     = 'root',
-  $war_suffix               = 'suffixnotset',
-  $zip_suffix               = 'suffixnotset',
-  $jar_root                 = '',
-  $jar_user                 = '',
-  $jar_suffix               = 'suffixnotset',
-  $document_root            = '',
-  $document_user            = '',
-  $document_suffix          = 'suffixnotset',
-  $document_init_source     = '',
-  $config_root              = '',
-  $config_user              = '',
-  $config_suffix            = 'suffixnotset',
-  $config_init_source       = '',
-  $predeploy_customcommand  = '',
-  $predeploy_user           = '',
-  $predeploy_priority       = '39',
-  $postdeploy_customcommand = '',
-  $postdeploy_user          = '',
-  $postdeploy_priority      = '41',
-  $init_script              = '',
-  $disable_services         = '',
-  $firewall_src_ip          = '',
-  $firewall_dst_port        = '0',
-  $firewall_delay           = '1',
-  $report_email             = '',
-  $backup_rsync_options     = '--exclude .snapshot',
-  $backup_retention         = '5',
-  $run_checks               = true,
-  $always_deploy            = true,
-  $check_deploy             = true,
-  $auto_deploy              = false,
-  $enable                   = true ) {
-
+  String $source,
+  String $http_user                = '',
+  String $http_password            = '',
+  String $artifact_type            = 'release',
+  String $deploy_root              = '',
+  String $user                     = 'root',
+  String $war_suffix               = 'suffixnotset',
+  String $zip_suffix               = 'suffixnotset',
+  String $jar_root                 = '',
+  String $jar_user                 = '',
+  String $jar_suffix               = 'suffixnotset',
+  String $document_root            = '',
+  String $document_user            = '',
+  String $document_suffix          = 'suffixnotset',
+  String $document_init_source     = '',
+  String $config_root              = '',
+  String $config_user              = '',
+  String $config_suffix            = 'suffixnotset',
+  String $config_init_source       = '',
+  String $predeploy_customcommand  = '',
+  String $predeploy_user           = '',
+  Variant[String,Integer] $predeploy_priority  = '39',
+  String $postdeploy_customcommand = '',
+  String $postdeploy_user          = '',
+  Variant[String,Integer] $postdeploy_priority = '41',
+  String $init_script              = '',
+  String $disable_services         = '',
+  String $firewall_src_ip          = '',
+  Variant[String,Integer] $firewall_dst_port   = '0',
+  Variant[String,Integer] $firewall_delay      = '1',
+  String $report_email             = '',
+  String $backup_rsync_options     = '--exclude .snapshot',
+  Variant[String,Integer] $backup_retention    = '5',
+  Boolean $run_checks               = true,
+  Boolean $always_deploy            = true,
+  Boolean $check_deploy             = true,
+  Boolean $auto_deploy              = false,
+  Variant[Boolean,String] $enable   = true,
+) {
   require puppi
   require puppi::params
 
@@ -241,22 +241,20 @@ define puppi::project::y4maven (
   $bool_check_deploy = any2bool($check_deploy)
   $bool_auto_deploy = any2bool($auto_deploy)
 
-
 ### CREATE PROJECT
-    puppi::project { $name:
-      source                   => $source,
-      deploy_root              => $deploy_root,
-      user                     => $user,
-      predeploy_customcommand  => $predeploy_customcommand,
-      postdeploy_customcommand => $postdeploy_customcommand,
-      init_script              => $init_script,
-      disable_services         => $disable_services,
-      report_email             => $report_email,
-      enable                   => $enable,
-      document_root            => $document_root,
-      config_root              => $config_root,
-    }
-
+  puppi::project { $name:
+    source                   => $source,
+    deploy_root              => $deploy_root,
+    user                     => $user,
+    predeploy_customcommand  => $predeploy_customcommand,
+    postdeploy_customcommand => $postdeploy_customcommand,
+    init_script              => $init_script,
+    disable_services         => $disable_services,
+    report_email             => $report_email,
+    enable                   => $enable,
+    document_root            => $document_root,
+    config_root              => $config_root,
+  }
 
 ### INIT SEQUENCE
   if ($document_init_source != '') {
@@ -293,29 +291,29 @@ define puppi::project::y4maven (
     }
   }
 
-    # First: hybrisServer-Platform
-    $platform_metadata_arguments = $http_password ? {
-      '' => "-s ${source}/hybrisServer-Platform/maven-metadata.xml -t maven-metadata -a ${real_always_deploy}" ,
-      default => "-s ${source}/hybrisServer-Platform/maven-metadata.xml -t maven-metadata -a ${real_always_deploy} -u ${http_user} -p ${http_password}"
-    }
+  # First: hybrisServer-Platform
+  $platform_metadata_arguments = $http_password ? {
+    ''      => "-s ${source}/hybrisServer-Platform/maven-metadata.xml -t maven-metadata -a ${real_always_deploy}" ,
+    default => "-s ${source}/hybrisServer-Platform/maven-metadata.xml -t maven-metadata -a ${real_always_deploy} -u ${http_user} -p ${http_password}", # lint:ignore:140chars
+  }
 
-    puppi::deploy { "${name}-Get_Maven_Metadata_hybrisServer-Platform_File":
-      priority  => '20' ,
-      command   => 'get_file.sh' ,
-      arguments => $platform_metadata_arguments,
-      user      => 'root' ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  puppi::deploy { "${name}-Get_Maven_Metadata_hybrisServer-Platform_File":
+    priority  => '20' ,
+    command   => 'get_file.sh' ,
+    arguments => $platform_metadata_arguments,
+    user      => 'root' ,
+    project   => $name ,
+    enable    => $enable ,
+  }
 
-    puppi::deploy { "${name}-Extract_Maven_Metadata_hybrisServer-Platform":
-      priority  => '21' ,
-      command   => 'get_metadata.sh' ,
-      arguments => "-m ${document_suffix} -mc ${config_suffix} -mj ${jar_suffix} -mw ${war_suffix} -mz ${zip_suffix} -at ${artifact_type}" ,
-      user      => 'root' ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  puppi::deploy { "${name}-Extract_Maven_Metadata_hybrisServer-Platform":
+    priority  => '21' ,
+    command   => 'get_metadata.sh' ,
+    arguments => "-m ${document_suffix} -mc ${config_suffix} -mj ${jar_suffix} -mw ${war_suffix} -mz ${zip_suffix} -at ${artifact_type}" ,
+    user      => 'root' ,
+    project   => $name ,
+    enable    => $enable ,
+  }
 
   # Files retrieval
   $platform_zipfile_arguments = $http_password ? {
@@ -334,29 +332,29 @@ define puppi::project::y4maven (
     }
   }
 
-    # Second: hybrisServer-AllExtensions
-    $extensions_metadata_arguments = $http_password ? {
-      ''      => "-s ${source}/hybrisServer-AllExtensions/maven-metadata.xml -t maven-metadata -a ${real_always_deploy}",
-      default => "-s ${source}/hybrisServer-AllExtensions/maven-metadata.xml -t maven-metadata -a ${real_always_deploy} -u ${http_user} -p ${http_password}",
-    }
+  # Second: hybrisServer-AllExtensions
+  $extensions_metadata_arguments = $http_password ? {
+    ''      => "-s ${source}/hybrisServer-AllExtensions/maven-metadata.xml -t maven-metadata -a ${real_always_deploy}",
+    default => "-s ${source}/hybrisServer-AllExtensions/maven-metadata.xml -t maven-metadata -a ${real_always_deploy} -u ${http_user} -p ${http_password}", # lint:ignore:140chars
+  }
 
-    puppi::deploy { "${name}-Get_Maven_Metadata_hybrisServer-AllExtensions_File":
-      priority  => '23' ,
-      command   => 'get_file.sh' ,
-      arguments => $extensions_metadata_arguments,
-      user      => 'root' ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  puppi::deploy { "${name}-Get_Maven_Metadata_hybrisServer-AllExtensions_File":
+    priority  => '23' ,
+    command   => 'get_file.sh' ,
+    arguments => $extensions_metadata_arguments,
+    user      => 'root' ,
+    project   => $name ,
+    enable    => $enable ,
+  }
 
-    puppi::deploy { "${name}-Extract_Maven_Metadata_hybrisServer-AllExtensions":
-      priority  => '24' ,
-      command   => 'get_metadata.sh' ,
-      arguments => "-m ${document_suffix} -mc ${config_suffix} -mj ${jar_suffix} -mw ${war_suffix} -mz ${zip_suffix} -at ${artifact_type}" ,
-      user      => 'root' ,
-      project   => $name ,
-      enable    => $enable ,
-    }
+  puppi::deploy { "${name}-Extract_Maven_Metadata_hybrisServer-AllExtensions":
+    priority  => '24' ,
+    command   => 'get_metadata.sh' ,
+    arguments => "-m ${document_suffix} -mc ${config_suffix} -mj ${jar_suffix} -mw ${war_suffix} -mz ${zip_suffix} -at ${artifact_type}" ,
+    user      => 'root' ,
+    project   => $name ,
+    enable    => $enable ,
+  }
 
   # Files retrieval
   if ($deploy_root != '') {
@@ -374,7 +372,6 @@ define puppi::project::y4maven (
       enable    => $enable ,
     }
   }
-
 
   if ($config_root != '') {
     # Third: config-tarball (optional, right now not supported)
@@ -587,7 +584,6 @@ define puppi::project::y4maven (
     }
   }
 
-
 ### ROLLBACK PROCEDURE
 
   if ($firewall_src_ip != '') {
@@ -711,7 +707,6 @@ define puppi::project::y4maven (
     }
   }
 
-
 ### REPORTING
 
   if ($report_email != '') {
@@ -729,5 +724,4 @@ define puppi::project::y4maven (
   if ($bool_auto_deploy == true) {
     puppi::run { $name: }
   }
-
 }

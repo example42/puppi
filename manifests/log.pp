@@ -12,19 +12,20 @@
 # :include:../README.log
 #
 define puppi::log (
-  $log,
-  $description = '' ) {
-
+  Variant[String,Array] $log,
+  String $description = '',
+) {
   require puppi
   require puppi::params
 
-  $array_log = is_array($log) ? {
-    false     => split($log, ','),
-    default   => $log,
+  if $log.type =~ Array {
+    $array_log = $log
+  } else {
+    $array_log = [$log]
   }
 
   file { "${puppi::params::logsdir}/${name}":
-    ensure  => 'present',
+    ensure  => 'file',
     mode    => '0644',
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,
@@ -32,5 +33,4 @@ define puppi::log (
     content => template('puppi/log.erb'),
     tag     => 'puppi_log',
   }
-
 }

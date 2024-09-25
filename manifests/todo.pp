@@ -28,24 +28,22 @@
 # }
 #
 define puppi::todo (
-  $description   = '',
-  $notes         = '',
-  $check_command = '',
-  $run           = '' ) {
-
+  String $description   = '',
+  String $notes         = '',
+  String $check_command = '',
+  String $run           = '',
+) {
   require puppi
   require puppi::params
 
-  $array_run = is_array($run) ? {
-    false     => $run ? {
-      ''      => [],
-      default => split($run, ','),
-    },
-    default   => $run,
+  if $run.type =~ Array {
+    $array_run = $run
+  } else {
+    $array_run = [$run]
   }
 
   file { "${puppi::params::tododir}/${name}":
-    ensure  => present,
+    ensure  => file,
     mode    => '0750',
     owner   => $puppi::params::configfile_owner,
     group   => $puppi::params::configfile_group,
@@ -53,5 +51,4 @@ define puppi::todo (
     content => template('puppi/todo.erb'),
     tag     => 'puppi_todo',
   }
-
 }

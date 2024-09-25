@@ -1,12 +1,13 @@
-# Puppi: Puppet Knowledge to the CLI
+# Puppi: Applications deployment as code
 
-Puppi is maintained by Example42 GmbH
+Puppi is maintained by Example42
 
 Licence: Apache 2
 
 Puppi is a unique tool that serves both as a Puppet module and a CLI command tool.
 It's data is entirely driven by Puppet code.
 Example use cases for Puppi may include:
+
 - creating a standardize method to automate the deployment of web applications
 - or to provide a set of standard commands to query and check system resources based on "user defined actions".
 
@@ -15,22 +16,18 @@ Its structure provides FULL flexibility on the type of "actions" that may be req
 The module provides:
 
 * Puppi v1 script
-
 * A set of scripts that can be chained together to automate any kind of deployment.
-
 * Puppet defines that make it easy to prepare a puppi set of commands for a project deployment.
-
 * Puppet defines to populate the output of the different actions.
 
 This module requires functions provided by the [Puppet Labs Stdlib Module](https://github.com/puppetlabs/puppetlabs-stdlib).
 
-
 ## HOW TO INSTALL
 
-Download Puppi from GitHub and place it in your modules directory:
+Install the module from the Forge:
 
 ```bash
-git clone https://github.com/example42/puppi.git /etc/puppet/modules/puppi
+puppet module install example42/puppi
 ```
 
 To use the Puppi just declare or include the puppi class
@@ -53,17 +50,16 @@ Once Puppi is installed you can use it to:
 
 * Easily define in Puppet manifests Web Applications deploy procedures. For example:
 
-  ```ruby
-  puppi::project::war { "myapp":
-    source           => "http://repo.example42.com/deploy/prod/myapp.war",
-    deploy_root      => "/opt/tomcat/myapp/webapps",
-  }
-  ```
+```ruby
+puppi::project::war { "myapp":
+  source           => "http://repo.example42.com/deploy/prod/myapp.war",
+  deploy_root      => "/opt/tomcat/myapp/webapps",
+}
+```
 
 * Integrate with your modules for puppi check, info and log
 
 * Enable Example42 modules integration
-
 
 ## HOW TO USE WITH EXAMPLE42 MODULES
 
@@ -72,7 +68,7 @@ Once enabled for each module you have puppi check, info and log commands.
 
 To enable Puppi integration in OldGen (version 1) Example42 Modules, set in the scope these variables:
 
-```
+```html
 $puppi = yes            # Enables puppi integration
 $monitor = yes          # Enables automatic monitoring
 $monitor_tool = "puppi" # Sets puppi as monitoring tool
@@ -119,15 +115,10 @@ In the deploy/rollback/init actions, puppi runs the commands in /etc/puppi/proje
 You can also provide some options:
 
 * -f : Force puppi commands execution also on CRITICAL errors
-
 * -i : Interactively ask confirmation for every command
-
 * -t : Test mode. Just show the commands that should be executed without doing anything
-
 * -d <yes|full>: Debug mode. Show debugging info during execution
-
 * -o "parameter=value parameter2=value2" : Set manual options to override defaults. The options must be in parameter=value syntax, separated by spaces and inside double quotes.
-
 
 Some common puppi commands when you log for an application deployment:
 
@@ -177,7 +168,6 @@ Create an info entry with the commands used to provide info on a topic
         puppi::info
 
 Read details in the relevant READMEs
-
 
 ## FILE PATHS (all of them are provided, and can be configured, in the puppi module):
 
@@ -229,52 +219,47 @@ A runtime configuration file, which is used by all the the scripts invoked by pu
 
         /tmp/puppi/$project/config
 
-
 ## HOW TO CUSTOMIZE
+
 It should be clear that with puppi you have full flexibility in the definition of a deployment
 procedure, since the puppi command is basically a wrapper that executes arbitrary scripts with
 a given sequence, in pure KISS logic.
 
 The advantanges though, are various:
+
 * You have a common syntax to manage deploys and rollbacks on an host
-
 * In your Puppet manifests, you can set in simple, coherent and still flexible and customizable
-  defines all the elements, you need for your application deployments.
-  Think about it: with just a Puppet define you build the whole deploy logic
-
+   defines all the elements, you need for your application deployments.
+   Think about it: with just a Puppet define you build the whole deploy logic
 * Reporting for each deploy/rollback is built-in and extensible
-
 * Automatic checks can be built in the deploy procedure
-
 * You have a common, growing, set of general-use scripts for typical actions
-
 * You have quick and useful command to see what's happening on the system (puppi check, log, info)
 
 There are different parts where you can customize the behaviour of puppi:
 
 * The set of general-use scripts in /etc/puppi/scripts/ ( this directory is filled with the content
-  of puppi/files/scripts/ ) can/should be enhanced. These can be arbitrary scripts in whatever
-  language. If you want to follow puppi's logic, though, consider that they should import the
-  common and runtime configuration files and have an exit code logic similar to the one of
-  Nagios plugins: 0 is OK, 1 is WARNING, 2 is CRITICAL. Note that by default a script that
-  exits with WARNING doesn't block the deploy procedure, on the other hand, if a script exits
-  with CRITICAL (exit 2) by default it blocks the procedure.
-  Take a second, also, to explore the runtime config file created by the puppi command that
-  contains variables that can be set and used by the scripts invoked by puppi.
-
+   of puppi/files/scripts/ ) can/should be enhanced. These can be arbitrary scripts in whatever
+   language. If you want to follow puppi's logic, though, consider that they should import the
+   common and runtime configuration files and have an exit code logic similar to the one of
+   Nagios plugins: 0 is OK, 1 is WARNING, 2 is CRITICAL. Note that by default a script that
+   exits with WARNING doesn't block the deploy procedure, on the other hand, if a script exits
+   with CRITICAL (exit 2) by default it blocks the procedure.
+   Take a second, also, to explore the runtime config file created by the puppi command that
+   contains variables that can be set and used by the scripts invoked by puppi.
 * The custom project defines that describe deploy templates. These are placed in
-  puppi/manifests/project/ and can request all the arguments you want to feed your scripts with.
-  Generally is a good idea to design a standard enough template that can be used for all the
-  cases where the deployment procedure involves similar steps. Consider also that you can handle
-  exceptions with variables (see the $loadbalancer_ip usage in puppi/manifests/project/maven.pp)
-
+   puppi/manifests/project/ and can request all the arguments you want to feed your scripts with.
+   Generally is a good idea to design a standard enough template that can be used for all the
+   cases where the deployment procedure involves similar steps. Consider also that you can handle
+   exceptions with variables (see the $loadbalancer_ip usage in puppi/manifests/project/maven.pp)
 
 ## (NO) DEPENDENCIES AND CONFLICTS
+
 Puppi is self contained. It doesn't require other modules.
 (And is required by all Example42 modules).
 
 For correct functionality by default some extra packages are installed.
 If you have conflicts with your existing modules, set the argument:
 
-  install_dependencies => false
+install_dependencies => false
 

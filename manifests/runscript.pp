@@ -98,23 +98,23 @@
 # }
 #
 define puppi::runscript (
-  $source           = undef,
-  $content          = undef,
-  $destination_path = '',
-  $parameters       = '',
-  $autorun          = true,
-  $refreshonly      = true,
-  $creates          = undef,
-  $onlyif           = undef,
-  $unless           = undef,
-  $basedir          = '/usr/local/sbin',
-  $cron             = '',
-  $cron_user        = 'root',
-  $owner            = 'root',
-  $group            = 'root',
-  $mode             = '0755',
-  $ensure           = 'present' ) {
-
+  Optional[String] $source  = undef,
+  Optional[String] $content = undef,
+  String $destination_path  = '',
+  String $parameters        = '',
+  Boolean $autorun          = true,
+  Boolean $refreshonly      = true,
+  Optional[String] $creates = undef,
+  Optional[String] $onlyif  = undef,
+  Optional[String] $unless  = undef,
+  String $basedir           = '/usr/local/sbin',
+  String $cron              = '',
+  String $cron_user         = 'root',
+  String $owner             = 'root',
+  String $group             = 'root',
+  String $mode              = '0755',
+  String $ensure            = 'present',
+) {
   $real_command = $destination_path ? {
     ''      => "${basedir}/${name}",
     default => $destination_path,
