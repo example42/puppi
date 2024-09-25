@@ -28,9 +28,8 @@ define puppi::info (
   if $run.type =~ Array {
     $array_run = $run
   } else {
-    $array_run = split($run, ',')
+    $array_run = [$run]
   }
-
   file { "${puppi::params::infodir}/${name}":
     ensure  => file,
     mode    => '0750',
