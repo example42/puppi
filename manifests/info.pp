@@ -20,7 +20,7 @@
 define puppi::info (
   String $description  = '',
   String $templatefile = 'puppi/info.erb',
-  String $run          = '',
+  Variant[String,Array] $run = '',
 ) {
   require puppi
   require puppi::params

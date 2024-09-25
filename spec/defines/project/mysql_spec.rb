@@ -4,9 +4,12 @@ require 'spec_helper'
 
 describe 'puppi::project::mysql' do
   let(:title) { 'namevar' }
-  let(:params) do
-    {}
-  end
+  let(:params) {
+    { 
+      'source'         => 'test',
+      'mysql_database' => 'tmp',
+    }
+  }
 
   on_supported_os.select { |k, _v| k == 'redhat-8-x86_64'  }.each do |os, os_facts|
     context "on #{os}" do
