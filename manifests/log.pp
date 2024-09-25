@@ -21,7 +21,7 @@ define puppi::log (
   if $log.type =~ Array {
     $array_log = $log
   } else {
-    $array_rlog = [$log]
+    $array_log = [$log]
   }
 
   file { "${puppi::params::logsdir}/${name}":
