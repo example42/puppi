@@ -30,7 +30,7 @@ define puppi::info::module (
   Array $servicename     = [],
   String $processname    = '',
   Array $configfile      = [],
-  String $configdir      = '',
+  Variant[Array,String] $configdir = '',
   String $initconfigfile = '',
   String $pidfile        = '',
   Array $datadir         = [],
