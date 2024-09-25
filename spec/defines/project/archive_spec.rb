@@ -6,7 +6,7 @@ describe 'puppi::project::archive' do
   let(:title) { 'namevar' }
   let(:params) {
     { 
-      'source'      =>  'test',
+      'source'      =>  'test.tar.gz',
       'deploy_root' => '/tmp',
     }
   }

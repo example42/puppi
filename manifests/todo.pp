@@ -36,12 +36,13 @@ define puppi::todo (
   require puppi
   require puppi::params
 
-  $array_run = is_array($run) ? {
-    false     => $run ? {
+  if Array($run) {
+    $array_run = $run
+  } else {
+    $array_run = $run ? {
       ''      => [],
       default => split($run, ','),
-    },
-    default   => $run,
+    }
   }
 
   file { "${puppi::params::tododir}/${name}":

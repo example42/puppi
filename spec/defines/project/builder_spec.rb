@@ -7,7 +7,7 @@ describe 'puppi::project::builder' do
   let(:params) {
     { 
       'source'      => 'test',
-      'source_type' => 'git',
+      'source_type' => 'zip',
       'deploy_root' => '/tmp',
     }
   }
