@@ -19,7 +19,7 @@ describe 'puppi::info' do
     
       describe 'Test puppi info step file creation' do
         it 'should create a puppi::info step file' do
-          should contain_file('/etc/puppi/info/sample').with_ensure('present')
+          should contain_file('/etc/puppi/info/sample').with_ensure('file')
         end
         it 'should populate correctly the puppi::info step file' do
           should contain_file('/etc/puppi/info/sample').with_content(/myownscript/)

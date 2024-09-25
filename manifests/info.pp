@@ -25,7 +25,11 @@ define puppi::info (
   require puppi
   require puppi::params
 
-  $array_run  = Array($run)
+  if $run.type =~ Array {
+    $array_run = $run
+  } else {
+    $array_run = split($run, ',')
+  }
 
   file { "${puppi::params::infodir}/${name}":
     ensure  => file,

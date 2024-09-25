@@ -18,7 +18,7 @@ describe 'puppi::ze' do
     
       describe 'Test puppi ze data file creation' do
         it 'should create a puppi::ze step file' do
-          should contain_file('puppize_sample').with_ensure('present')
+          should contain_file('puppize_sample').with_ensure('file')
         end
       end
     

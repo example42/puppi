@@ -36,7 +36,11 @@ define puppi::todo (
   require puppi
   require puppi::params
 
-  $array_run  = Array($run)
+  if $run.type =~ Array {
+    $array_run = $run
+  } else {
+    $array_run = split($run, ',')
+  }
 
   file { "${puppi::params::tododir}/${name}":
     ensure  => file,

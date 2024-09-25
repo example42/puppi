@@ -17,7 +17,7 @@ describe 'puppi::log' do
     
       describe 'Test puppi log file creation' do
         it 'should create a puppi::log file' do
-          should contain_file('/etc/puppi/logs/mylog').with_ensure('present')
+          should contain_file('/etc/puppi/logs/mylog').with_ensure('file')
         end
         it 'should populate correctly the puppi::log step file' do
           should contain_file('/etc/puppi/logs/mylog').with_content(/mylog.log/)

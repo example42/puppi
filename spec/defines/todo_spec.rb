@@ -19,7 +19,7 @@ describe 'puppi::todo' do
     
       describe 'Test puppi todo file creation' do
         it 'should create a puppi::todo file' do
-          should contain_file('/etc/puppi/todo/mytodo').with_ensure('present')
+          should contain_file('/etc/puppi/todo/mytodo').with_ensure('file')
         end
         it 'should populate correctly the puppi::todo step file' do
           should contain_file('/etc/puppi/todo/mytodo').with_content(/check_test/)

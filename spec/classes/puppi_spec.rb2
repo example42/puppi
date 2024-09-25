@@ -8,8 +8,8 @@ describe 'puppi' do
 
   describe 'Test standard installation' do
     it { should contain_file('puppi').with_ensure('present') }
-    it { should contain_file('puppi.conf').with_ensure('present') }
-    it { should contain_file('puppi.scripts').with_ensure('present') }
+    it { should contain_file('puppi.conf').with_ensure('file') }
+    it { should contain_file('puppi.scripts').with_ensure('file') }
     it { should contain_file('puppi_basedir').with_ensure('directory') }
     it { should contain_file('puppi_datadir').with_ensure('directory') }
   end
