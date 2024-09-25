@@ -6,7 +6,7 @@
 # Sources common header for Puppi scripts
 . <%= scope.lookupvar('puppi::params::scriptsdir') %>/header || exit 10
 
-<% if @packagename != "" -%>
+<% if @packagename != [] -%>
 # Show packages info
 echo_title "$HOSTNAME - <%= @name %>: Packages Installed: <% @packagename.each do |item| %><%= item %><% end %>"
 <% @packagename.each do |item| -%>
@@ -19,7 +19,7 @@ show_command "<%= scope.lookupvar('puppi::params::info_package_list') %> <%= ite
 <% end -%>
 <% end -%>
 
-<% if @configfile != "" -%>
+<% if @configfile != [] -%>
 # Show config info
 echo_title "$HOSTNAME - <%= @name %>: Configuration Files managed: <% @configfile.each do |item| %><%= item %><% end %>"
 <% @configfile.each do |item| -%>
@@ -31,7 +31,7 @@ show_command "head <%= item %>"
 <% end -%>
 <% end -%>
 
-<% if @datadir != "" -%>
+<% if @datadir != [] -%>
 # Show data dir
 echo_title "$HOSTNAME - <%= @name %>: Application data are in: <% @datadir.each do |item| %><%= item %><% end %>"
 <% @datadir.each do |item| -%>
@@ -40,7 +40,7 @@ show_command "df <%= item %>"
 <% end -%>
 <% end -%>
 
-<% if @logdir != "" -%>
+<% if @logdir != [] -%>
 # Show log dir
 echo_title "$HOSTNAME - <%= @name %>: Logs are in: <% @logdir.each do |item| %><%= item %><% end %>"
 <% @logdir.each do |item| -%>
@@ -49,7 +49,7 @@ show_command "df <%= item %>"
 <% end -%>
 <% end -%>
 
-<% if @logfile != "" -%>
+<% if @logfile != [] -%>
 # Show logs
 echo_title "$HOSTNAME - <%= @name %>: Last log entries: <% @logfile.each do |item| %><%= item %><% end %>"
 <% @logfile.each do |item| -%>
@@ -61,14 +61,14 @@ show_command "tail -10 <%= item %>"
 <% end -%>
 <% end -%>
 
-<% if @run != "" -%>
+<% if @run != [] -%>
 echo_title "$HOSTNAME - <%= @name %>: Extra info"
 <% @run.each do |cmd| %>show_command "<%= cmd %>"
 <% end -%>
 <% end -%>
 
 
-<% if @servicename != "" -%>
+<% if @servicename != [] -%>
 # Show service info
 echo_title "$HOSTNAME - <%= @name %>: Services: <% @servicename.each do |item| %><%= item %><% end %>"
 <% @servicename.each do |item| -%>

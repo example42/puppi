@@ -26,20 +26,20 @@
 #  }
 #
 define puppi::info::module (
-  String $packagename    = '',
-  String $servicename    = '',
+  Array  $packagename    = [],
+  Array $servicename     = [],
   String $processname    = '',
-  String $configfile     = '',
+  Array $configfile      = [],
   String $configdir      = '',
   String $initconfigfile = '',
   String $pidfile        = '',
-  String $datadir        = '',
-  String $logfile        = '',
-  String $logdir         = '',
+  Array $datadir         = [],
+  Array $logfile         = [],
+  Array $logdir          = [],
   String $protocol       = '',
   Variant[String,Integer] $port = '',
   String $description    = '',
-  String $run            = '',
+  Array $run             = [],
   String $verbose        = 'no',
   String $templatefile   = 'puppi/info/module.erb',
 ) {
